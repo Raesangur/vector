@@ -1,4 +1,5 @@
 #pragma once
+#include <stdlib.h>
 #include <algorithm>
 #include <memory>
 #include <stdexcept>
@@ -51,20 +52,23 @@ namespace pel
             std::copy(otherVector.cbegin(), otherVector.cend(), begin);
         }
 
-        //vector(std::initializer_list) /** @todo */
+        vector(const std::initializer_list<ItemType> ilist)
+        {
+            /** @todo */
+        }
 
         /* Destructor */
         ~vector()
         {
-            delete[] m_beginIterator;
+            std::free(m_beginIterator);
         }
 
 
         /*********************************************************************/
         /* Element accessors ----------------------------------------------- */
-        inline ItemType& at(size_type index)
+        inline ItemType& at(const size_type index)
         { return *this->operator[](index); }
-        inline const ItemType& at(size_type index) const 
+        inline const ItemType& at(const size_type index) const 
         { return *this->operator[](index); }
 
         inline ItemType& front() { return *begin(); }
@@ -82,13 +86,16 @@ namespace pel
         {
             std::fill_n(begin() + offset, count, value);
         }
-        //void assign(const std::initializer_list)  /** @todo */
+        void assign(const std::initializer_list<ItemType> ilist)
+        {
+            /** @todo */
+        }
 
 
         /*********************************************************************/
         /* Operator overloads ---------------------------------------------- */
 
-        ItemType& operator[](size_type index)
+        ItemType& operator[](const size_type index)
         {
             if (index >= length())
             {
@@ -98,7 +105,7 @@ namespace pel
             return m_beginIterator[index];
         }
 
-        const ItemType& operator[](size_type index) const
+        const ItemType& operator[](const size_type index) const
         {
             if (index >= length())
             {
@@ -106,6 +113,41 @@ namespace pel
             }
 
             return m_beginIterator[index];
+        }
+
+        vector<ItemType>& operator+=(const ItemType& rhs)
+        {
+            emplace_back(rhs);
+            return *this;
+        }
+
+        vector<ItemType>& operator++(int)
+        {
+            reserve(capacity() + 1);
+            return *this;
+        }
+
+        vector<ItemType>& operator--(int)
+        {
+            if (capacity() == length())
+            {
+                pop_back();
+            }
+            reserve(capacity() - 1);
+            return *this;
+        }
+
+        vector<ItemType>& operator>>(int steps)
+        {
+            std::shift_right(cbegin(), cend(), steps);
+
+            return *this;
+        }
+        vector<ItemType>& operator<<(int steps)
+        {
+            std::shift_left(cbegin(), cend(), steps);
+
+            return *this;
         }
 
 
@@ -118,12 +160,65 @@ namespace pel
 
 
         /*********************************************************************/
+        /* Element management ---------------------------------------------- */
+        void push_back(const ItemType& value)
+        {
+            if (length() + 1 > capacity())
+            {
+                reserve(capacity() + s_stepSize());
+            }
+
+            *m_endIterator = value;
+
+            m_addSize(1);
+        }
+
+        void pop_back()
+        {
+            if (length() == 0)
+            {
+                return;
+            }
+
+            std::destroy_at(--m_endIterator);
+            m_length--;
+        }
+
+        vector_iterator insert(const ItemType& value,
+                               const vector_iterator& position = cbegin(), 
+                               const size_type count = 1)
+        {
+            /** @todo */
+        }
+        vector_iterator insert(const vector_iterator& destination,
+                               const vector_iterator& sourceBegin,
+                               const vector_iterator& sourceEnd)
+        {
+            /** @todo */
+        }
+        vector_iterator insert(const std::initializer_list<ItemType> ilist,
+                               const vector_iterator& position = cbegin())
+        {
+            /** @todo */
+        }
+
+        vector_iterator emplace(const ItemType& value,
+                                const vector_iterator& position = cbegin())
+        {
+            /** @todo */
+        }
+        vector_iterator emplace_back(const ItemType& value)
+        {
+            /** @todo */
+        }
+        /*********************************************************************/
         /* Memory ---------------------------------------------------------- */
         const size_type& size() const     { return length(); }
         const size_type& length() const   { return m_length; }
         const size_type& capacity() const { return m_capacity; }
+        const bool isEmpty() const        { return length() == 0; }
 
-        void reserve(size_type newCapacity)
+        void reserve(const size_type newCapacity)
         {
             /* Check if resizing is necessary */
             if (newCapacity == capacity())
@@ -131,22 +226,11 @@ namespace pel
                 return;
             }
 
-            /* Backup old begin operator */
-            vector_iterator oldBegin = begin();
-            vector_iterator oldEnd = end();
-
-
             /* Allocate a new memory segment */
             m_VectorConstructor(newCapacity);
-
-            /* Copy old content in the new memory */
-            std::copy(oldBegin, oldEnd, begin());
-
-            /* Delete the old segment of allocated memory */
-            delete[] oldBegin;
         }
 
-        void resize(size_type newLength)
+        void resize(const size_type newLength)
         {
             /* Check if reserving memory is necessary */
             if (newLength > capacity())
@@ -169,29 +253,46 @@ namespace pel
             m_endIterator = m_beginIterator;
         }
 
-        void push_back(const ItemType& value)
+        void shrink_to_fit()
         {
-            if (length() + 1 > capacity())
+            if (length() == capacity())
             {
-                reserve(capacity() + s_stepSize());
+                return;
             }
 
-            m_addSize(1);
-
-            *m_endIterator = value;
+            reserve(length());
         }
 
 
         /*********************************************************************/
         /* Private methods ------------------------------------------------- */
     private:
-        void m_VectorConstructor(size_type length)
+        void m_VectorConstructor(const size_type size)
         {
-            m_capacity = length;
-            m_beginIterator = new ItemType[length];
-            m_endIterator = &m_beginIterator[length];
+            m_capacity = size;
+
+            /* Reallocate block of memory */
+            std::size_t blockSize = capacity() * sizeof(ItemType);
+            void* tempPtr = std::realloc(m_beginIterator, blockSize);
+            if (tempPtr == nullptr)
+            {
+                if (size != 0)
+                {
+                    throw new std::bad_alloc();
+                }
+                else
+                {
+                    m_beginIterator = nullptr;
+                    m_endIterator = nullptr;
+                    return;
+                }
+            }
+
+            /* Set iterators */
+            m_beginIterator = static_cast<ItemType*>(tempPtr);
+            m_endIterator = &m_beginIterator[length()];
         }
-        void m_addSize(size_type addedLength)
+        void m_addSize(const size_type addedLength)
         {
             m_length = length() + addedLength;
             m_endIterator = &m_beginIterator[length()];
@@ -205,13 +306,13 @@ namespace pel
     private:
         size_type m_length;
         size_type m_capacity;
-        vector_iterator m_beginIterator;
-        vector_iterator m_endIterator;
+        vector_iterator m_beginIterator = nullptr;
+        vector_iterator m_endIterator = nullptr;
 
 
         /*********************************************************************/
         /* Static variables ------------------------------------------------ */
-        size_type s_stepSize() { return 4; }
+        constexpr size_type s_stepSize() { return 4; }
 #pragma endregion
     };
 };

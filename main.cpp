@@ -1,18 +1,68 @@
 #include <vector>
+#include <array>
+#include <string>
+#include <utility>
 #include "vector.hpp"
+#include <type_traits>
 
 #include <iostream>
 
+struct mystruct
+{
+    mystruct()
+    {
+        a = 0;
+        b = 1;
+        c = 2;
+        d = 3;
+        e = 4;
+        f = 5;
+        f1 = 0.0;
+        f2 = 1.0;
+        f3 = 3.141592653589793236448464323;
+        array = { true, false, true, false, false, true, false, true, false, false };
+    }
+
+    int a;
+    int b;
+    int c;
+    int d;
+    int e;
+    int f;
+    double f1;
+    double f2;
+    double f3;
+    std::array<bool, 10> array;
+};
 
 template<typename ItemType>
 void printVec(pel::vector<ItemType>& vector)
 {
-    std::for_each(vector.cbegin(), vector.cend(), [](ItemType& val)
-        {
-            std::cout << val << '\n';
-        });
+    if constexpr (std::is_same<ItemType, mystruct>())
+    {
+        printStructVec(vector);
+    }
+    else
+    {
+        std::for_each(vector.cbegin(), vector.cend(), [](ItemType& val)
+                      {
+                          std::cout << val << '\n';
+                      });
+        std::cout << "----------------\n";
+    }
+}
+
+inline void printStructVec(pel::vector<mystruct>& vector)
+{
+    std::for_each(vector.cbegin(), vector.cend(), [](mystruct& val)
+                  {
+                      std::cout << "A: " << val.a << '\n';
+                      std::cout << "B: " << val.b << '\n';
+                      std::cout << "C: " << val.c << '\n' << "-----" << '\n';
+                  });
     std::cout << "----------------\n";
 }
+
 
 int main()
 {
@@ -63,25 +113,38 @@ int main()
         std::cout << '\n' << vec2.size() << '\n';
 
         std::cout << "----------------\n";
-        //pel::vector<std::shared_ptr<int>> vec3(0);
+        pel::vector<mystruct> vec3(0);
 
-        std::shared_ptr<int> int1 = std::make_shared<int>(1);
-        std::shared_ptr<int> int2 = std::make_shared<int>(2);
-        std::shared_ptr<int> int3 = std::make_shared<int>(3);
-        std::shared_ptr<int> int4 = std::make_shared<int>(4);
-       /* printVec(vec3);
-        vec3.push_back(int1);
-        vec3.push_back(int2);
-        vec3.push_back(int3);
-        vec3.push_back(int4);
-        printVec(vec3);*/
 
+        printVec(vec3);
+        mystruct a;
+        mystruct b;
+        b.b = 0;
+        mystruct c;
+        c.c = 0;
+        vec3.push_back(a);
+        vec3.push_back(b);
+        vec3.push_back(c);
+        vec3.push_back(b);
+        vec3.push_back(a);
+        printVec(vec3);
+        vec3.pop_back();
+        printVec(vec3);
+
+        while (vec3.isEmpty() == false)
+        {
+            vec3.pop_back();
+        }
+        printVec(vec3);
+        std::cout << "size : " << vec3.length() << "\ncapacity : " << vec3.capacity() << '\n';
+        vec3.shrink_to_fit();
+        std::cout << "size : " << vec3.length() << "\ncapacity : " << vec3.capacity() << '\n';
 
         return 0;
     }
-    catch(std::exception e)
+    catch(...)
     {
-        std::cout << e.what();
+        std::cout << "\n ----------exception-----------\n";
         return -1;
     }
 }
