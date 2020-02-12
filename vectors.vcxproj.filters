@@ -24,4 +24,7 @@
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>
+  <ItemGroup>
+    <Natvis Include="vector.natvis" />
+  </ItemGroup>
 </Project>

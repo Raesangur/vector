@@ -13,6 +13,8 @@ namespace pel
         /*********************************************************************/
         /* Type definitions ------------------------------------------------ */
         using size_type = typename std::size_t;
+        /** @todo Better iterators */
+        /** @todo reverse iterators */
         using vector_iterator = ItemType*;
 
 
@@ -67,16 +69,20 @@ namespace pel
         /*********************************************************************/
         /* Element accessors ----------------------------------------------- */
         inline ItemType& at(const size_type index)
-        { return *this->operator[](index); }
-        inline const ItemType& at(const size_type index) const 
-        { return *this->operator[](index); }
+        {
+            return *this->operator[](index);
+        }
+        inline const ItemType& at(const size_type index) const
+        {
+            return *this->operator[](index);
+        }
 
         inline ItemType& front() { return *begin(); }
-        inline ItemType& back()  { return *(end() - 1); }
+        inline ItemType& back() { return *(end() - 1); }
         inline const ItemType& front() const { return *begin(); }
-        inline const ItemType& back() const  { return *(end() - 1); }
+        inline const ItemType& back() const { return *(end() - 1); }
 
-        inline ItemType* data()             { return m_beginIterator; }
+        inline ItemType* data() { return m_beginIterator; }
         inline const ItemType* data() const { return m_beginIterator; }
 
 
@@ -133,6 +139,7 @@ namespace pel
             {
                 pop_back();
             }
+
             reserve(capacity() - 1);
             return *this;
         }
@@ -163,10 +170,7 @@ namespace pel
         /* Element management ---------------------------------------------- */
         void push_back(const ItemType& value)
         {
-            if (length() + 1 > capacity())
-            {
-                reserve(capacity() + s_stepSize());
-            }
+            m_checkFit(1);
 
             *m_endIterator = value;
 
@@ -184,39 +188,116 @@ namespace pel
             m_length--;
         }
 
+
         vector_iterator insert(const ItemType& value,
-                               const vector_iterator& position = cbegin(), 
+                               const vector_iterator& position = cbegin(),
                                const size_type count = 1)
         {
-            /** @todo */
+            m_checkIfValid(position);
+            if (count == 0)
+            {
+                return cbegin();
+            }
+
+            m_checkFit(1);
+            m_addSize(count);
+
+            std::shift_right(position, cend(), count);
+
+            for (size_type i = 0; i < count; i++)
+            {
+                position[i] = value;
+            }
+
+            return position;
         }
-        vector_iterator insert(const vector_iterator& destination,
-                               const vector_iterator& sourceBegin,
-                               const vector_iterator& sourceEnd)
+
+        vector_iterator insert(const ItemType& value,
+                               const size_type offset = 0,
+                               const size_type count = 1)
         {
-            /** @todo */
+            if (offset > length())
+            {
+                throw std::invalid_argument("Invalid insert offset");
+            }
+
+            vector_iterator position = cbegin() + offset;
+
+            return insert(value, position, count);
         }
-        vector_iterator insert(const std::initializer_list<ItemType> ilist,
+
+        vector_iterator insert(const vector_iterator& sourceBegin,
+                               const vector_iterator& sourceEnd,
+                               const vector_iterator& position = cbegin())
+        {
+            m_checkIfValid(position);
+            size_type sourceSize = sourceEnd - sourceBegin;
+            
+            m_checkFit(sourceSize);
+            m_addSize(sourceSize);
+
+            std::shift_right(position, cend(), sourceSize);
+            std::copy(sourceBegin, sourceEnd, position);
+
+            return position;
+        }
+
+        vector_iterator insert(const vector_iterator& sourceBegin,
+                               const vector_iterator& sourceEnd,
+                               const size_type offset = 0)
+        {
+            if (offset > length())
+            {
+                throw std::invalid_argument("Invalid insert offset");
+            }
+
+            vector_iterator position = cbegin() + offset;
+
+            return insert(sourceBegin, sourceEnd, position);
+        }
+
+        vector_iterator insert(const std::initializer_list<ItemType>& ilist,
                                const vector_iterator& position = cbegin())
         {
             /** @todo */
+        }
+        vector_iterator insert(const std::initializer_list<ItemType>& ilist,
+                               const size_type offset = 0)
+        {
+            if (offset > length())
+            {
+                throw std::invalid_argument("Invalid insert offset");
+            }
+
+            vector_iterator position = cbegin() + offset;
+
+            return insert(ilist, position);
         }
 
         vector_iterator emplace(const ItemType& value,
                                 const vector_iterator& position = cbegin())
         {
-            /** @todo */
+            m_checkIfValid(position);
+
+            *position = value;
+
+            return position;
         }
         vector_iterator emplace_back(const ItemType& value)
         {
-            /** @todo */
+            vector_iterator position = m_endIterator - 1;
+
+            *position = value;
+
+            return position;
         }
+
+
         /*********************************************************************/
         /* Memory ---------------------------------------------------------- */
-        const size_type& size() const     { return length(); }
-        const size_type& length() const   { return m_length; }
+        const size_type& length() const { return m_length; }
         const size_type& capacity() const { return m_capacity; }
-        const bool isEmpty() const        { return length() == 0; }
+        const bool isEmpty() const { return length() == 0; }
 
         void reserve(const size_type newCapacity)
         {
@@ -242,7 +323,7 @@ namespace pel
             /** @todo /
 
             /* Resize */
-            m_addSize(newLength);
+            m_changeSize(newLength);
         }
 
         void clear()
@@ -294,8 +375,31 @@ namespace pel
         }
         void m_addSize(const size_type addedLength)
         {
-            m_length = length() + addedLength;
+            m_changeSize(length() + addedLength);
+        }
+        void m_changeSize(const size_type newLength)
+        {
+            m_length = newLength;
             m_endIterator = &m_beginIterator[length()];
+        }
+        bool m_checkFit(const size_type extraLength)
+        {
+            if (length() + extraLength > capacity())
+            {
+                reserve(capacity() + s_stepSize() + extraLength);
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+        }
+        void m_checkIfValid(const vector_iterator& iterator)
+        {
+            if ((iterator < cbegin()) || (iterator > cend()))
+            {
+                throw std::invalid_argument("Invalid iterator");
+            }
         }
 #pragma endregion
 

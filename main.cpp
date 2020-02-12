@@ -36,6 +36,16 @@ struct mystruct
 };
 
 template<typename ItemType>
+void printVec(std::vector<ItemType>& vector)
+{
+    std::for_each(vector.cbegin(), vector.cend(), [](const ItemType& val)
+                  {
+                      std::cout << val << '\n';
+                  });
+    std::cout << "----------------\n";
+}
+
+template<typename ItemType>
 void printVec(pel::vector<ItemType>& vector)
 {
     if constexpr (std::is_same<ItemType, mystruct>())
@@ -66,8 +76,12 @@ inline void printStructVec(pel::vector<mystruct>& vector)
 
 int main()
 {
-    std::vector<int> testvec = { 12, 0 };
-    testvec.clear();
+    std::vector<int> testvec = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+    printVec(testvec);
+    std::shift_right(testvec.begin() + 2, testvec.end(), 1);
+    printVec(testvec);
+
+
     try
     {
         pel::vector<int> vec(5);
@@ -89,7 +103,7 @@ int main()
         printVec(vec2);
 
 
-        vec.reserve(vec.size() * 2);
+        vec.reserve(vec.length() * 2);
         printVec(vec);
 
         vec.resize(vec.capacity());
@@ -110,7 +124,7 @@ int main()
         vec2.clear();
         printVec(vec2);
         std::cout << vec2.capacity();
-        std::cout << '\n' << vec2.size() << '\n';
+        std::cout << '\n' << vec2.length() << '\n';
 
         std::cout << "----------------\n";
         pel::vector<mystruct> vec3(0);
@@ -139,6 +153,12 @@ int main()
         std::cout << "size : " << vec3.length() << "\ncapacity : " << vec3.capacity() << '\n';
         vec3.shrink_to_fit();
         std::cout << "size : " << vec3.length() << "\ncapacity : " << vec3.capacity() << '\n';
+        std::cout << "--------------\n--------------\n--------------\n\n";
+
+        printVec(vec);
+        vec.insert(1024, vec.length());
+        vec.emplace_back(2048);
+        printVec(vec);
 
         return 0;
     }
