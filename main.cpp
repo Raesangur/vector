@@ -73,15 +73,47 @@ inline void printStructVec(pel::vector<mystruct>& vector)
     std::cout << "----------------\n";
 }
 
+class myInt
+{
+public:
+    constexpr myInt() = delete;
+    constexpr myInt(int value) : m_value(value)
+    {}
+
+    constexpr const int getValue() const
+    {
+        return m_value;
+    }
+
+    constexpr operator int() const
+    {
+        return m_value;
+    }
+
+    constexpr int operator()() const
+    {
+        return m_value;
+    }
+
+private:
+    int m_value = 0;
+};
+
+
 
 int main()
 {
+
+
+    
+
     std::vector<int> testvec = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
     printVec(testvec);
     std::shift_right(testvec.begin() + 2, testvec.end(), 1);
     printVec(testvec);
+    std::vector<int>::iterator vecit = testvec.begin();
 
-
+    auto it = testvec.begin();
     try
     {
         pel::vector<int> vec(5);
@@ -157,7 +189,13 @@ int main()
 
         printVec(vec);
         vec.insert(1024, vec.length());
-        vec.emplace_back(2048);
+        vec.replace_back(2048);
+        printVec(vec);
+
+        std::initializer_list<int> ilist = { 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150 };
+        vec.push_back(ilist);
+        printVec(vec);
+        //vec.insert(ilist, 0);
         printVec(vec);
 
         return 0;

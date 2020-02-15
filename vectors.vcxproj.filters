@@ -23,6 +23,9 @@
     <ClInclude Include="vector.hpp">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="vector_iterator.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Natvis Include="vector.natvis" />
