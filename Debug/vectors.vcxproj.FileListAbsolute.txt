@@ -1,0 +1,2 @@
+E:\GitHub\vector\Debug\vectors.exe
+E:\GitHub\vector\Debug\vectors.pdb

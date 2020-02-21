@@ -7,7 +7,7 @@
       <Item Name ="[capacity]"> m_capacity </Item>
       <ArrayItems>
         <Size> m_endIterator - m_beginIterator </Size>
-        <ValuePointer>m_beginIterator</ValuePointer>
+        <ValuePointer> m_beginIterator </ValuePointer>
       </ArrayItems>
     </Expand>
   </Type>

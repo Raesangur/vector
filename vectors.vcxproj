@@ -92,6 +92,7 @@
       <AdditionalOptions>/w44061 /w44062 /w44165 /w44242 /w44254 /w44289 /w44355 /w44388 /w44536 /w44545 /w44546 /w44582 /w44583 /w44596 /w44619 /w44643 /w44774 /w44800 /w44837 /w44868 /w44905 /w44906 /w44431 %(AdditionalOptions)</AdditionalOptions>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <CompileAs>CompileAsCpp</CompileAs>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -109,6 +110,7 @@
       <AdditionalOptions>/w44061 /w44062 /w44165 /w44242 /w44254 /w44289 /w44355 /w44388 /w44536 /w44545 /w44546 /w44582 /w44583 /w44596 /w44619 /w44643 /w44774 /w44800 /w44837 /w44868 /w44905 /w44906 /w44431 %(AdditionalOptions)</AdditionalOptions>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <CompileAs>CompileAsCpp</CompileAs>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -128,6 +130,7 @@
       <AdditionalOptions>/w44061 /w44062 /w44165 /w44242 /w44254 /w44289 /w44355 /w44388 /w44536 /w44545 /w44546 /w44582 /w44583 /w44596 /w44619 /w44643 /w44774 /w44800 /w44837 /w44868 /w44905 /w44906 /w44431 %(AdditionalOptions)</AdditionalOptions>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <CompileAs>CompileAsCpp</CompileAs>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -149,6 +152,7 @@
       <AdditionalOptions>/w44061 /w44062 /w44165 /w44242 /w44254 /w44289 /w44355 /w44388 /w44536 /w44545 /w44546 /w44582 /w44583 /w44596 /w44619 /w44643 /w44774 /w44800 /w44837 /w44868 /w44905 /w44906 /w44431 %(AdditionalOptions)</AdditionalOptions>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <CompileAs>CompileAsCpp</CompileAs>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -172,6 +176,9 @@
   </ItemGroup>
   <ItemGroup>
     <Natvis Include="vector.natvis" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="vector.inl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

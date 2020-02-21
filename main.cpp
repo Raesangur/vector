@@ -100,13 +100,8 @@ private:
 };
 
 
-
 int main()
 {
-
-
-    
-
     std::vector<int> testvec = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
     printVec(testvec);
     std::shift_right(testvec.begin() + 2, testvec.end(), 1);

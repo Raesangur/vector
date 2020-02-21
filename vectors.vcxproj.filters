@@ -30,4 +30,9 @@
   <ItemGroup>
     <Natvis Include="vector.natvis" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="vector.inl">
+      <Filter>Source Files</Filter>
+    </None>
+  </ItemGroup>
 </Project>
