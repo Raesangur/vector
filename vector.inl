@@ -689,6 +689,102 @@ pel::vector<ItemType>::cend() const
 {
     return m_endIterator;
 }
+
+/**
+ * @function    rbegin
+ *
+ * @brief       Returns a reverse iterator to the reversed beginning of the 
+ *              allocated data.
+ * @date        2020/02/07 - 22:39
+ * @author      Pascal-Emmanuel Lachance
+ *              https://www.github.com/Raesangur/
+ *
+ * @template    ItemType: Type of the elements contained in the vector
+ * @attributes  constexpr inline - const
+ *
+ * @retval      vector_iterator:
+ *              Iterator to the reversed start of the vector's memory.
+ *              (end - 1)
+ */
+template<typename ItemType>
+constexpr inline
+pel::reverse_vector_iterator<ItemType>
+pel::vector<ItemType>::rbegin() const
+{
+    return std::reverse_iterator<vector_iterator<ItemType>>(m_beginIterator);
+}
+
+/**
+ * @function    rend
+ *
+ * @brief       Returns a reverse iterator to the reversed end of the
+ *              allocated data.
+ * @date        2020/02/07 - 22:39
+ * @author      Pascal-Emmanuel Lachance
+ *              https://www.github.com/Raesangur/
+ *
+ * @template    ItemType: Type of the elements contained in the vector
+ * @attributes  constexpr inline - const
+ *
+ * @retval      vector_iterator:
+ *              Iterator to the reversed of the vector's memory.
+ *              (begin - 1)
+ */
+template<typename ItemType>
+constexpr inline
+pel::reverse_vector_iterator<ItemType>
+pel::vector<ItemType>::rbegin() const
+{
+    return std::reverse_iterator<vector_iterator<ItemType>>(m_beginIterator);
+}
+
+/**
+ * @function    crbegin
+ *
+ * @brief       Returns a const reverse iterator to the reversed beginning of
+ *              the allocated data.
+ * @date        2020/02/07 - 22:39
+ * @author      Pascal-Emmanuel Lachance
+ *              https://www.github.com/Raesangur/
+ *
+ * @template    ItemType: Type of the elements contained in the vector
+ * @attributes  constexpr inline - const
+ *
+ * @retval      vector_iterator:
+ *              Const iterator to the reversed start of the vector's memory.
+ *              (end - 1)
+ */
+template<typename ItemType>
+constexpr inline
+const pel::reverse_vector_iterator<ItemType>
+pel::vector<ItemType>::crbegin() const
+{
+    return std::reverse_iterator<vector_iterator<ItemType>>(m_beginIterator);
+}
+
+/**
+ * @function    crend
+ *
+ * @brief       Returns a const reverse iterator to the reversed end of the
+ *              allocated data.
+ * @date        2020/02/07 - 22:39
+ * @author      Pascal-Emmanuel Lachance
+ *              https://www.github.com/Raesangur/
+ *
+ * @template    ItemType: Type of the elements contained in the vector
+ * @attributes  constexpr inline - const
+ *
+ * @retval      vector_iterator:
+ *              Const iterator to the reversed of the vector's memory.
+ *              (begin - 1)
+ */
+template<typename ItemType>
+constexpr inline
+const pel::reverse_vector_iterator<ItemType>
+pel::vector<ItemType>::crbegin() const
+{
+    return std::reverse_iterator<vector_iterator<ItemType>>(m_beginIterator);
+}
 #pragma endregion
 
 
@@ -706,14 +802,14 @@ pel::vector<ItemType>::cend() const
  *              https://www.github.com/Raesangur/
  *
  * @template    ItemType: Type of the elements contained in the vector
- * @attributes  constexpr
+ * @attributes  constexpr inline
  *
  * @param       ItemType& value: Element to push back at the end of the vector.
  *
  * @retval      void: None
  */
 template<typename ItemType>
-constexpr
+constexpr inline
 void
 pel::vector<ItemType>::push_back(const ItemType& value)
 {
@@ -734,7 +830,7 @@ pel::vector<ItemType>::push_back(const ItemType& value)
  *              https://www.github.com/Raesangur/
  *
  * @template    ItemType: Type of the elements contained in the vector
- * @attributes  constexpr
+ * @attributes  constexpr inline
  *
  * @param       initializer_list ilist:
  *              Initializer list containing elements to push back at the end
@@ -743,7 +839,7 @@ pel::vector<ItemType>::push_back(const ItemType& value)
  * @retval      void: None
  */
 template<typename ItemType>
-constexpr
+constexpr inline
 void
 pel::vector<ItemType>::push_back(const std::initializer_list<ItemType> ilist)
 {
@@ -763,12 +859,12 @@ pel::vector<ItemType>::push_back(const std::initializer_list<ItemType> ilist)
  *              https://www.github.com/Raesangur/
  *
  * @template    ItemType: Type of the elements contained in the vector
- * @attributes  constexpr
+ * @attributes  constexpr inline
  *
  * @retval      void: None
  */
 template<typename ItemType>
-constexpr
+constexpr inline
 void
 pel::vector<ItemType>::pop_back()
 {

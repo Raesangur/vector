@@ -10,16 +10,21 @@
 namespace pel
 {
 /** @todo Complete comments */
+/** @todo Move default values to .inl */
 /** @todo Free memory automatically when not needed */
 /** @todo Increase allocation step size automatically when needed */
+/** @todo make things actually constexpr */
+/** @todo ToString method */
+/** @todo noexcept, ndebug-mode compiling without checks */
 /**       @todo Make allocation step sizes align with the implementation's
                 memory allocations alignments and sizes. */
-                /** @todo noexcept, ndebug-mode compiling without checks */
-                /** @todo make things actually constexpr */
 
 
 template<typename ItemType>
 using vector_iterator = ItemType*;
+
+template<typename ItemType>
+using reverse_vector_iterator = std::reverse_iterator<vector_iterator<ItemType>>;
 
 
 template<typename ItemType>
@@ -89,13 +94,17 @@ public:
     constexpr inline vector_iterator<ItemType> end()   const;
     constexpr inline const vector_iterator<ItemType> cbegin() const;
     constexpr inline const vector_iterator<ItemType> cend()   const;
+    constexpr inline reverse_vector_iterator<ItemType> rbegin() const;
+    constexpr inline reverse_vector_iterator<ItemType> rend()   const;
+    constexpr inline const reverse_vector_iterator<ItemType> crbegin() const;
+    constexpr inline const reverse_vector_iterator<ItemType> crend()   const;
 
 
     /*********************************************************************/
     /* Element management ---------------------------------------------- */
-    constexpr void push_back(const ItemType& value);
-    constexpr void push_back(const std::initializer_list<ItemType> ilist);
-    constexpr void pop_back();
+    constexpr inline void push_back(const ItemType& value);
+    constexpr inline void push_back(const std::initializer_list<ItemType> ilist);
+    constexpr inline void pop_back();
 
 
     constexpr inline vector_iterator<ItemType>
