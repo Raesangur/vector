@@ -1,2 +1,7 @@
 ﻿  main.cpp
-  vectors.vcxproj -> E:\GitHub\vector\Debug\vectors.exe
+E:\GitHub\vector\vector.inl(863,1): error C2220: the following warning is treated as an error
+E:\GitHub\vector\vector.inl(863,1): warning C4346: 'SizeType': dependent name is not a type
+E:\GitHub\vector\vector.inl(863,1): message : prefix with 'typename' to indicate a type
+E:\GitHub\vector\vector.inl(863,1): error C2061: syntax error: identifier 'SizeType'
+E:\GitHub\vector\vector.inl(865,1): error C2143: syntax error: missing ';' before '{'
+E:\GitHub\vector\vector.inl(865,1): error C2447: '{': missing function header (old-style formal list?)

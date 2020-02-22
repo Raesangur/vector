@@ -10,10 +10,10 @@
 namespace pel
 {
 /** @todo Free memory automatically when not needed */
-/** @todo Increase allocation step size automatically when needed */
+/** @todo noexcept, ndebug-mode compiling without checks */
 /** @todo make things actually constexpr */
 /** @todo ToString method */
-/** @todo noexcept, ndebug-mode compiling without checks */
+/** @todo Increase allocation step size automatically when needed */
 /**       @todo Make allocation step sizes align with the implementation's
                 memory allocations alignments and sizes. */
 
@@ -106,8 +106,8 @@ public:
 
 
     constexpr inline vector_iterator<ItemType> insert(const ItemType& value,
-                                                      vector_iterator<ItemType> position,
-                                                      SizeType count = 1);
+                                                      const vector_iterator<ItemType> position,
+                                                      const SizeType count = 1);
 
     constexpr inline vector_iterator<ItemType> insert(const ItemType& value,
                                                       const SizeType offset,
@@ -136,24 +136,24 @@ public:
     constexpr inline SizeType capacity() const;
     constexpr inline bool isEmpty() const;
 
-    constexpr void reserve(const SizeType newCapacity);
-    constexpr void resize(const SizeType newLength);
+    constexpr inline void reserve(const SizeType newCapacity);
+    constexpr inline void resize(const SizeType newLength);
 
-    constexpr void clear();
+    constexpr inline void clear();
 
-    constexpr void shrink_to_fit();
+    constexpr inline void shrink_to_fit();
 
 
     /*********************************************************************/
     /* Private methods ------------------------------------------------- */
 private:
-    inline void m_VectorConstructor(const SizeType size);
+    inline void vector_constructor(const SizeType size);
 
-    constexpr inline void m_addSize(const SizeType addedLength);
-    constexpr inline void m_changeSize(const SizeType newLength);
+    constexpr inline void add_size(const SizeType addedLength);
+    constexpr inline void change_size(const SizeType newLength);
 
-    constexpr inline void m_checkFit(const SizeType extraLength);
-    constexpr inline void m_checkIfValid(const vector_iterator<ItemType> iterator);
+    constexpr inline void check_fit(const SizeType extraLength);
+    constexpr inline void check_if_valid(const vector_iterator<ItemType> iterator);
 #pragma endregion
 
 

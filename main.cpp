@@ -187,6 +187,8 @@ int main()
         vec.replace_back(2048);
         printVec(vec);
 
+        auto riter = vec.rbegin();
+
         std::initializer_list<int> ilist = { 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150 };
         vec.push_back(ilist);
         printVec(vec);
