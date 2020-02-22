@@ -107,42 +107,36 @@ public:
     constexpr inline void pop_back();
 
 
-    constexpr inline vector_iterator<ItemType>
-        insert(const ItemType& value,
-               vector_iterator<ItemType> position,
-               SizeType count = 1);
+    constexpr inline vector_iterator<ItemType> insert(const ItemType& value,
+                                                      vector_iterator<ItemType> position,
+                                                      SizeType count = 1);
 
-    constexpr inline vector_iterator<ItemType>
-        insert(const ItemType& value,
-               const SizeType offset,
-               const SizeType count = 1);
+    constexpr inline vector_iterator<ItemType> insert(const ItemType& value,
+                                                      const SizeType offset,
+                                                      const SizeType count = 1);
 
-    constexpr inline vector_iterator<ItemType>
-        insert(const vector_iterator<ItemType> sourceBegin,
-               const vector_iterator<ItemType> sourceEnd,
-               const vector_iterator<ItemType> position);
+    constexpr inline vector_iterator<ItemType> insert(const vector_iterator<ItemType> sourceBegin,
+                                                      const vector_iterator<ItemType> sourceEnd,
+                                                      const vector_iterator<ItemType> position);
 
-    constexpr inline vector_iterator<ItemType>
-        insert(const vector_iterator<ItemType> sourceBegin,
-               const vector_iterator<ItemType> sourceEnd,
-               const SizeType offset = 0);
+    constexpr inline vector_iterator<ItemType> insert(const vector_iterator<ItemType> sourceBegin,
+                                                      const vector_iterator<ItemType> sourceEnd,
+                                                      const SizeType offset = 0);
 
-    constexpr inline vector_iterator<ItemType>
-        insert(const std::initializer_list<ItemType> ilist,
-               const SizeType offset = 0);
+    constexpr inline vector_iterator<ItemType> insert(const std::initializer_list<ItemType> ilist,
+                                                      const SizeType offset = 0);
 
     constexpr inline vector_iterator<ItemType> replace_back(const ItemType& value);
     constexpr inline vector_iterator<ItemType> replace_front(const ItemType& value);
-    constexpr inline vector_iterator<ItemType>
-        replace(const ItemType& value,
-                vector_iterator<ItemType> position = cbegin());
+    constexpr inline vector_iterator<ItemType> replace(const ItemType& value,
+                                                       vector_iterator<ItemType> position = cbegin());
 
 
     /*********************************************************************/
     /* Memory ---------------------------------------------------------- */
-    constexpr inline const SizeType& length() const;
-    constexpr inline const SizeType& capacity() const;
-    constexpr inline const bool isEmpty() const;
+    constexpr inline SizeType length() const;
+    constexpr inline SizeType capacity() const;
+    constexpr inline bool isEmpty() const;
 
     constexpr void reserve(const SizeType newCapacity);
     constexpr void resize(const SizeType newLength);
@@ -155,12 +149,12 @@ public:
     /*********************************************************************/
     /* Private methods ------------------------------------------------- */
 private:
-    constexpr inline void m_VectorConstructor(const SizeType size);
+    inline void m_VectorConstructor(const SizeType size);
 
     constexpr inline void m_addSize(const SizeType addedLength);
     constexpr inline void m_changeSize(const SizeType newLength);
 
-    constexpr inline bool m_checkFit(const SizeType extraLength);
+    constexpr inline void m_checkFit(const SizeType extraLength);
     constexpr inline void m_checkIfValid(const vector_iterator<ItemType> iterator);
 #pragma endregion
 
