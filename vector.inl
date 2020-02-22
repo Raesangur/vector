@@ -160,7 +160,7 @@ pel::vector<ItemType>::~vector()
 
 /******************************************************************************/
 /* Element accessors -------------------------------------------------------- */
-
+#pragma region Element accessors
 
 /**
  * @function    at
@@ -396,13 +396,31 @@ pel::vector<ItemType>::assign(const std::initializer_list<ItemType> ilist,
 
     std::copy(ilist.begin(), ilist.end(), begin() + offset);
 }
+#pragma endregion
 
 
 /******************************************************************************/
 /* Operator overloads ------------------------------------------------------- */
+#pragma region Operator overloads
 
+/**
+ * @function    operator[]
+ *
+ * @brief       Overload of the brackets[] operator to access an element at a
+ *              specific index
+ * @date        2020/02/07 - 22:39
+ * @author      Pascal-Emmanuel Lachance
+ *              https://www.github.com/Raesangur/
+ *
+ * @template    ItemType: Type of the elements contained in the vector
+ * @attributes  constexpr inline
+ *
+ * @param       SizeType index: Index of the element to access
+ *
+ * @retval      ItemType&: Reference to the element at the index
+ */
 template<typename ItemType>
-constexpr
+constexpr inline
 ItemType&
 pel::vector<ItemType>::operator[](const SizeType index)
 {
@@ -414,9 +432,25 @@ pel::vector<ItemType>::operator[](const SizeType index)
     return m_beginIterator[index];
 }
 
+/**
+ * @function    operator[]
+ *
+ * @brief       Overload of the brackets[] operator to access a const
+ *              element at a specific index
+ * @date        2020/02/07 - 22:39
+ * @author      Pascal-Emmanuel Lachance
+ *              https://www.github.com/Raesangur/
+ *
+ * @template    ItemType: Type of the elements contained in the vector
+ * @attributes  constexpr inline - const
+ *
+ * @param       SizeType index: Index of the element to access
+ *
+ * @retval      ItemType&: Const reference to the element at the index
+ */
 template<typename ItemType>
-constexpr const
-ItemType&
+constexpr inline
+const ItemType&
 pel::vector<ItemType>::operator[](const SizeType index) const
 {
     if (index >= length())
@@ -427,8 +461,26 @@ pel::vector<ItemType>::operator[](const SizeType index) const
     return m_beginIterator[index];
 }
 
+/**
+ * @function    operator+=
+ *
+ * @brief       Overload of the arithmetic += operator to add an element at
+ *              the end of the vector.
+ * @date        2020/02/07 - 22:39
+ * @author      Pascal-Emmanuel Lachance
+ *              https://www.github.com/Raesangur/
+ *
+ * @template    ItemType: Type of the elements contained in the vector
+ * @attributes  constexpr inline
+ *
+ * @param       ItemType& rhs:
+ *              Item at the right-hand-size of the addition, to be added at
+ *              the end off the array.
+ *
+ * @retval      vector&: Reference the vector itself.
+ */
 template<typename ItemType>
-constexpr
+constexpr inline
 pel::vector<ItemType>&
 pel::vector<ItemType>::operator+=(const ItemType& rhs)
 {
@@ -436,8 +488,22 @@ pel::vector<ItemType>::operator+=(const ItemType& rhs)
     return *this;
 }
 
+/**
+ * @function    operator++
+ *
+ * @brief       Overload of the post-increment ++ operator to reserve one element
+ *              of memory at the end of the vector.
+ * @date        2020/02/07 - 22:39
+ * @author      Pascal-Emmanuel Lachance
+ *              https://www.github.com/Raesangur/
+ *
+ * @template    ItemType: Type of the elements contained in the vector
+ * @attributes  constexpr inline
+ *
+ * @retval      vector&: Reference the vector itself.
+ */
 template<typename ItemType>
-constexpr
+constexpr inline
 pel::vector<ItemType>&
 pel::vector<ItemType>::operator++(int)
 {
@@ -445,8 +511,26 @@ pel::vector<ItemType>::operator++(int)
     return *this;
 }
 
+/**
+ * @function    operator--
+ *
+ * @brief       Overload of the post-decrement -- operator to free one element
+ *              of memory at the end of the vector.
+ * @date        2020/02/07 - 22:39
+ * @author      Pascal-Emmanuel Lachance
+ *              https://www.github.com/Raesangur/
+ *
+ * @template    ItemType: Type of the elements contained in the vector
+ * @attributes  constexpr inline
+ *
+ * @retval      vector&: Reference the vector itself.
+ *
+ * @note        If the shrinking of the capacity of the vector causes it to 
+ *              shrink smaller than it's current size, the last element of the
+ *              vector will be popped back and destroyed (safely).
+ */
 template<typename ItemType>
-constexpr
+constexpr inline
 pel::vector<ItemType>&
 pel::vector<ItemType>::operator--(int)
 {
@@ -459,8 +543,24 @@ pel::vector<ItemType>::operator--(int)
     return *this;
 }
 
+/**
+ * @function    operator>>
+ *
+ * @brief       Overload of the right-shift >> operator to shift the vector's
+ *              elements to the right.
+ * @date        2020/02/07 - 22:39
+ * @author      Pascal-Emmanuel Lachance
+ *              https://www.github.com/Raesangur/
+ *
+ * @template    ItemType: Type of the elements contained in the vector
+ * @attributes  constexpr inline
+ *
+ * @param       int step: Shifts to the rights
+ *
+ * @retval      vector&: Reference the vector itself.
+ */
 template<typename ItemType>
-constexpr
+constexpr inline
 pel::vector<ItemType>&
 pel::vector<ItemType>::operator>>(int steps)
 {
@@ -469,8 +569,24 @@ pel::vector<ItemType>::operator>>(int steps)
     return *this;
 }
 
+/**
+ * @function    operator<<
+ *
+ * @brief       Overload of the left-shift << operator to shift the vector's
+ *              elements to the left.
+ * @date        2020/02/07 - 22:39
+ * @author      Pascal-Emmanuel Lachance
+ *              https://www.github.com/Raesangur/
+ *
+ * @template    ItemType: Type of the elements contained in the vector
+ * @attributes  constexpr inline
+ *
+ * @param       int step: Shifts to the left
+ *
+ * @retval      vector&: Reference the vector itself.
+ */
 template<typename ItemType>
-constexpr
+constexpr inline
 pel::vector<ItemType>&
 pel::vector<ItemType>::operator<<(int steps)
 {
@@ -478,10 +594,26 @@ pel::vector<ItemType>::operator<<(int steps)
 
     return *this;
 }
+#pragma endregion
 
 
 /******************************************************************************/
 /* Iterators ---------------------------------------------------------------- */
+#pragma region Iterators
+
+/**
+ * @function    begin
+ *
+ * @brief       Returns an iterator to the beginning of the allocated data.
+ * @date        2020/02/07 - 22:39
+ * @author      Pascal-Emmanuel Lachance
+ *              https://www.github.com/Raesangur/
+ *
+ * @template    ItemType: Type of the elements contained in the vector
+ * @attributes  constexpr inline - const
+ *
+ * @retval      vector_iterator: Iterator to the start of the vector's memory.
+ */
 template<typename ItemType>
 constexpr inline
 pel::vector_iterator<ItemType>
@@ -490,6 +622,22 @@ pel::vector<ItemType>::begin() const
     return m_beginIterator;
 }
 
+/**
+ * @function    end
+ *
+ * @brief       Returns an iterator to the end of the allocated data.
+ * @date        2020/02/07 - 22:39
+ * @author      Pascal-Emmanuel Lachance
+ *              https://www.github.com/Raesangur/
+ *
+ * @template    ItemType: Type of the elements contained in the vector
+ * @attributes  constexpr inline - const
+ *
+ * @retval      vector_iterator: Iterator to the end of the vector's memory.
+ *
+ * @note        This iterator does not point directly to the end of the 
+ *              memory, but to one element after the end of the memory.
+ */
 template<typename ItemType>
 constexpr inline
 pel::vector_iterator<ItemType>
@@ -498,25 +646,72 @@ pel::vector<ItemType>::end() const
     return m_endIterator;
 }
 
-template<typename ItemType>
-constexpr inline const
-pel::vector_iterator<ItemType>
+/**
+ * @function    cbegin
+ *
+ * @brief       Returns a const iterator to the beginning of the allocated data.
+ * @date        2020/02/07 - 22:39
+ * @author      Pascal-Emmanuel Lachance
+ *              https://www.github.com/Raesangur/
+ *
+ * @template    ItemType: Type of the elements contained in the vector
+ * @attributes  constexpr inline - const
+ *
+ * @retval      vector_iterator:
+ *              Const iterator to the start of the vector's memory.
+ */
+template<typename ItemType> 
+constexpr inline
+const pel::vector_iterator<ItemType>
 pel::vector<ItemType>::cbegin() const
 {
     return m_beginIterator;
 }
 
+/**
+ * @function    cend
+ *
+ * @brief       Returns a const iterator to the end of the allocated data.
+ * @date        2020/02/07 - 22:39
+ * @author      Pascal-Emmanuel Lachance
+ *              https://www.github.com/Raesangur/
+ *
+ * @template    ItemType: Type of the elements contained in the vector
+ * @attributes  constexpr inline - const
+ *
+ * @retval      vector_iterator:
+ *              Const iterator to the end of the vector's memory.
+ */
 template<typename ItemType>
-constexpr inline const
-pel::vector_iterator<ItemType>
+constexpr inline
+const pel::vector_iterator<ItemType>
 pel::vector<ItemType>::cend() const
 {
     return m_endIterator;
 }
+#pragma endregion
 
 
 /******************************************************************************/
 /* Element management ------------------------------------------------------- */
+#pragma region Element management
+
+/**
+ * @function    push_back
+ *
+ * @brief       Add an element to the end of the vector, after the current
+ *              last item.
+ * @date        2020/02/07 - 22:39
+ * @author      Pascal-Emmanuel Lachance
+ *              https://www.github.com/Raesangur/
+ *
+ * @template    ItemType: Type of the elements contained in the vector
+ * @attributes  constexpr
+ *
+ * @param       ItemType& value: Element to push back at the end of the vector.
+ *
+ * @retval      void: None
+ */
 template<typename ItemType>
 constexpr
 void
@@ -529,6 +724,24 @@ pel::vector<ItemType>::push_back(const ItemType& value)
     m_addSize(1);
 }
 
+/**
+ * @function    push_back
+ *
+ * @brief       Add elements from an initializer list to the end of the vector,
+ *              after the current last item.
+ * @date        2020/02/07 - 22:39
+ * @author      Pascal-Emmanuel Lachance
+ *              https://www.github.com/Raesangur/
+ *
+ * @template    ItemType: Type of the elements contained in the vector
+ * @attributes  constexpr
+ *
+ * @param       initializer_list ilist:
+ *              Initializer list containing elements to push back at the end
+ *              of the vector.
+ *
+ * @retval      void: None
+ */
 template<typename ItemType>
 constexpr
 void
@@ -541,6 +754,19 @@ pel::vector<ItemType>::push_back(const std::initializer_list<ItemType> ilist)
     m_addSize(ilist.size());
 }
 
+/**
+ * @function    pop_back
+ *
+ * @brief       Remove the last element of the vector.
+ * @date        2020/02/07 - 22:39
+ * @author      Pascal-Emmanuel Lachance
+ *              https://www.github.com/Raesangur/
+ *
+ * @template    ItemType: Type of the elements contained in the vector
+ * @attributes  constexpr
+ *
+ * @retval      void: None
+ */
 template<typename ItemType>
 constexpr
 void
@@ -556,8 +782,30 @@ pel::vector<ItemType>::pop_back()
 }
 
 
+/**
+ * @function    insert
+ *
+ * @brief       Insert an element in the middle of the vector, right-shifting
+ *              items on the right to fit.
+ * @date        2020/02/07 - 22:39
+ * @author      Pascal-Emmanuel Lachance
+ *              https://www.github.com/Raesangur/
+ *
+ * @template    ItemType: Type of the elements contained in the vector
+ * @attributes  constexpr inline
+ *
+ * @param       ItemType& value: Element to insert in the vector
+ * @param       vector_iterator position: Position to insert the element at
+ * @param       SizeType count:
+ *              Number of elements to insert from the initial offset
+ *
+ * @retval      vector_iterator:
+ *              Position at which the element has been inserted.
+ *              (if multiple elements have been inserted, return position of
+ *               the last inserted element).
+ */
 template<typename ItemType>
-constexpr
+constexpr inline
 pel::vector_iterator<ItemType>
 pel::vector<ItemType>::insert(const ItemType& value,
                               vector_iterator<ItemType> position,
@@ -579,11 +827,33 @@ pel::vector<ItemType>::insert(const ItemType& value,
         position[i] = value;
     }
 
-    return position;
+    return position + count;
 }
 
+/**
+ * @function    insert
+ *
+ * @brief       Insert an element in the middle of the vector, right-shifting
+ *              items on the right to fit.
+ * @date        2020/02/07 - 22:39
+ * @author      Pascal-Emmanuel Lachance
+ *              https://www.github.com/Raesangur/
+ *
+ * @template    ItemType: Type of the elements contained in the vector
+ * @attributes  constexpr inline
+ *
+ * @param       ItemType& value: Element to insert in the vector
+ * @param       SizeType offset: Position to insert the element at
+ * @param       SizeType count:
+ *              Number of elements to insert from the initial offset
+ *
+ * @retval      vector_iterator:
+ *              Position at which the element has been inserted.
+ *              (if multiple elements have been inserted, return position of
+ *               the last inserted element).
+ */
 template<typename ItemType>
-constexpr
+constexpr inline
 pel::vector_iterator<ItemType>
 pel::vector<ItemType>::insert(const ItemType& value,
                               const SizeType offset,
@@ -599,8 +869,30 @@ pel::vector<ItemType>::insert(const ItemType& value,
     return insert(value, position, count);
 }
 
+/**
+ * @function    insert
+ *
+ * @brief       Insert elements in the middle of the vector from another vector,
+ *              right-shifting items on the right to fit.
+ * @date        2020/02/07 - 22:39
+ * @author      Pascal-Emmanuel Lachance
+ *              https://www.github.com/Raesangur/
+ *
+ * @template    ItemType: Type of the elements contained in the vector
+ * @attributes  constexpr inline
+ *
+ * @param       vector_iterator sourceBegin: Begin iterator from another vector
+ * @param       vector_iterator sourceEnd:   End iterator from another vector
+ * @param       vector_iterator position:
+ *              Position in vector to start copy-inserting data at
+ *
+ * @retval      vector_iterator:
+ *              Position at which the element has been inserted.
+ *              (if multiple elements have been inserted, return position of
+ *               the last inserted element).
+ */
 template<typename ItemType>
-constexpr
+constexpr inline
 pel::vector_iterator<ItemType>
 pel::vector<ItemType>::insert(const vector_iterator<ItemType> sourceBegin,
                               const vector_iterator<ItemType> sourceEnd,
@@ -615,11 +907,33 @@ pel::vector<ItemType>::insert(const vector_iterator<ItemType> sourceBegin,
     std::shift_right(position, cend(), sourceSize);
     std::copy(sourceBegin, sourceEnd, position);
 
-    return position;
+    return position + sourceSize;
 }
 
+/**
+ * @function    insert
+ *
+ * @brief       Insert elements in the middle of the vector from another vector,
+ *              right-shifting items on the right to fit.
+ * @date        2020/02/07 - 22:39
+ * @author      Pascal-Emmanuel Lachance
+ *              https://www.github.com/Raesangur/
+ *
+ * @template    ItemType: Type of the elements contained in the vector
+ * @attributes  constexpr inline
+ *
+ * @param       vector_iterator sourceBegin: Begin iterator from another vector
+ * @param       vector_iterator sourceEnd:   End iterator from another vector
+ * @param       SizeType offset:
+ *              Offset in vector to start copy-inserting data at
+ *
+ * @retval      vector_iterator:
+ *              Position at which the element has been inserted.
+ *              (if multiple elements have been inserted, return position of
+ *               the last inserted element).
+ */
 template<typename ItemType>
-constexpr
+constexpr inline
 pel::vector_iterator<ItemType>
 pel::vector<ItemType>::insert(const vector_iterator<ItemType> sourceBegin,
                               const vector_iterator<ItemType> sourceEnd,
@@ -635,8 +949,30 @@ pel::vector<ItemType>::insert(const vector_iterator<ItemType> sourceBegin,
     return insert(sourceBegin, sourceEnd, position);
 }
 
+/**
+ * @function    insert
+ *
+ * @brief       Insert elements in the middle of the vector from an initializer
+ *              list, right-shifting items on the right to fit.
+ * @date        2020/02/07 - 22:39
+ * @author      Pascal-Emmanuel Lachance
+ *              https://www.github.com/Raesangur/
+ *
+ * @template    ItemType: Type of the elements contained in the vector
+ * @attributes  constexpr inline
+ *
+ * @param       std::initializer_list ilist:
+ *              Initializer list containing element to copy-insert into vector
+ * @param       SizeType offset:
+ *              Offset in vector to start copy-inserting data at
+ *
+ * @retval      vector_iterator:
+ *              Position at which the element has been inserted.
+ *              (if multiple elements have been inserted, return position of
+ *               the last inserted element).
+ */
 template<typename ItemType>
-constexpr
+constexpr inline
 pel::vector_iterator<ItemType>
 pel::vector<ItemType>::insert(const std::initializer_list<ItemType> ilist,
                               const SizeType offset)
@@ -651,8 +987,27 @@ pel::vector<ItemType>::insert(const std::initializer_list<ItemType> ilist,
     return insert(ilist.begin(), ilist.end(), position);
 }
 
+
+/**
+ * @function    replace
+ *
+ * @brief       Replace the element at a specified position with a new
+ *              element.
+ * @date        2020/02/07 - 22:39
+ * @author      Pascal-Emmanuel Lachance
+ *              https://www.github.com/Raesangur/
+ *
+ * @template    ItemType: Type of the elements contained in the vector
+ * @attributes  constexpr inline
+ *
+ * @param       ItemType& value: Value that will replace element
+ * @param       vector_iterator position: Position of the element to replace
+ *
+ * @retval      vector_iterator:
+ *              Position at which the element has been replaced.
+ */
 template<typename ItemType>
-constexpr
+constexpr inline
 pel::vector_iterator<ItemType>
 pel::vector<ItemType>::replace(const ItemType& value,
                                vector_iterator<ItemType> position)
@@ -664,8 +1019,24 @@ pel::vector<ItemType>::replace(const ItemType& value,
     return position;
 }
 
+/**
+ * @function    replace_back
+ *
+ * @brief       Replace the last element with a new element.
+ * @date        2020/02/07 - 22:39
+ * @author      Pascal-Emmanuel Lachance
+ *              https://www.github.com/Raesangur/
+ *
+ * @template    ItemType: Type of the elements contained in the vector
+ * @attributes  constexpr inline
+ *
+ * @param       ItemType& value: Value that will replace element
+ *
+ * @retval      vector_iterator: Iterator to the element that was replaced.
+ *                               (end iterator - 1)
+ */
 template<typename ItemType>
-constexpr
+constexpr inline
 pel::vector_iterator<ItemType>
 pel::vector<ItemType>::replace_back(const ItemType& value)
 {
@@ -676,8 +1047,24 @@ pel::vector<ItemType>::replace_back(const ItemType& value)
     return position;
 }
 
+/**
+ * @function    replace_front
+ *
+ * @brief       Replace the first element with a new element.
+ * @date        2020/02/07 - 22:39
+ * @author      Pascal-Emmanuel Lachance
+ *              https://www.github.com/Raesangur/
+ *
+ * @template    ItemType: Type of the elements contained in the vector
+ * @attributes  constexpr inline
+ *
+ * @param       ItemType& value: Value that will replace element
+ *
+ * @retval      vector_iterator: Iterator to the element that was replaced.
+ *                               (begin iterator)
+ */
 template<typename ItemType>
-constexpr
+constexpr inline
 pel::vector_iterator<ItemType>
 pel::vector<ItemType>::replace_front(const ItemType& value)
 {
@@ -687,6 +1074,7 @@ pel::vector<ItemType>::replace_front(const ItemType& value)
 
     return position;
 }
+#pragma endregion
 
 
 /******************************************************************************/
@@ -847,4 +1235,3 @@ pel::vector<ItemType>::m_checkIfValid(const vector_iterator<ItemType> iterator)
         throw std::invalid_argument("Invalid iterator");
     }
 }
-#pragma endregion

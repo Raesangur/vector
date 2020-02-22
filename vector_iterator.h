@@ -4,6 +4,20 @@
 #include <compare>
 #include <iterator>
 
+
+/**************************************/
+/* THIS FILE IS DEPRECATED            */
+/**************************************/
+/* DO NOT USE                         */
+/* DO NOT USE                         */
+/* DO NOT USE                         */
+/* (It should still be working though */
+/**************************************/
+
+
+
+
+
 namespace pel
 {
 /* Forward declaration */

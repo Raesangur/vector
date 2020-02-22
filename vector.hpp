@@ -9,9 +9,13 @@
 
 namespace pel
 {
+/** @todo Complete comments */
 /** @todo Free memory automatically when not needed */
 /** @todo Increase allocation step size automatically when needed */
-/** @todo noexcept, ndebug-mode compiling without checks */
+/**       @todo Make allocation step sizes align with the implementation's
+                memory allocations alignments and sizes. */
+                /** @todo noexcept, ndebug-mode compiling without checks */
+                /** @todo make things actually constexpr */
 
 
 template<typename ItemType>
@@ -67,16 +71,16 @@ public:
 
     /*********************************************************************/
     /* Operator overloads ---------------------------------------------- */
-    constexpr ItemType& operator[](const SizeType index);
-    constexpr const ItemType& operator[](const SizeType index) const;
+    constexpr inline ItemType& operator[](const SizeType index);
+    constexpr inline const ItemType& operator[](const SizeType index) const;
 
-    constexpr vector<ItemType>& operator+=(const ItemType& rhs);
+    constexpr inline vector<ItemType>& operator+=(const ItemType& rhs);
 
-    constexpr vector<ItemType>& operator++(int);
-    constexpr vector<ItemType>& operator--(int);
+    constexpr inline vector<ItemType>& operator++(int);
+    constexpr inline vector<ItemType>& operator--(int);
 
-    constexpr vector<ItemType>& operator>>(int steps);
-    constexpr vector<ItemType>& operator<<(int steps);
+    constexpr inline vector<ItemType>& operator>>(int steps);
+    constexpr inline vector<ItemType>& operator<<(int steps);
 
 
     /*********************************************************************/
@@ -94,29 +98,35 @@ public:
     constexpr void pop_back();
 
 
-    constexpr vector_iterator<ItemType> insert(const ItemType& value,
-                                               vector_iterator<ItemType> position = begin(),
-                                               SizeType count = 1);
+    constexpr inline vector_iterator<ItemType>
+        insert(const ItemType& value,
+               vector_iterator<ItemType> position,
+               SizeType count = 1);
 
-    constexpr vector_iterator<ItemType> insert(const ItemType& value,
-                                               const SizeType offset = 0,
-                                               const SizeType count = 1);
+    constexpr inline vector_iterator<ItemType>
+        insert(const ItemType& value,
+               const SizeType offset,
+               const SizeType count = 1);
 
-    constexpr vector_iterator<ItemType> insert(const vector_iterator<ItemType> sourceBegin,
-                                               const vector_iterator<ItemType> sourceEnd,
-                                               const vector_iterator<ItemType> position);
+    constexpr inline vector_iterator<ItemType>
+        insert(const vector_iterator<ItemType> sourceBegin,
+               const vector_iterator<ItemType> sourceEnd,
+               const vector_iterator<ItemType> position);
 
-    constexpr vector_iterator<ItemType> insert(const vector_iterator<ItemType> sourceBegin,
-                                               const vector_iterator<ItemType> sourceEnd,
-                                               const SizeType offset = 0);
+    constexpr inline vector_iterator<ItemType>
+        insert(const vector_iterator<ItemType> sourceBegin,
+               const vector_iterator<ItemType> sourceEnd,
+               const SizeType offset = 0);
 
-    constexpr vector_iterator<ItemType> insert(const std::initializer_list<ItemType> ilist,
-                                               const SizeType offset = 0);
+    constexpr inline vector_iterator<ItemType>
+        insert(const std::initializer_list<ItemType> ilist,
+               const SizeType offset = 0);
 
-    constexpr vector_iterator<ItemType> replace(const ItemType& value,
-                                                vector_iterator<ItemType> position = cbegin());
-    constexpr vector_iterator<ItemType> replace_back(const ItemType& value);
-    constexpr vector_iterator<ItemType> replace_front(const ItemType& value);
+    constexpr inline vector_iterator<ItemType> replace_back(const ItemType& value);
+    constexpr inline vector_iterator<ItemType> replace_front(const ItemType& value);
+    constexpr inline vector_iterator<ItemType>
+        replace(const ItemType& value,
+                vector_iterator<ItemType> position = cbegin());
 
 
     /*********************************************************************/
