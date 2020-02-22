@@ -13,6 +13,7 @@
  * @attributes  constexpr
  *
  * @param       SizeType length: Number of elements to allocate
+ *              [defaults : 0]
  *
  * @retval      pel::vector: Constructed vector
  *****************************************************************************/
@@ -348,7 +349,9 @@ pel::vector<ItemType>::data() const
  *
  * @param       ItemType& value: Value to assign to the vector
  * @param       SizeType offset: Offset at which data should be assigned
+ *              [defaults : 0]
  * @param       SizeType count:  Number of elements to be assigned a new value
+ *              [defaults : 1]
  *
  * @retval      void: None
  *****************************************************************************/
@@ -378,6 +381,7 @@ pel::vector<ItemType>::assign(const ItemType& value,
  *
  * @param       std::initializer_list ilist: Values to assign to the vector
  * @param       SizeType offset: Offset at which data should be assigned
+ *              [defaults : 0]
  *
  * @retval      void: None
  *****************************************************************************/
@@ -888,6 +892,7 @@ pel::vector<ItemType>::pop_back()
  * @param       vector_iterator position: Position to insert the element at
  * @param       SizeType count:
  *              Number of elements to insert from the initial offset
+ *              [defaults : 1]
  *
  * @retval      vector_iterator:
  *              Position at which the element has been inserted.
@@ -936,6 +941,7 @@ pel::vector<ItemType>::insert(const ItemType& value,
  * @param       SizeType offset: Position to insert the element at
  * @param       SizeType count:
  *              Number of elements to insert from the initial offset
+ *              [defaults : 1]
  *
  * @retval      vector_iterator:
  *              Position at which the element has been inserted.
@@ -1016,6 +1022,7 @@ pel::vector<ItemType>::insert(const vector_iterator<ItemType> sourceBegin,
  * @param       vector_iterator sourceEnd:   End iterator from another vector
  * @param       SizeType offset:
  *              Offset in vector to start copy-inserting data at
+ *              [defaults : 0]
  *
  * @retval      vector_iterator:
  *              Position at which the element has been inserted.
@@ -1055,6 +1062,7 @@ pel::vector<ItemType>::insert(const vector_iterator<ItemType> sourceBegin,
  *              Initializer list containing element to copy-insert into vector
  * @param       SizeType offset:
  *              Offset in vector to start copy-inserting data at
+ *              [defaults : 0]
  *
  * @retval      vector_iterator:
  *              Position at which the element has been inserted.
@@ -1091,6 +1099,7 @@ pel::vector<ItemType>::insert(const std::initializer_list<ItemType> ilist,
  *
  * @param       ItemType& value: Value that will replace element
  * @param       vector_iterator position: Position of the element to replace
+ *              [defaults : cbegin()]
  *
  * @retval      vector_iterator:
  *              Position at which the element has been replaced.

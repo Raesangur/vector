@@ -9,8 +9,6 @@
 
 namespace pel
 {
-/** @todo Complete comments */
-/** @todo Move default values to .inl */
 /** @todo Free memory automatically when not needed */
 /** @todo Increase allocation step size automatically when needed */
 /** @todo make things actually constexpr */
@@ -42,7 +40,7 @@ public:
 #pragma region Methods declarations
 
     /* Constructors */
-    constexpr vector(SizeType length);
+    constexpr vector(SizeType length = 0);
     constexpr vector(SizeType length, const ItemType& defaultValue);
     constexpr vector(const vector_iterator<ItemType> beginIterator,
                      const vector_iterator<ItemType> endIterator);
