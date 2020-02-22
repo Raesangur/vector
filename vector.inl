@@ -1,8 +1,23 @@
 
 
-/*********************************************************************/
-/* Constructors */
+/*****************************************************************************/
+/* Constructors ------------------------------------------------------------ */
 #pragma region Constructors
+ /**
+  * @function     vector
+  *
+  * @brief        Constructor for the vector class
+  * @date         2020/02/07 - 22:39
+  * @author       Pascal-Emmanuel Lachance
+  *               https://www.github.com/Raesangur/
+  *
+  * @template     ItemType: Type of the elements contained in the vector.
+  * @attributes   constexpr
+  * 
+  * @param        SizeType length: Number of elements to allocate
+  *
+  * @retval       pel::vector: Constructed vector
+  */
 template<typename ItemType>
 constexpr
 pel::vector<ItemType>::vector(SizeType length)
@@ -11,7 +26,23 @@ pel::vector<ItemType>::vector(SizeType length)
     m_VectorConstructor(length);
 }
 
-
+/**
+  * @function     vector
+  *
+  * @brief        Default-value constructor for the vector class
+  * @date         2020/02/07 - 22:39
+  * @author       Pascal-Emmanuel Lachance
+  *               https://www.github.com/Raesangur/
+  *
+  * @template     ItemType: Type of the elements contained in the vector.
+  * @attributes   constexpr
+  *
+  * @param        SizeType length: Number of elements to allocate
+  * @param        ItemType& defaultValue:
+  *               Value to initialize all the elements initially allocated with
+  *
+  * @retval       pel::vector: Constructed vector
+  */
 template<typename ItemType>
 constexpr
 pel::vector<ItemType>::vector(SizeType length, const ItemType& defaultValue)
@@ -22,6 +53,24 @@ pel::vector<ItemType>::vector(SizeType length, const ItemType& defaultValue)
     std::fill(this->begin(), this->end(), defaultValue);
 }
 
+/**
+  * @function     vector
+  *
+  * @brief        Iterator-based copy constructor for the vector class
+  * @date         2020/02/07 - 22:39
+  * @author       Pascal-Emmanuel Lachance
+  *               https://www.github.com/Raesangur/
+  *
+  * @template     ItemType: Type of the elements contained in the vector.
+  * @attributes   constexpr
+  *
+  * @param        vector_iterator beginIterator:
+  *               Begin iterator of another vector to start copying from.
+  * @param        vector_iterator endIterator:
+  *               End iterator of another vector to end the copy.
+  *
+  * @retval       pel::vector: Constructed vector
+  */
 template<typename ItemType>
 constexpr
 pel::vector<ItemType>::vector(const vector_iterator<ItemType> beginIterator,
@@ -33,6 +82,21 @@ pel::vector<ItemType>::vector(const vector_iterator<ItemType> beginIterator,
     std::copy(beginIterator, endIterator, begin());
 }
 
+/**
+ * @function     vector
+ *
+ * @brief        Copy constructor for the vector class
+ * @date         2020/02/07 - 22:39
+ * @author       Pascal-Emmanuel Lachance
+ *               https://www.github.com/Raesangur/
+ *
+ * @template     ItemType: Type of the elements contained in the vector.
+ * @attributes   constexpr
+ *
+ * @param        vector& otherVector: Vector to copy data from.
+ *
+ * @retval       pel::vector: Constructed vector
+ */
 template<typename ItemType>
 constexpr
 pel::vector<ItemType>::vector(const vector<ItemType>& otherVector)
@@ -43,6 +107,22 @@ pel::vector<ItemType>::vector(const vector<ItemType>& otherVector)
     std::copy(otherVector.cbegin(), otherVector.cend(), begin);
 }
 
+/**
+ * @function     vector
+ *
+ * @brief        Initializer list constructor for the vector class
+ * @date         2020/02/07 - 22:39
+ * @author       Pascal-Emmanuel Lachance
+ *               https://www.github.com/Raesangur/
+ *
+ * @template     ItemType: Type of the elements contained in the vector.
+ * @attributes   constexpr
+ *
+ * @param        std::initializer_list ilist:
+ *               Initializer list of all the values to put in a new vector.
+ *
+ * @retval       pel::vector: Constructed vector
+ */
 template<typename ItemType>
 constexpr
 pel::vector<ItemType>::vector(const std::initializer_list<ItemType> ilist)
@@ -54,17 +134,50 @@ pel::vector<ItemType>::vector(const std::initializer_list<ItemType> ilist)
 }
 
 /* Destructor */
+ /**
+  * @function     ~vector
+  *
+  * @brief        Destructor for the vector class
+  * @date         2020/02/07 - 22:39
+  * @author       Pascal-Emmanuel Lachance
+  *               https://www.github.com/Raesangur/
+  *
+  * @template     ItemType: Type of the elements contained in the vector.
+  *
+  * @retval       pel::vector: destructed vector
+  */
 template<typename ItemType>
 pel::vector<ItemType>::~vector()
 {
+    /* Destroy all the elements in the vector */
+    std::destroy(begin(), end());
+
+    /* Free allocated memory */
     std::free(begin());
 }
 #pragma endregion
 
 
-/*********************************************************************/
-/* Element accessors ----------------------------------------------- */
+/******************************************************************************/
+/* Element accessors -------------------------------------------------------- */
 
+
+/**
+ * @function    at
+ *
+ * @brief       Obtain a reference to the element at a specified index
+ *              in the vector.
+ * @date        2020/02/07 - 22:39
+ * @author      Pascal-Emmanuel Lachance
+ *              https://www.github.com/Raesangur/
+ *
+ * @template    ItemType: Type of the elements contained in the vector.
+ * @attributes  constexpr inline
+ *
+ * @param       SizeType index: Index of the element to get.
+ *
+ * @retval      ItemType&: Reference to the item at the specified index.
+ */
 template<typename ItemType>
 constexpr inline
 ItemType&
@@ -73,15 +186,44 @@ pel::vector<ItemType>::at(const SizeType index)
     return *this->operator[](index);
 }
 
+/**
+ * @function    at
+ *
+ * @brief       Obtain a constant reference to the element at a specified index
+ *              in the vector.
+ * @date        2020/02/07 - 22:39
+ * @author      Pascal-Emmanuel Lachance
+ *              https://www.github.com/Raesangur/
+ *
+ * @template    ItemType: Type of the elements contained in the vector.
+ * @attributes  constexpr inline - const
+ *
+ * @param       SizeType index: Index of the element to get.
+ *
+ * @retval      ItemType&: Const reference to the item at the specified index.
+ */
 template<typename ItemType>
-constexpr inline const
-ItemType&
+constexpr inline
+const ItemType&
 pel::vector<ItemType>::at(const SizeType index) const
 {
     return *this->operator[](index);
 }
 
 
+/**
+ * @function    front
+ *
+ * @brief       Get the element at the front of the vector
+ * @date        2020/02/07 - 22:39
+ * @author      Pascal-Emmanuel Lachance
+ *              https://www.github.com/Raesangur/
+ *
+ * @template    ItemType: Type of the elements contained in the vector
+ * @attributes  constexpr inline
+ *
+ * @retval      ItemType&: Element at the front of the vector
+ */
 template<typename ItemType>
 constexpr inline
 ItemType&
@@ -90,6 +232,19 @@ pel::vector<ItemType>::front()
     return *begin();
 }
 
+/**
+ * @function    back
+ *
+ * @brief       Get the element at the back of the vector
+ * @date        2020/02/07 - 22:39
+ * @author      Pascal-Emmanuel Lachance
+ *              https://www.github.com/Raesangur/
+ *
+ * @template    ItemType: Type of the elements contained in the vector
+ * @attributes  constexpr inline
+ *
+ * @retval      ItemType&: Element at the back of the vector
+ */
 template<typename ItemType>
 constexpr inline
 ItemType&
@@ -98,22 +253,62 @@ pel::vector<ItemType>::back()
     return *(end() - 1);
 }
 
+
+/**
+ * @function    front
+ *
+ * @brief       Get the const element at the front of the vector
+ * @date        2020/02/07 - 22:39
+ * @author      Pascal-Emmanuel Lachance
+ *              https://www.github.com/Raesangur/
+ *
+ * @template    ItemType: Type of the elements contained in the vector
+ * @attributes  constexpr inline - const
+ *
+ * @retval      ItemType&: Const element at the front of the vector
+ */
 template<typename ItemType>
-constexpr inline const
-ItemType&
+constexpr inline
+const ItemType&
 pel::vector<ItemType>::front() const
 {
     return *begin();
 }
 
+/**
+ * @function    front
+ *
+ * @brief       Get the const element at the back of the vector
+ * @date        2020/02/07 - 22:39
+ * @author      Pascal-Emmanuel Lachance
+ *              https://www.github.com/Raesangur/
+ *
+ * @template    ItemType: Type of the elements contained in the vector
+ * @attributes  constexpr inline - const
+ *
+ * @retval      ItemType&: Const element at the back of the vector
+ */
 template<typename ItemType>
-constexpr inline const
-ItemType&
+constexpr inline
+const ItemType&
 pel::vector<ItemType>::back() const
 {
     return *(end() - 1);
 }
 
+/**
+ * @function    data
+ *
+ * @brief       Get a pointer to the beginning of the vector's data space
+ * @date        2020/02/07 - 22:39
+ * @author      Pascal-Emmanuel Lachance
+ *              https://www.github.com/Raesangur/
+ *
+ * @template    ItemType: Type of the elements contained in the vector
+ * @attributes  constexpr inline
+ *
+ * @retval      ItemType*: Pointer to the beginning of the vector's data
+ */
 template<typename ItemType>
 constexpr inline
 ItemType*
@@ -121,27 +316,76 @@ pel::vector<ItemType>::data()
 {
     return m_beginIterator;
 }
+
+/**
+ * @function    data
+ *
+ * @brief       Get a const pointer to the beginning of the vector's data space
+ * @date        2020/02/07 - 22:39
+ * @author      Pascal-Emmanuel Lachance
+ *              https://www.github.com/Raesangur/
+ *
+ * @template    ItemType: Type of the elements contained in the vector
+ * @attributes  constexpr inline - const
+ *
+ * @retval      ItemType*: Const pointer to the beginning of the vector's data
+ */
 template<typename ItemType>
-constexpr inline const
-ItemType*
+constexpr inline
+const ItemType*
 pel::vector<ItemType>::data() const
 {
     return m_beginIterator;
 }
 
 
+/**
+ * @function    assign
+ *
+ * @brief       Assign a value to a certain offset in the vector for a 
+                certain amount of elements.
+ * @date        2020/02/07 - 22:39
+ * @author      Pascal-Emmanuel Lachance
+ *              https://www.github.com/Raesangur/
+ *
+ * @template    ItemType: Type of the elements contained in the vector
+ * @attributes  constexpr inline
+ *
+ * @param       ItemType& value: Value to assign to the vector
+ * @param       SizeType offset: Offset at which data should be assigned
+ * @param       SizeType count:  Number of elements to be assigned a new value
+ *
+ * @retval      void: None
+ */
 template<typename ItemType>
 constexpr inline
 void
 pel::vector<ItemType>::assign(const ItemType& value,
-                              const SizeType count,
-                              const SizeType offset)
+                              const SizeType offset,
+                              const SizeType count)
 {
     m_checkFit(count);
 
     std::fill_n(begin() + offset, count, value);
 }
 
+/**
+ * @function    assign
+ *
+ * @brief       Assign values to a certain offset in the vector through an
+                initializer's list.
+ * @date        2020/02/07 - 22:39
+ * @author      Pascal-Emmanuel Lachance
+ *              https://www.github.com/Raesangur/
+ *
+ * @template    ItemType: Type of the elements contained in the vector
+ * @attributes  constexpr inline
+ *
+ * @param       std::initializer_list ilist: Values to assign to the vector
+ * @param       SizeType offset: Offset at which data should be assigned
+ *
+ * @retval      void: None
+ */
 template<typename ItemType>
 constexpr inline
 void
@@ -154,8 +398,8 @@ pel::vector<ItemType>::assign(const std::initializer_list<ItemType> ilist,
 }
 
 
-/*********************************************************************/
-/* Operator overloads ---------------------------------------------- */
+/******************************************************************************/
+/* Operator overloads ------------------------------------------------------- */
 
 template<typename ItemType>
 constexpr
@@ -236,8 +480,8 @@ pel::vector<ItemType>::operator<<(int steps)
 }
 
 
-/*********************************************************************/
-/* Iterators ------------------------------------------------------- */
+/******************************************************************************/
+/* Iterators ---------------------------------------------------------------- */
 template<typename ItemType>
 constexpr inline
 pel::vector_iterator<ItemType>
@@ -271,8 +515,8 @@ pel::vector<ItemType>::cend() const
 }
 
 
-/*********************************************************************/
-/* Element management ---------------------------------------------- */
+/******************************************************************************/
+/* Element management ------------------------------------------------------- */
 template<typename ItemType>
 constexpr
 void
@@ -445,8 +689,8 @@ pel::vector<ItemType>::replace_front(const ItemType& value)
 }
 
 
-/*********************************************************************/
-/* Memory ---------------------------------------------------------- */
+/******************************************************************************/
+/* Memory ------------------------------------------------------------------- */
 template<typename ItemType>
 constexpr inline const
 typename pel::vector<ItemType>::SizeType&
@@ -529,8 +773,8 @@ pel::vector<ItemType>::shrink_to_fit()
 }
 
 
-/*********************************************************************/
-/* Private methods ------------------------------------------------- */
+/******************************************************************************/
+/* Private methods ---------------------------------------------------------- */
 template<typename ItemType>
 constexpr inline
 void

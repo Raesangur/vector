@@ -59,8 +59,8 @@ public:
 
 
     constexpr inline void assign(const ItemType& value,
-                                 const SizeType count,
-                                 const SizeType offset = 0);
+                                 const SizeType offset = 0,
+                                 const SizeType count = 1);
     constexpr inline void assign(const std::initializer_list<ItemType> ilist,
                                  const SizeType offset = 0);
 
