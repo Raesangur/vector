@@ -273,9 +273,12 @@ pel::vector<ItemType>::data() const noexcept
  *****************************************************************************/
 template<typename ItemType>
 constexpr inline pel::vector<ItemType>::SizeType
-pel::vector<ItemType>index_of(const vector_iterator iterator) const
+pel::vector<ItemType>::index_of(const vector_iterator<ItemType> iterator) const
 {
-    check_if_valid(iterator);
+    if constexpr (pel::vector_safeness == true)
+    {
+        check_if_valid(iterator);
+    }
 
     return iterator - begin();
 }
@@ -708,7 +711,11 @@ pel::vector<ItemType>::insert(const ItemType& value,
                               const vector_iterator<ItemType> position,
                               const SizeType count)
 {
-    check_if_valid(position);
+    if constexpr (pel::vector_safeness == true)
+    {
+        check_if_valid(position);
+    }
+
     if (count == 0)
     {
         return begin();
@@ -783,7 +790,11 @@ pel::vector<ItemType>::insert(const vector_iterator<ItemType> sourceBegin,
                               const vector_iterator<ItemType> sourceEnd,
                               const vector_iterator<ItemType> position)
 {
-    check_if_valid(position);
+    if constexpr (pel::vector_safeness == true)
+    {
+        check_if_valid(position);
+    }
+
     SizeType sourceSize = sourceEnd - sourceBegin;
 
     check_fit(sourceSize);
@@ -881,7 +892,10 @@ constexpr inline pel::vector_iterator<ItemType>
 pel::vector<ItemType>::replace(const ItemType& value,
                                vector_iterator<ItemType> position)
 {
-    check_if_valid(position);
+    if constexpr (pel::vector_safeness == true)
+    {
+        check_if_valid(position);
+    }
 
     *position = value;
     return position;

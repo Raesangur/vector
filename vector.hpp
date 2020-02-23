@@ -68,7 +68,7 @@ public:
     constexpr inline const ItemType* data() const noexcept;
 
 
-    constexpr inline SizeType index_of(const vector_iterator iterator) const;
+    constexpr inline SizeType index_of(const vector_iterator<ItemType> iterator) const;
 
     constexpr inline void assign(const ItemType& value,
                                  const SizeType offset = 0,
