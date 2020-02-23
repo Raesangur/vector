@@ -195,6 +195,19 @@ int main()
         //vec.insert(ilist, 0);
         printVec(vec);
 
+        std::sort(vec.begin(), vec.end());
+        printVec(vec);
+        std::sort(vec.rbegin(), vec.rend());
+        printVec(vec);
+
+        printVec(vec);
+
+        for (int& element : vec)
+        {
+            element = 0;
+        }
+        std::cout << vec;
+
         return 0;
     }
     catch(...)

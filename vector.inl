@@ -131,7 +131,7 @@ pel::vector<ItemType>::~vector()
  *****************************************************************************/
 template<typename ItemType>
 constexpr inline ItemType&
-pel::vector<ItemType>::at(SizeType index)
+pel::vector<ItemType>::at(SizeType index) noexcept
 {
     return *this->operator[](index);
 }
@@ -147,7 +147,7 @@ pel::vector<ItemType>::at(SizeType index)
  *****************************************************************************/
 template<typename ItemType>
 constexpr inline const ItemType&
-pel::vector<ItemType>::at(SizeType index) const
+pel::vector<ItemType>::at(SizeType index) const noexcept
 {
     return *this->operator[](index);
 }
@@ -160,7 +160,7 @@ pel::vector<ItemType>::at(SizeType index) const
  *****************************************************************************/
 template<typename ItemType>
 constexpr inline ItemType&
-pel::vector<ItemType>::front()
+pel::vector<ItemType>::front() noexcept
 {
     return *begin();
 }
@@ -173,7 +173,7 @@ pel::vector<ItemType>::front()
  *****************************************************************************/
 template<typename ItemType>
 constexpr inline ItemType&
-pel::vector<ItemType>::back()
+pel::vector<ItemType>::back() noexcept
 {
     return *(end() - 1);
 }
@@ -186,7 +186,7 @@ pel::vector<ItemType>::back()
  *****************************************************************************/
 template<typename ItemType>
 constexpr inline const ItemType&
-pel::vector<ItemType>::front() const
+pel::vector<ItemType>::front() const noexcept
 {
     return *begin();
 }
@@ -199,7 +199,7 @@ pel::vector<ItemType>::front() const
  *****************************************************************************/
 template<typename ItemType>
 constexpr inline const ItemType&
-pel::vector<ItemType>::back() const
+pel::vector<ItemType>::back() const noexcept
 {
     return *(end() - 1);
 }
@@ -212,7 +212,7 @@ pel::vector<ItemType>::back() const
  *****************************************************************************/
 template<typename ItemType>
 constexpr inline ItemType*
-pel::vector<ItemType>::data()
+pel::vector<ItemType>::data() noexcept
 {
     return m_beginIterator;
 }
@@ -225,7 +225,7 @@ pel::vector<ItemType>::data()
  *****************************************************************************/
 template<typename ItemType>
 constexpr inline const ItemType*
-pel::vector<ItemType>::data() const
+pel::vector<ItemType>::data() const noexcept
 {
     return m_beginIterator;
 }
@@ -418,6 +418,28 @@ pel::vector<ItemType>::operator<<(int steps)
 
     return *this;
 }
+
+/******************************************************************************
+ * @brief       Overload of the left-shift << operator to print a vector's
+ *              content to an outputstream.
+ *
+ * @param       std::ostream& os: Left-hand-side output stream
+ * @param       vector<ItemType>& vec: Right-hand-side vector to print
+ *
+ * @retval      std::ostream&: Reference the output stream after appending data
+ *****************************************************************************/
+template<typename ItemType>
+inline std::ostream&
+operator<<(std::ostream& os,
+           const pel::vector<ItemType>& vec)
+{
+    for (ItemType& element : vec)
+    {
+        os << element << '\n';
+    }
+    return os;
+}
+
 #pragma endregion
 
 
@@ -433,7 +455,7 @@ pel::vector<ItemType>::operator<<(int steps)
  *****************************************************************************/
 template<typename ItemType>
 constexpr inline pel::vector_iterator<ItemType>
-pel::vector<ItemType>::begin() const
+pel::vector<ItemType>::begin() const noexcept
 {
     return m_beginIterator;
 }
@@ -449,7 +471,7 @@ pel::vector<ItemType>::begin() const
  *****************************************************************************/
 template<typename ItemType>
 constexpr inline pel::vector_iterator<ItemType>
-pel::vector<ItemType>::end() const
+pel::vector<ItemType>::end() const noexcept
 {
     return m_endIterator;
 }
@@ -463,7 +485,7 @@ pel::vector<ItemType>::end() const
  *****************************************************************************/
 template<typename ItemType>
 constexpr inline const pel::vector_iterator<ItemType>
-pel::vector<ItemType>::cbegin() const
+pel::vector<ItemType>::cbegin() const noexcept
 {
     return m_beginIterator;
 }
@@ -477,7 +499,7 @@ pel::vector<ItemType>::cbegin() const
  *****************************************************************************/
 template<typename ItemType>
 constexpr inline const pel::vector_iterator<ItemType>
-pel::vector<ItemType>::cend() const
+pel::vector<ItemType>::cend() const noexcept
 {
     return m_endIterator;
 }
@@ -493,9 +515,9 @@ pel::vector<ItemType>::cend() const
  *****************************************************************************/
 template<typename ItemType>
 constexpr inline pel::reverse_vector_iterator<ItemType>
-pel::vector<ItemType>::rbegin() const
+pel::vector<ItemType>::rbegin() const noexcept
 {
-    return reverse_vector_iterator<ItemType>(m_beginIterator);
+    return reverse_vector_iterator<ItemType>(m_endIterator);
 }
 
 
@@ -509,7 +531,7 @@ pel::vector<ItemType>::rbegin() const
  *****************************************************************************/
 template<typename ItemType>
 constexpr inline pel::reverse_vector_iterator<ItemType>
-pel::vector<ItemType>::rend() const
+pel::vector<ItemType>::rend() const noexcept
 {
     return reverse_vector_iterator<ItemType>(m_beginIterator);
 }
@@ -525,9 +547,9 @@ pel::vector<ItemType>::rend() const
  *****************************************************************************/
 template<typename ItemType>
 constexpr inline const pel::reverse_vector_iterator<ItemType>
-pel::vector<ItemType>::crbegin() const
+pel::vector<ItemType>::crbegin() const noexcept
 {
-    return reverse_vector_iterator<ItemType>(m_beginIterator);
+    return reverse_vector_iterator<ItemType>(m_endIterator);
 }
 
 
@@ -541,7 +563,7 @@ pel::vector<ItemType>::crbegin() const
  *****************************************************************************/
 template<typename ItemType>
 constexpr inline const pel::reverse_vector_iterator<ItemType>
-pel::vector<ItemType>::crend() const
+pel::vector<ItemType>::crend() const noexcept
 {
     return reverse_vector_iterator<ItemType>(m_beginIterator);
 }
@@ -861,7 +883,7 @@ pel::vector<ItemType>::replace_front(const ItemType& value)
  *****************************************************************************/
 template<typename ItemType>
 constexpr inline typename pel::vector<ItemType>::SizeType
-pel::vector<ItemType>::length() const
+pel::vector<ItemType>::length() const noexcept
 {
     return m_length;
 }
@@ -875,7 +897,7 @@ pel::vector<ItemType>::length() const
  *****************************************************************************/
 template<typename ItemType>
 constexpr inline typename pel::vector<ItemType>::SizeType
-pel::vector<ItemType>::capacity() const
+pel::vector<ItemType>::capacity() const noexcept
 {
     return m_capacity;
 }
@@ -890,7 +912,7 @@ pel::vector<ItemType>::capacity() const
  *****************************************************************************/
 template<typename ItemType>
 constexpr inline bool
-pel::vector<ItemType>::isEmpty() const
+pel::vector<ItemType>::isEmpty() const noexcept
 {
     return length() == 0;
 }

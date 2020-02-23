@@ -5,12 +5,13 @@
 #include <algorithm>
 #include <memory>
 #include <stdexcept>
+#include <ostream>
 
 
 namespace pel
 {
 /** @todo Free memory automatically when not needed */
-/** @todo noexcept, ndebug-mode compiling without checks */
+/** @todo ndebug-mode compiling without checks */
 /** @todo make things actually constexpr */
 /** @todo ToString method */
 /** @todo Increase allocation step size automatically when needed */
@@ -53,16 +54,16 @@ public:
 
     /*********************************************************************/
     /* Element accessors ----------------------------------------------- */
-    constexpr inline ItemType& at(const SizeType index);
-    constexpr inline const ItemType& at(const SizeType index) const;
+    constexpr inline ItemType& at(const SizeType index) noexcept;
+    constexpr inline const ItemType& at(const SizeType index) const noexcept;
 
-    constexpr inline ItemType& front();
-    constexpr inline ItemType& back();
-    constexpr inline const ItemType& front() const;
-    constexpr inline const ItemType& back() const;
+    constexpr inline ItemType& front() noexcept;
+    constexpr inline ItemType& back() noexcept;
+    constexpr inline const ItemType& front() const noexcept;
+    constexpr inline const ItemType& back() const noexcept;
 
-    constexpr inline ItemType* data();
-    constexpr inline const ItemType* data() const;
+    constexpr inline ItemType* data() noexcept;
+    constexpr inline const ItemType* data() const noexcept;
 
 
     constexpr inline void assign(const ItemType& value,
@@ -85,17 +86,16 @@ public:
     constexpr inline vector<ItemType>& operator>>(int steps);
     constexpr inline vector<ItemType>& operator<<(int steps);
 
-
     /*********************************************************************/
     /* Iterators ------------------------------------------------------- */
-    constexpr inline vector_iterator<ItemType> begin() const;
-    constexpr inline vector_iterator<ItemType> end()   const;
-    constexpr inline const vector_iterator<ItemType> cbegin() const;
-    constexpr inline const vector_iterator<ItemType> cend()   const;
-    constexpr inline reverse_vector_iterator<ItemType> rbegin() const;
-    constexpr inline reverse_vector_iterator<ItemType> rend()   const;
-    constexpr inline const reverse_vector_iterator<ItemType> crbegin() const;
-    constexpr inline const reverse_vector_iterator<ItemType> crend()   const;
+    constexpr inline vector_iterator<ItemType> begin() const noexcept;
+    constexpr inline vector_iterator<ItemType> end()   const noexcept;
+    constexpr inline const vector_iterator<ItemType> cbegin() const noexcept;
+    constexpr inline const vector_iterator<ItemType> cend()   const noexcept;
+    constexpr inline reverse_vector_iterator<ItemType> rbegin() const noexcept;
+    constexpr inline reverse_vector_iterator<ItemType> rend()   const noexcept;
+    constexpr inline const reverse_vector_iterator<ItemType> crbegin() const noexcept;
+    constexpr inline const reverse_vector_iterator<ItemType> crend()   const noexcept;
 
 
     /*********************************************************************/
@@ -132,9 +132,9 @@ public:
 
     /*********************************************************************/
     /* Memory ---------------------------------------------------------- */
-    constexpr inline SizeType length() const;
-    constexpr inline SizeType capacity() const;
-    constexpr inline bool isEmpty() const;
+    constexpr inline SizeType length() const noexcept;
+    constexpr inline SizeType capacity() const noexcept;
+    constexpr inline bool isEmpty() const noexcept;
 
     constexpr inline void reserve(const SizeType newCapacity);
     constexpr inline void resize(const SizeType newLength);
@@ -169,7 +169,7 @@ private:
 
     /*********************************************************************/
     /* Static variables ------------------------------------------------ */
-    constexpr inline SizeType s_stepSize() { return 4; }
+    constexpr inline SizeType m_stepSize() { return 4; }
 
 
 #pragma endregion
