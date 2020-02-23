@@ -232,6 +232,24 @@ pel::vector<ItemType>::data() const noexcept
 
 
 /******************************************************************************
+ * @brief       Return the index of an iterator from the start of the vector.
+ *
+ * @param       vector_iterator iterator:
+ *              Iterator in the vector to get the index of.
+ * 
+ * @retval      SizeType: index of the iterator       
+ *****************************************************************************/
+template<typename ItemType>
+constexpr inline pel::vector<ItemType>::SizeType
+pel::vector<ItemType>index_of(const vector_iterator iterator) const
+{
+    check_if_valid(iterator);
+
+    return iterator - begin();
+}
+
+
+/******************************************************************************
  * @brief       Assign a value to a certain offset in the vector for a
  *              certain amount of elements.
  *
