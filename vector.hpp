@@ -6,17 +6,19 @@
 #include <memory>
 #include <stdexcept>
 #include <ostream>
+#include <sstream>
 
 
 namespace pel
 {
 /** @todo Free memory automatically when not needed */
-/** @todo ndebug-mode compiling without checks */
 /** @todo make things actually constexpr */
 /** @todo ToString method */
 /** @todo Increase allocation step size automatically when needed */
 /**       @todo Make allocation step sizes align with the implementation's
                 memory allocations alignments and sizes. */
+
+constexpr bool vector_safeness = true;
 
 
 template<typename ItemType>
@@ -54,13 +56,13 @@ public:
 
     /*********************************************************************/
     /* Element accessors ----------------------------------------------- */
-    constexpr inline ItemType& at(const SizeType index) noexcept;
-    constexpr inline const ItemType& at(const SizeType index) const noexcept;
+    constexpr inline ItemType& at(const SizeType index) noexcept(pel::vector_safeness == true);
+    constexpr inline const ItemType& at(const SizeType index) const noexcept(pel::vector_safeness == true);
 
-    constexpr inline ItemType& front() noexcept;
-    constexpr inline ItemType& back() noexcept;
-    constexpr inline const ItemType& front() const noexcept;
-    constexpr inline const ItemType& back() const noexcept;
+    constexpr inline ItemType& front() noexcept(pel::vector_safeness == true);
+    constexpr inline ItemType& back() noexcept(pel::vector_safeness == true);
+    constexpr inline const ItemType& front() const noexcept(pel::vector_safeness == true);
+    constexpr inline const ItemType& back() const noexcept(pel::vector_safeness == true);
 
     constexpr inline ItemType* data() noexcept;
     constexpr inline const ItemType* data() const noexcept;
@@ -75,8 +77,8 @@ public:
 
     /*********************************************************************/
     /* Operator overloads ---------------------------------------------- */
-    constexpr inline ItemType& operator[](const SizeType index);
-    constexpr inline const ItemType& operator[](const SizeType index) const;
+    constexpr inline ItemType& operator[](const SizeType index) noexcept(pel::vector_safeness == true);
+    constexpr inline const ItemType& operator[](const SizeType index) const noexcept(pel::vector_safeness == true);
 
     constexpr inline vector<ItemType>& operator+=(const ItemType& rhs);
 
@@ -85,6 +87,7 @@ public:
 
     constexpr inline vector<ItemType>& operator>>(int steps);
     constexpr inline vector<ItemType>& operator<<(int steps);
+
 
     /*********************************************************************/
     /* Iterators ------------------------------------------------------- */
@@ -142,6 +145,11 @@ public:
     constexpr inline void clear();
 
     constexpr inline void shrink_to_fit();
+
+
+    /*********************************************************************/
+    /* Misc ------------------------------------------------------------ */
+    constexpr inline std::string to_string() const;
 
 
     /*********************************************************************/

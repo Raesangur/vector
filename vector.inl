@@ -131,7 +131,7 @@ pel::vector<ItemType>::~vector()
  *****************************************************************************/
 template<typename ItemType>
 constexpr inline ItemType&
-pel::vector<ItemType>::at(SizeType index) noexcept
+pel::vector<ItemType>::at(SizeType index) noexcept(pel::vector_safeness == true)
 {
     return *this->operator[](index);
 }
@@ -147,7 +147,7 @@ pel::vector<ItemType>::at(SizeType index) noexcept
  *****************************************************************************/
 template<typename ItemType>
 constexpr inline const ItemType&
-pel::vector<ItemType>::at(SizeType index) const noexcept
+pel::vector<ItemType>::at(SizeType index) const noexcept(pel::vector_safeness == true)
 {
     return *this->operator[](index);
 }
@@ -157,11 +157,19 @@ pel::vector<ItemType>::at(SizeType index) const noexcept
  * @brief       Get the element at the front of the vector
  *
  * @retval      ItemType&: Element at the front of the vector
+ *
+ * @throw       std::length_error
+ *              If there was no memory allocated for the elements, accessing
+ *              even just the first element would cause errors.
  *****************************************************************************/
 template<typename ItemType>
 constexpr inline ItemType&
-pel::vector<ItemType>::front() noexcept
+pel::vector<ItemType>::front() noexcept(pel::vector_safeness == true)
 {
+    if (capacity() == 0)
+    {
+        throw std::length_error("Could not access element - No memory allocated");
+    }
     return *begin();
 }
 
@@ -170,11 +178,19 @@ pel::vector<ItemType>::front() noexcept
  * @brief       Get the element at the back of the vector
  *
  * @retval      ItemType&: Element at the back of the vector
+ *
+ * @throw       std::length_error
+ *              If there was no memory allocated for the elements, accessing
+ *              even just the first element would cause errors.
  *****************************************************************************/
 template<typename ItemType>
 constexpr inline ItemType&
-pel::vector<ItemType>::back() noexcept
+pel::vector<ItemType>::back() noexcept(pel::vector_safeness == true)
 {
+    if (capacity() == 0)
+    {
+        throw std::length_error("Could not access element - No memory allocated");
+    }
     return *(end() - 1);
 }
 
@@ -183,11 +199,19 @@ pel::vector<ItemType>::back() noexcept
  * @brief       Get the const element at the front of the vector
  *
  * @retval      ItemType&: Const element at the front of the vector
+ *
+ * @throw       std::length_error
+ *              If there was no memory allocated for the elements, accessing
+ *              even just the first element would cause errors.
  *****************************************************************************/
 template<typename ItemType>
 constexpr inline const ItemType&
-pel::vector<ItemType>::front() const noexcept
+pel::vector<ItemType>::front() const noexcept(pel::vector_safeness == true)
 {
+    if (capacity() == 0)
+    {
+        throw std::length_error("Could not access element - No memory allocated");
+    }
     return *begin();
 }
 
@@ -196,11 +220,19 @@ pel::vector<ItemType>::front() const noexcept
  * @brief       Get the const element at the back of the vector
  *
  * @retval      ItemType&: Const element at the back of the vector
+ *
+ * @throw       std::length_error
+ *              If there was no memory allocated for the elements, accessing
+ *              even just the first element would cause errors.
  *****************************************************************************/
 template<typename ItemType>
 constexpr inline const ItemType&
-pel::vector<ItemType>::back() const noexcept
+pel::vector<ItemType>::back() const noexcept(pel::vector_safeness == true)
 {
+    if (capacity() == 0)
+    {
+        throw std::length_error("Could not access element - No memory allocated");
+    }
     return *(end() - 1);
 }
 
@@ -291,11 +323,14 @@ pel::vector<ItemType>::assign(const std::initializer_list<ItemType> ilist,
  *****************************************************************************/
 template<typename ItemType>
 constexpr inline ItemType&
-pel::vector<ItemType>::operator[](const SizeType index)
+pel::vector<ItemType>::operator[](const SizeType index) noexcept(pel::vector_safeness == true)
 {
-    if (index >= length())
+    if constexpr (pel::vector_safeness == true)
     {
-        throw std::length_error("Index out of range");
+        if (index >= length())
+        {
+            throw std::length_error("Index out of range");
+        }
     }
 
     return m_beginIterator[index];
@@ -315,11 +350,14 @@ pel::vector<ItemType>::operator[](const SizeType index)
  *****************************************************************************/
 template<typename ItemType>
 constexpr inline const ItemType&
-pel::vector<ItemType>::operator[](const SizeType index) const
+pel::vector<ItemType>::operator[](const SizeType index) const noexcept(pel::vector_safeness == true)
 {
-    if (index >= length())
+    if constexpr (pel::vector_safeness == true)
     {
-        throw std::length_error("Index out of range!");
+        if (index >= length())
+        {
+            throw std::length_error("Index out of range!");
+        }
     }
 
     return m_beginIterator[index];
@@ -340,7 +378,7 @@ template<typename ItemType>
 constexpr inline pel::vector<ItemType>&
 pel::vector<ItemType>::operator+=(const ItemType& rhs)
 {
-    emplace_back(rhs);
+    push_back(rhs);
     return *this;
 }
 
@@ -427,9 +465,12 @@ pel::vector<ItemType>::operator<<(int steps)
  * @param       vector<ItemType>& vec: Right-hand-side vector to print
  *
  * @retval      std::ostream&: Reference the output stream after appending data
+ *
+ * @note        This method is not directly part of the pel::vector class, and
+ *              is rather appended to the std::ostream class.
  *****************************************************************************/
 template<typename ItemType>
-inline std::ostream&
+constexpr inline std::ostream&
 operator<<(std::ostream& os,
            const pel::vector<ItemType>& vec)
 {
@@ -1006,6 +1047,28 @@ pel::vector<ItemType>::shrink_to_fit()
 
 
 /*****************************************************************************/
+/* MISC -------------------------------------------------------------------- */
+/*****************************************************************************/
+#pragma region Misc
+/******************************************************************************
+ * @brief       Convert the content
+ *
+ * @param       SizeType size: Size (in elements) to allocate
+ *
+ * @throws      std::bad_alloc: Could not allocate block of memory
+ *****************************************************************************/
+template<typename ItemType>
+constexpr inline std::string
+pel::vector<ItemType>::to_string() const
+{
+    std::ostringstream os;
+    os << this;
+    return os.str();
+}
+#pragma endregion
+
+
+/*****************************************************************************/
 /* PRIVATE METHODS --------------------------------------------------------- */
 /*****************************************************************************/
 #pragma region Private Methods
@@ -1114,9 +1177,12 @@ template<typename ItemType>
 constexpr inline void
 pel::vector<ItemType>::check_if_valid(const vector_iterator<ItemType> iterator)
 {
-    if ((iterator < cbegin()) || (iterator > cend()))
+    if constexpr (pel::vector_safeness == true)
     {
-        throw std::invalid_argument("Invalid iterator");
+        if ((iterator < cbegin()) || (iterator > cend()))
+        {
+            throw std::invalid_argument("Invalid iterator");
+        }
     }
 }
 #pragma endregion
