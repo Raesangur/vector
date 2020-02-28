@@ -992,6 +992,21 @@ pel::vector<ItemType>::isEmpty() const noexcept
 
 
 /******************************************************************************
+ * @brief       Simple accessor, returns true if there are elements in the
+ *              vector.
+ *
+ * @retval      bool: True if there are elements in the vector
+ *                    False if there are not elements in the vector
+ *****************************************************************************/
+template<typename ItemType>
+constexpr inline bool
+pel::vector<ItemType>::isNotEmpty() const noexcept
+{
+    return !isEmpty();
+}
+
+
+/******************************************************************************
  * @brief       Allocate memory for the vector.
  *
  * @param       SizeType newCapacity:
