@@ -1,5 +1,4 @@
 #pragma once
-//#include "vector_iterator.h"
 
 #include <stdlib.h>
 #include <algorithm>
@@ -11,9 +10,12 @@
 
 namespace pel
 {
+/** @todo CMake Integration */
+/** @todo Inherit from container_base */
+/**       @todo Configure Git Subproject */
+/** @todo Clear Clang-Tidy warnings */
 /** @todo Free memory automatically when not needed */
 /** @todo make things actually constexpr */
-/** @todo ToString method */
 /** @todo Increase allocation step size automatically when needed */
 /**       @todo Make allocation step sizes align with the implementation's
                 memory allocations alignments and sizes. */
@@ -56,13 +58,13 @@ public:
 
     /*********************************************************************/
     /* Element accessors ----------------------------------------------- */
-    constexpr inline ItemType& at(const SizeType index) const noexcept(pel::vector_safeness == true);
-    constexpr inline const ItemType& at(const SizeType index) const noexcept(pel::vector_safeness == true);
+    constexpr inline ItemType& at(const SizeType index);
+    constexpr inline const ItemType& at(const SizeType index) const;
 
-    constexpr inline ItemType& front() const noexcept(pel::vector_safeness == true);
-    constexpr inline ItemType& back() const noexcept(pel::vector_safeness == true);
-    constexpr inline const ItemType& front() const noexcept(pel::vector_safeness == true);
-    constexpr inline const ItemType& back() const noexcept(pel::vector_safeness == true);
+    constexpr inline ItemType& front();
+    constexpr inline ItemType& back();
+    constexpr inline const ItemType& front() const;
+    constexpr inline const ItemType& back() const;
 
     constexpr inline ItemType* data() noexcept;
     constexpr inline const ItemType* data() const noexcept;
@@ -79,8 +81,8 @@ public:
 
     /*********************************************************************/
     /* Operator overloads ---------------------------------------------- */
-    constexpr inline ItemType& operator[](const SizeType index) const noexcept(pel::vector_safeness == true);
-    constexpr inline const ItemType& operator[](const SizeType index) const noexcept(pel::vector_safeness == true);
+    constexpr inline ItemType& operator[](const SizeType index);
+    constexpr inline const ItemType& operator[](const SizeType index) const;
 
     constexpr inline vector<ItemType>& operator+=(const ItemType& rhs);
 
@@ -188,4 +190,4 @@ private:
 
 };
 
-#include "vector.inl"
+#include "src/vector.inl"

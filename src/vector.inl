@@ -1,3 +1,6 @@
+#pragma once
+#include "src/vector.hpp"
+
 /*****************************************************************************/
 /* CONSTRUCTORS & DESTRUCTORS ---------------------------------------------- */
 /*****************************************************************************/
@@ -131,7 +134,7 @@ pel::vector<ItemType>::~vector()
  *****************************************************************************/
 template<typename ItemType>
 constexpr inline ItemType&
-pel::vector<ItemType>::at(SizeType index) const noexcept(pel::vector_safeness == true)
+pel::vector<ItemType>::at(SizeType index)
 {
     return *this->operator[](index);
 }
@@ -147,7 +150,7 @@ pel::vector<ItemType>::at(SizeType index) const noexcept(pel::vector_safeness ==
  *****************************************************************************/
 template<typename ItemType>
 constexpr inline const ItemType&
-pel::vector<ItemType>::at(SizeType index) const noexcept(pel::vector_safeness == true)
+pel::vector<ItemType>::at(SizeType index) const
 {
     return *this->operator[](index);
 }
@@ -164,7 +167,7 @@ pel::vector<ItemType>::at(SizeType index) const noexcept(pel::vector_safeness ==
  *****************************************************************************/
 template<typename ItemType>
 constexpr inline ItemType&
-pel::vector<ItemType>::front() const noexcept(pel::vector_safeness == true)
+pel::vector<ItemType>::front()
 {
     if (capacity() == 0)
     {
@@ -185,7 +188,7 @@ pel::vector<ItemType>::front() const noexcept(pel::vector_safeness == true)
  *****************************************************************************/
 template<typename ItemType>
 constexpr inline ItemType&
-pel::vector<ItemType>::back() const noexcept(pel::vector_safeness == true)
+pel::vector<ItemType>::back()
 {
     if (capacity() == 0)
     {
@@ -206,7 +209,7 @@ pel::vector<ItemType>::back() const noexcept(pel::vector_safeness == true)
  *****************************************************************************/
 template<typename ItemType>
 constexpr inline const ItemType&
-pel::vector<ItemType>::front() const noexcept(pel::vector_safeness == true)
+pel::vector<ItemType>::front() const
 {
     if (capacity() == 0)
     {
@@ -227,7 +230,7 @@ pel::vector<ItemType>::front() const noexcept(pel::vector_safeness == true)
  *****************************************************************************/
 template<typename ItemType>
 constexpr inline const ItemType&
-pel::vector<ItemType>::back() const noexcept(pel::vector_safeness == true)
+pel::vector<ItemType>::back() const
 {
     if (capacity() == 0)
     {
@@ -272,7 +275,7 @@ pel::vector<ItemType>::data() const noexcept
  * @retval      SizeType: index of the iterator       
  *****************************************************************************/
 template<typename ItemType>
-constexpr inline pel::vector<ItemType>::SizeType
+constexpr inline typename pel::vector<ItemType>::SizeType
 pel::vector<ItemType>::index_of(const vector_iterator<ItemType> iterator) const
 {
     if constexpr (pel::vector_safeness == true)
@@ -344,7 +347,7 @@ pel::vector<ItemType>::assign(const std::initializer_list<ItemType> ilist,
  *****************************************************************************/
 template<typename ItemType>
 constexpr inline ItemType&
-pel::vector<ItemType>::operator[](const SizeType index) const noexcept(pel::vector_safeness == true)
+pel::vector<ItemType>::operator[](const SizeType index)
 {
     if constexpr (pel::vector_safeness == true)
     {
@@ -371,7 +374,7 @@ pel::vector<ItemType>::operator[](const SizeType index) const noexcept(pel::vect
  *****************************************************************************/
 template<typename ItemType>
 constexpr inline const ItemType&
-pel::vector<ItemType>::operator[](const SizeType index) const noexcept(pel::vector_safeness == true)
+pel::vector<ItemType>::operator[](const SizeType index) const
 {
     if constexpr (pel::vector_safeness == true)
     {
@@ -1206,7 +1209,7 @@ pel::vector<ItemType>::check_fit(const SizeType extraLength)
 {
     if (length() + extraLength > capacity())
     {
-        reserve(capacity() + s_stepSize() + extraLength);
+        reserve(capacity() + m_stepSize() + extraLength);
     }
 }
 
