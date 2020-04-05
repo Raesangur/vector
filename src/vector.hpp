@@ -140,6 +140,7 @@ public:
     constexpr inline SizeType length() const noexcept;
     constexpr inline SizeType capacity() const noexcept;
     constexpr inline bool isEmpty() const noexcept;
+    constexpr inline bool isNotEmpty() const noexcept;
 
     constexpr inline void reserve(const SizeType newCapacity);
     constexpr inline void resize(const SizeType newLength);
