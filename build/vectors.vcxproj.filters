@@ -1,27 +1,45 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="16.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
+    <ClCompile Include="E:\GitHub\vector\src\container_base\src\main.cpp">
+      <Filter>src\container_base\src</Filter>
+    </ClCompile>
     <ClCompile Include="E:\GitHub\vector\src\main.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>src</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="E:\GitHub\vector\src\container_base\src\container_base.h">
+      <Filter>src\container_base\src</Filter>
+    </ClInclude>
+    <ClInclude Include="E:\GitHub\vector\src\container_base\src\iterator_base.h">
+      <Filter>src\container_base\src</Filter>
+    </ClInclude>
+    <ClInclude Include="E:\GitHub\vector\src\container_base\src\test\testContainer.hpp">
+      <Filter>src\container_base\src\test</Filter>
+    </ClInclude>
     <ClInclude Include="E:\GitHub\vector\src\vector.hpp">
-      <Filter>Header Files</Filter>
+      <Filter>src</Filter>
     </ClInclude>
     <ClInclude Include="E:\GitHub\vector\src\vector.inl">
-      <Filter>Header Files</Filter>
+      <Filter>src</Filter>
     </ClInclude>
     <ClInclude Include="E:\GitHub\vector\src\vector_iterator.h">
-      <Filter>Header Files</Filter>
+      <Filter>src</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <Filter Include="Header Files">
-      <UniqueIdentifier>{A0B3A245-3DE8-3532-A203-CCE0F84C64D6}</UniqueIdentifier>
+    <Filter Include="src">
+      <UniqueIdentifier>{BDE77A38-B357-357D-A475-1BA386922EFE}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files">
-      <UniqueIdentifier>{2575FB99-B6AA-3BB7-9644-368CD29AB5CF}</UniqueIdentifier>
+    <Filter Include="src\container_base">
+      <UniqueIdentifier>{D62149A9-30D4-3A97-A829-381E6FC648F6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\container_base\src">
+      <UniqueIdentifier>{267992CE-0779-314B-AF7E-84C73D0749A0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\container_base\src\test">
+      <UniqueIdentifier>{A5DB6724-C78D-3961-8054-4317E9E0C128}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

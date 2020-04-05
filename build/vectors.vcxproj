@@ -149,7 +149,15 @@
     </ProjectReference>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="E:\GitHub\vector\src\main.cpp" />
+    <ClInclude Include="E:\GitHub\vector\src\container_base\src\container_base.h" />
+    <ClInclude Include="E:\GitHub\vector\src\container_base\src\iterator_base.h" />
+    <ClCompile Include="E:\GitHub\vector\src\container_base\src\main.cpp">
+      <ObjectFileName>$(IntDir)/src/container_base/src/main.cpp.obj</ObjectFileName>
+    </ClCompile>
+    <ClInclude Include="E:\GitHub\vector\src\container_base\src\test\testContainer.hpp" />
+    <ClCompile Include="E:\GitHub\vector\src\main.cpp">
+      <ObjectFileName>$(IntDir)/src/main.cpp.obj</ObjectFileName>
+    </ClCompile>
     <ClInclude Include="E:\GitHub\vector\src\vector.hpp" />
     <ClInclude Include="E:\GitHub\vector\src\vector.inl" />
     <ClInclude Include="E:\GitHub\vector\src\vector_iterator.h" />

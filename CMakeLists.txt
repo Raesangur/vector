@@ -53,16 +53,37 @@ file(GLOB_RECURSE source_list
     "src/*.c"
     "src/*.cpp"
     "src/*.inl"
+    "inc/*.h"
+    "inc/*.hpp"
+    "inc/*.inl"
 )
 
 # Create MSVC subfolders
 foreach(source IN LISTS source_list)
+    # Check if the path is absolute and convert it to relative
+    if (IS_ABSOLUTE "${source}")
+        file(RELATIVE_PATH source "${CMAKE_CURRENT_SOURCE_DIR}" "${source}")
+    endif()
+
+    # Check if the path is a "build" path
+    string(FIND "${source}" "build" isBuildPath)
+    if (isBuildPath EQUAL -1)
+    else()
+        continue()
+    endif()
+
+    # Generate subfolders from paths 
     get_filename_component(source_path "${source}" PATH)
-    #source_group("${source_path}" FILES "${source}")
+    string(REPLACE "/" "\\" source_path_msvc "${source_path}")
+    source_group("${source_path_msvc}" FILES "${source}")
+
+    # Confirm the file is wanted
+    list(APPEND good_sources_list "${source}")
 endforeach()
 
+
 # Create executable
-add_executable(vectors ${source_list})
+add_executable(vectors ${good_sources_list})
 
 
 
