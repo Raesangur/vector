@@ -5,7 +5,7 @@
 #include <utility>
 #include <vector>
 
-#include "src/vector.hpp"
+#include "./vector.hpp"
 
 struct mystruct
 {
@@ -147,7 +147,7 @@ main()
         vec3.pop_back();
         printVec(vec3);
 
-        while(vec3.isEmpty() == false)
+        while(vec3.is_empty() == false)
         {
             vec3.pop_back();
         }
