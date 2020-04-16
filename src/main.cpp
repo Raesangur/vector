@@ -19,19 +19,20 @@ struct mystruct
         f     = 5;
         f1    = 0.0;
         f2    = 1.0;
-        f3    = 3.141592653589793236448464323;
+        f3    = 3.1415926535897932384626433;
         array = {true, false, true, false, false, true, false, true, false, false};
     }
 
-    int                  a;
-    int                  b;
-    int                  c;
-    int                  d;
-    int                  e;
-    int                  f;
-    double               f1;
-    double               f2;
-    double               f3;
+    int    a;
+    int    b;
+    int    c;
+    int    d;
+    int    e;
+    int    f;
+    double f1;
+    double f2;
+    double f3;
+
     std::array<bool, 10> array;
 };
 
