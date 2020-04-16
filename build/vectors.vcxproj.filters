@@ -23,6 +23,11 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
+    <Natvis Include="E:\GitHub\vector\src\vector.natvis">
+      <Filter>src</Filter>
+    </Natvis>
+  </ItemGroup>
+  <ItemGroup>
     <Filter Include="src">
       <UniqueIdentifier>{BDE77A38-B357-357D-A475-1BA386922EFE}</UniqueIdentifier>
     </Filter>

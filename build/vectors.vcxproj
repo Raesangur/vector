@@ -157,6 +157,7 @@
     <ClCompile Include="E:\GitHub\vector\src\main.cpp" />
     <ClInclude Include="E:\GitHub\vector\src\vector.hpp" />
     <ClInclude Include="E:\GitHub\vector\src\vector.inl" />
+    <Natvis Include="E:\GitHub\vector\src\vector.natvis" />
   </ItemGroup>
   <ItemGroup>
   </ItemGroup>
