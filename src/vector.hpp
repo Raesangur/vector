@@ -12,10 +12,10 @@
 
 namespace pel
 {
-/** @todo Inherit from container_base */
 /** @todo Clear Clang-Tidy warnings */
 /** @todo Free memory automatically when not needed */
 /** @todo make things actually constexpr */
+/** @todo working reverse iterators */
 /** @todo Increase allocation step size automatically when needed */
 /**       @todo Make allocation step sizes align with the implementation's
                 memory allocations alignments and sizes. */
@@ -24,10 +24,12 @@ namespace pel
 constexpr bool vector_safeness = true;
 
 template<typename ItemType>
-using vector_iterator = ItemType*;
+using vector_iterator = iterator_base<ItemType>;
+// using vector_iterator = ItemType*;
 
 template<typename ItemType>
-using reverse_vector_iterator = std::reverse_iterator<vector_iterator<ItemType>>;
+using reverse_vector_iterator = iterator_base<ItemType>;
+// using reverse_vector_iterator = std::reverse_iterator<vector_iterator<ItemType>>;
 
 
 template<typename ItemType>

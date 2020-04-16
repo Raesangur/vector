@@ -6,7 +6,7 @@
       <Item Name ="[length]"> m_length </Item>
       <Item Name ="[capacity]"> m_capacity </Item>
       <ArrayItems>
-        <Size> m_endIterator - m_beginIterator </Size>
+        <Size> m_endIterator.ptr() - m_beginIterator.ptr() </Size>
         <ValuePointer> m_beginIterator </ValuePointer>
       </ArrayItems>
     </Expand>

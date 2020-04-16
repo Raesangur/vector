@@ -73,7 +73,8 @@ constexpr pel::vector<ItemType>::vector(const vector<ItemType>& otherVector)
     m_length = otherVector.m_length;
     vector_constructor(length());
 
-    std::copy(otherVector.cbegin(), otherVector.cend(), begin);
+    std::copy(
+      otherVector.m_beginIterator.ptr(), otherVector.m_endIterator.ptr(), m_beginIterator.ptr());
 }
 
 
@@ -86,12 +87,12 @@ constexpr pel::vector<ItemType>::vector(const vector<ItemType>& otherVector)
  * @retval      Constructed vector
  *****************************************************************************/
 template<typename ItemType>
-constexpr pel::vector<ItemType>::vector(const InitializerListType ilist)
+constexpr pel::vector<ItemType>::vector(const InitializerListType ilist) :
+    m_length(ilist.size())
 {
-    m_length = ilist.size();
     vector_constructor(length());
 
-    std::copy(ilist.begin(), ilist.end(), begin());
+    std::copy(ilist.begin(), ilist.end(), m_beginIterator.ptr());
 }
 
 
@@ -105,10 +106,10 @@ template<typename ItemType>
 pel::vector<ItemType>::~vector()
 {
     /* Destroy all the elements in the vector */
-    std::destroy(begin(), end());
+    std::destroy(m_beginIterator.ptr(), m_endIterator.ptr());
 
     /* Free allocated memory */
-    std::free(begin());
+    std::free(m_beginIterator.ptr());
 }
 #pragma endregion
 
@@ -170,7 +171,7 @@ pel::vector<ItemType>::front()
             throw std::length_error("Could not access element - No memory allocated");
         }
     }
-    return *begin();
+    return *m_beginIterator.ptr();
 }
 
 
@@ -194,7 +195,7 @@ pel::vector<ItemType>::back()
             throw std::length_error("Could not access element - No memory allocated");
         }
     }
-    return *(end() - 1);
+    return *(m_endIterator.ptr() - 1);
 }
 
 
@@ -218,7 +219,7 @@ pel::vector<ItemType>::front() const
             throw std::length_error("Could not access element - No memory allocated");
         }
     }
-    return *begin();
+    return *m_beginIterator.ptr();
 }
 
 
@@ -242,7 +243,7 @@ pel::vector<ItemType>::back() const
             throw std::length_error("Could not access element - No memory allocated");
         }
     }
-    return *(end() - 1);
+    return *(m_endIterator.ptr() - 1);
 }
 
 
@@ -289,7 +290,7 @@ pel::vector<ItemType>::index_of(const IteratorType iterator) const
         check_if_valid(iterator);
     }
 
-    return iterator - begin();
+    return iterator - m_beginIterator.ptr();
 }
 
 
@@ -312,7 +313,7 @@ pel::vector<ItemType>::assign(const ItemType& value, SizeType offset, SizeType c
         check_fit(count);
     }
 
-    std::fill_n(begin() + offset, count, value);
+    std::fill_n(m_beginIterator.ptr() + offset, count, value);
 }
 
 
@@ -333,7 +334,7 @@ pel::vector<ItemType>::assign(const InitializerListType ilist, SizeType offset)
         check_fit(ilist.size());
     }
 
-    std::copy(ilist.begin(), ilist.end(), begin() + offset);
+    std::copy(ilist.begin(), ilist.end(), m_beginIterator.ptr() + offset);
 }
 #pragma endregion
 
@@ -366,7 +367,7 @@ pel::vector<ItemType>::operator[](SizeType index)
         }
     }
 
-    return m_beginIterator[index];
+    return m_beginIterator.ptr()[index];
 }
 
 
@@ -393,7 +394,7 @@ pel::vector<ItemType>::operator[](SizeType index) const
         }
     }
 
-    return m_beginIterator[index];
+    return m_beginIterator.ptr()[index];
 }
 
 
@@ -467,7 +468,7 @@ template<typename ItemType>
 constexpr inline pel::vector<ItemType>&
 pel::vector<ItemType>::operator>>(int steps)
 {
-    std::shift_right(cbegin(), cend(), steps);
+    std::shift_right(cbegin().ptr(), cend().ptr(), steps);
 
     return *this;
 }
@@ -485,34 +486,10 @@ template<typename ItemType>
 constexpr inline pel::vector<ItemType>&
 pel::vector<ItemType>::operator<<(int steps)
 {
-    std::shift_left(cbegin(), cend(), steps);
+    std::shift_left(cbegin().ptr(), cend().ptr(), steps);
 
     return *this;
 }
-
-/******************************************************************************
- * @brief       Overload of the left-shift << operator to print a vector's
- *              content to an output stream.
- *
- * @param       std::ostream& os: Left-hand-side output stream
- * @param       vector<ItemType>& vec: Right-hand-side vector to print
- *
- * @retval      std::ostream&: Reference the output stream after appending data
- *
- * @note        This method is not directly part of the pel::vector class, and
- *              is rather appended to the std::ostream class.
- *****************************************************************************/
-template<typename ItemType>
-constexpr inline std::ostream&
-operator<<(std::ostream& os, const pel::vector<ItemType>& vec)
-{
-    for(ItemType& element: vec)
-    {
-        os << element << '\n';
-    }
-    return os;
-}
-
 #pragma endregion
 
 
@@ -1114,7 +1091,7 @@ constexpr inline std::string
 pel::vector<ItemType>::to_string() const
 {
     std::ostringstream os;
-    os << this;
+    os << *this;
     return os.str();
 }
 #pragma endregion
@@ -1141,7 +1118,7 @@ pel::vector<ItemType>::vector_constructor(SizeType size)
 
     /* Reallocate block of memory */
     std::size_t blockSize = capacity() * sizeof(ItemType);
-    void*       tempPtr   = std::realloc(begin(), blockSize);
+    void*       tempPtr   = std::realloc(m_beginIterator.ptr(), blockSize);
     if(tempPtr == nullptr)
     {
         if(size != 0)
@@ -1150,15 +1127,15 @@ pel::vector<ItemType>::vector_constructor(SizeType size)
         }
         else
         {
-            m_beginIterator = nullptr;
-            m_endIterator   = nullptr;
+            m_beginIterator = IteratorType((ItemType*)(void*)this);
+            m_endIterator   = IteratorType((ItemType*)(void*)this);
             return;
         }
     }
 
     /* Set iterators */
-    m_beginIterator = static_cast<ItemType*>(tempPtr);
-    m_endIterator   = &m_beginIterator[length()];
+    m_beginIterator = IteratorType(static_cast<ItemType*>(tempPtr));
+    m_endIterator   = IteratorType(&(m_beginIterator.ptr()[length()]));
 }
 
 
@@ -1193,7 +1170,7 @@ constexpr inline void
 pel::vector<ItemType>::change_size(SizeType newLength)
 {
     m_length      = newLength;
-    m_endIterator = &m_beginIterator[length()];
+    m_endIterator = &(m_beginIterator.ptr()[length()]);
 }
 
 
@@ -1239,7 +1216,29 @@ pel::vector<ItemType>::check_if_valid(const IteratorType iterator)
 }
 #pragma endregion
 
-
+/******************************************************************************
+ * @brief       Overload of the left-shift << operator to print a vector's
+ *              content to an output stream.
+ *
+ * @param       std::ostream& os: Left-hand-side output stream
+ * @param       vector<ItemType>& vec: Right-hand-side vector to print
+ *
+ * @retval      std::ostream&: Reference the output stream after appending data
+ *
+ * @note        This method is not directly part of the pel::vector class, and
+ *              is rather appended to the std::ostream class.
+ *****************************************************************************/
+template<typename ItemType>
+constexpr inline std::ostream&
+operator<<(std::ostream& os, const pel::vector<ItemType>& vec)
+{
+    os << "[" << vec.capacity() << "] [" << vec.length() << "]\n";
+    for(ItemType& element: vec)
+    {
+        os << element << '\n';
+    }
+    return os;
+}
 
 /*****************************************************************************/
 /* END OF FILE ------------------------------------------------------------- */

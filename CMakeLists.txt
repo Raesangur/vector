@@ -56,6 +56,7 @@ file(GLOB_RECURSE source_list
     "inc/*.h"
     "inc/*.hpp"
     "inc/*.inl"
+    "*.natvis"
 )
 
 # Create subfolders and filter desired files
