@@ -42,9 +42,9 @@ constexpr pel::vector<ItemType>::vector(SizeType length, const ItemType& default
 /******************************************************************************
  * @brief       Iterator-based copy constructor for the vector class
  *
- * @param       vector_iterator beginIterator:
+ * @param       IteratorType beginIterator:
  *              Begin iterator of another vector to start copying from.
- * @param       vector_iterator endIterator:
+ * @param       IteratorType endIterator:
  *              End iterator of another vector to end the copy.
  *
  * @retval      Constructed vector
@@ -87,8 +87,7 @@ constexpr pel::vector<ItemType>::vector(const vector<ItemType>& otherVector)
  * @retval      Constructed vector
  *****************************************************************************/
 template<typename ItemType>
-constexpr pel::vector<ItemType>::vector(const InitializerListType ilist) :
-    m_length(ilist.size())
+constexpr pel::vector<ItemType>::vector(InitializerListType ilist) : m_length(ilist.size())
 {
     vector_constructor(length());
 
@@ -128,7 +127,7 @@ pel::vector<ItemType>::~vector()
  * @retval      ItemType&: Reference to the item at the specified index.
  *****************************************************************************/
 template<typename ItemType>
-constexpr inline ItemType&
+[[nodiscard]] constexpr inline ItemType&
 pel::vector<ItemType>::at(SizeType index)
 {
     return this->operator[](index);
@@ -144,7 +143,7 @@ pel::vector<ItemType>::at(SizeType index)
  * @retval      ItemType&: Const reference to the item at the specified index.
  *****************************************************************************/
 template<typename ItemType>
-constexpr inline const ItemType&
+[[nodiscard]] constexpr inline const ItemType&
 pel::vector<ItemType>::at(SizeType index) const
 {
     return this->operator[](index);
@@ -161,7 +160,7 @@ pel::vector<ItemType>::at(SizeType index) const
  *              even just the first element would cause errors.
  *****************************************************************************/
 template<typename ItemType>
-constexpr inline ItemType&
+[[nodiscard]] constexpr inline ItemType&
 pel::vector<ItemType>::front()
 {
     if constexpr(vector_safeness == true)
@@ -185,7 +184,7 @@ pel::vector<ItemType>::front()
  *              even just the first element would cause errors.
  *****************************************************************************/
 template<typename ItemType>
-constexpr inline ItemType&
+[[nodiscard]] constexpr inline ItemType&
 pel::vector<ItemType>::back()
 {
     if constexpr(vector_safeness == true)
@@ -209,7 +208,7 @@ pel::vector<ItemType>::back()
  *              even just the first element would cause errors.
  *****************************************************************************/
 template<typename ItemType>
-constexpr inline const ItemType&
+[[nodiscard]] constexpr inline const ItemType&
 pel::vector<ItemType>::front() const
 {
     if constexpr(vector_safeness == true)
@@ -233,7 +232,7 @@ pel::vector<ItemType>::front() const
  *              even just the first element would cause errors.
  *****************************************************************************/
 template<typename ItemType>
-constexpr inline const ItemType&
+[[nodiscard]] constexpr inline const ItemType&
 pel::vector<ItemType>::back() const
 {
     if constexpr(vector_safeness == true)
@@ -253,7 +252,7 @@ pel::vector<ItemType>::back() const
  * @retval      ItemType*: Pointer to the beginning of the vector's data
  *****************************************************************************/
 template<typename ItemType>
-constexpr inline ItemType*
+[[nodiscard]] constexpr inline ItemType*
 pel::vector<ItemType>::data() noexcept
 {
     return m_beginIterator;
@@ -266,7 +265,7 @@ pel::vector<ItemType>::data() noexcept
  * @retval      ItemType*: Const pointer to the beginning of the vector's data
  *****************************************************************************/
 template<typename ItemType>
-constexpr inline const ItemType*
+[[nodiscard]] constexpr inline const ItemType*
 pel::vector<ItemType>::data() const noexcept
 {
     return m_beginIterator;
@@ -276,14 +275,14 @@ pel::vector<ItemType>::data() const noexcept
 /******************************************************************************
  * @brief       Return the index of an iterator from the start of the vector.
  *
- * @param       vector_iterator iterator:
+ * @param       IteratorType iterator:
  *              Iterator in the vector to get the index of.
  *
  * @retval      SizeType: index of the iterator
  *****************************************************************************/
 template<typename ItemType>
-constexpr inline typename pel::vector<ItemType>::SizeType
-pel::vector<ItemType>::index_of(const IteratorType iterator) const
+[[nodiscard]] constexpr inline typename pel::vector<ItemType>::SizeType
+pel::vector<ItemType>::index_of(IteratorType iterator) const
 {
     if constexpr(pel::vector_safeness == true)
     {
@@ -327,7 +326,7 @@ pel::vector<ItemType>::assign(const ItemType& value, SizeType offset, SizeType c
  *****************************************************************************/
 template<typename ItemType>
 constexpr inline void
-pel::vector<ItemType>::assign(const InitializerListType ilist, SizeType offset)
+pel::vector<ItemType>::assign(InitializerListType ilist, SizeType offset)
 {
     if constexpr(vector_safeness == true)
     {
@@ -356,7 +355,7 @@ pel::vector<ItemType>::assign(const InitializerListType ilist, SizeType offset)
  *              If the index is out of the vector's length
  *****************************************************************************/
 template<typename ItemType>
-constexpr inline ItemType&
+[[nodiscard]] constexpr inline ItemType&
 pel::vector<ItemType>::operator[](SizeType index)
 {
     if constexpr(pel::vector_safeness == true)
@@ -383,7 +382,7 @@ pel::vector<ItemType>::operator[](SizeType index)
  *              If the index is out of the vector's length
  *****************************************************************************/
 template<typename ItemType>
-constexpr inline const ItemType&
+[[nodiscard]] constexpr inline const ItemType&
 pel::vector<ItemType>::operator[](SizeType index) const
 {
     if constexpr(pel::vector_safeness == true)
@@ -424,7 +423,7 @@ pel::vector<ItemType>::operator+=(const ItemType& rhs)
  * @retval      vector&: Reference the vector itself.
  *****************************************************************************/
 template<typename ItemType>
-constexpr inline pel::vector<ItemType>&
+constexpr inline pel::vector<ItemType>
 pel::vector<ItemType>::operator++(int)
 {
     reserve(capacity() + 1);
@@ -443,7 +442,7 @@ pel::vector<ItemType>::operator++(int)
  *              vector will be popped back and destroyed (safely).
  *****************************************************************************/
 template<typename ItemType>
-constexpr inline pel::vector<ItemType>&
+constexpr inline pel::vector<ItemType>
 pel::vector<ItemType>::operator--(int)
 {
     if(capacity() == length())
@@ -501,10 +500,10 @@ pel::vector<ItemType>::operator<<(int steps)
 /******************************************************************************
  * @brief       Returns an iterator to the beginning of the allocated data.
  *
- * @retval      vector_iterator: Iterator to the start of the vector's memory.
+ * @retval      IteratorType: Iterator to the start of the vector's memory.
  *****************************************************************************/
 template<typename ItemType>
-constexpr inline typename pel::vector<ItemType>::IteratorType
+[[nodiscard]] constexpr inline typename pel::vector<ItemType>::IteratorType
 pel::vector<ItemType>::begin() const noexcept
 {
     return m_beginIterator;
@@ -514,13 +513,13 @@ pel::vector<ItemType>::begin() const noexcept
 /******************************************************************************
  * @brief       Returns an iterator to the end of the allocated data.
  *
- * @retval      vector_iterator: Iterator to the end of the vector's memory.
+ * @retval      IteratorType: Iterator to the end of the vector's memory.
  *
  * @note        This iterator does not point directly to the end of the
  *              memory, but to one element after the end of the memory.
  *****************************************************************************/
 template<typename ItemType>
-constexpr inline typename pel::vector<ItemType>::IteratorType
+[[nodiscard]] constexpr inline typename pel::vector<ItemType>::IteratorType
 pel::vector<ItemType>::end() const noexcept
 {
     return m_endIterator;
@@ -530,11 +529,11 @@ pel::vector<ItemType>::end() const noexcept
 /******************************************************************************
  * @brief       Returns a const iterator to the beginning of the allocated data.
  *
- * @retval      vector_iterator:
+ * @retval      IteratorType:
  *              Const iterator to the start of the vector's memory.
  *****************************************************************************/
 template<typename ItemType>
-constexpr inline const typename pel::vector<ItemType>::IteratorType
+[[nodiscard]] constexpr inline const typename pel::vector<ItemType>::IteratorType
 pel::vector<ItemType>::cbegin() const noexcept
 {
     return m_beginIterator;
@@ -544,11 +543,11 @@ pel::vector<ItemType>::cbegin() const noexcept
 /******************************************************************************
  * @brief       Returns a const iterator to the end of the allocated data.
  *
- * @retval      vector_iterator:
+ * @retval      IteratorType:
  *              Const iterator to the end of the vector's memory.
  *****************************************************************************/
 template<typename ItemType>
-constexpr inline const typename pel::vector<ItemType>::IteratorType
+[[nodiscard]] constexpr inline const typename pel::vector<ItemType>::IteratorType
 pel::vector<ItemType>::cend() const noexcept
 {
     return m_endIterator;
@@ -559,15 +558,15 @@ pel::vector<ItemType>::cend() const noexcept
  * @brief       Returns a reverse iterator to the reversed beginning of the
  *              allocated data.
  *
- * @retval      vector_iterator:
+ * @retval      IteratorType:
  *              Iterator to the reversed start of the vector's memory.
  *              (end - 1)
  *****************************************************************************/
 template<typename ItemType>
-constexpr inline typename pel::vector<ItemType>::RIteratorType
+[[nodiscard]] constexpr inline typename pel::vector<ItemType>::RIteratorType
 pel::vector<ItemType>::rbegin() const noexcept
 {
-    return reverse_vector_iterator<ItemType>(m_endIterator);
+    return reverse_IteratorType<ItemType>(m_endIterator);
 }
 
 
@@ -575,15 +574,15 @@ pel::vector<ItemType>::rbegin() const noexcept
  * @brief       Returns a reverse iterator to the reversed end of the
  *              allocated data.
  *
- * @retval      vector_iterator:
+ * @retval      IteratorType:
  *              Iterator to the reversed of the vector's memory.
  *              (begin - 1)
  *****************************************************************************/
 template<typename ItemType>
-constexpr inline typename pel::vector<ItemType>::RIteratorType
+[[nodiscard]] constexpr inline typename pel::vector<ItemType>::RIteratorType
 pel::vector<ItemType>::rend() const noexcept
 {
-    return reverse_vector_iterator<ItemType>(m_beginIterator);
+    return reverse_IteratorType<ItemType>(m_beginIterator);
 }
 
 
@@ -591,15 +590,15 @@ pel::vector<ItemType>::rend() const noexcept
  * @brief       Returns a const reverse iterator to the reversed beginning of
  *              the allocated data.
  *
- * @retval      vector_iterator:
+ * @retval      IteratorType:
  *              Const iterator to the reversed start of the vector's memory.
  *              (end - 1)
  *****************************************************************************/
 template<typename ItemType>
-constexpr inline const typename pel::vector<ItemType>::RIteratorType
+[[nodiscard]] constexpr inline const typename pel::vector<ItemType>::RIteratorType
 pel::vector<ItemType>::crbegin() const noexcept
 {
-    return reverse_vector_iterator<ItemType>(m_endIterator);
+    return reverse_IteratorType<ItemType>(m_endIterator);
 }
 
 
@@ -607,15 +606,15 @@ pel::vector<ItemType>::crbegin() const noexcept
  * @brief       Returns a const reverse iterator to the reversed end of the
  *              allocated data.
  *
- * @retval      vector_iterator:
+ * @retval      IteratorType:
  *              Const iterator to the reversed of the vector's memory.
  *              (begin - 1)
  *****************************************************************************/
 template<typename ItemType>
-constexpr inline const typename pel::vector<ItemType>::RIteratorType
+[[nodiscard]] constexpr inline const typename pel::vector<ItemType>::RIteratorType
 pel::vector<ItemType>::crend() const noexcept
 {
-    return reverse_vector_iterator<ItemType>(m_beginIterator);
+    return reverse_IteratorType<ItemType>(m_beginIterator);
 }
 #pragma endregion
 
@@ -683,12 +682,12 @@ pel::vector<ItemType>::pop_back()
  *              items on the right to fit.
  *
  * @param       ItemType& value: Element to insert in the vector
- * @param       vector_iterator position: Position to insert the element at
+ * @param       IteratorType position: Position to insert the element at
  * @param       SizeType count:
  *              Number of elements to insert from the initial offset
  *              [defaults : 1]
  *
- * @retval      vector_iterator:
+ * @retval      IteratorType:
  *              Position at which the element has been inserted.
  *              (if multiple elements have been inserted, return position of
  *               the last inserted element).
@@ -731,7 +730,7 @@ pel::vector<ItemType>::insert(const ItemType& value, const IteratorType position
  *              Number of elements to insert from the initial offset
  *              [defaults : 1]
  *
- * @retval      vector_iterator:
+ * @retval      IteratorType:
  *              Position at which the element has been inserted.
  *              (if multiple elements have been inserted, return position of
  *               the last inserted element).
@@ -748,7 +747,7 @@ pel::vector<ItemType>::insert(const ItemType& value, SizeType offset, SizeType c
         throw std::invalid_argument("Invalid insert offset");
     }
 
-    vector_iterator<ItemType> position = cbegin() + offset;
+    IteratorType<ItemType> position = cbegin() + offset;
 
     return insert(value, position, count);
 }
@@ -758,12 +757,12 @@ pel::vector<ItemType>::insert(const ItemType& value, SizeType offset, SizeType c
  * @brief       Insert elements in the middle of the vector from another vector,
  *              right-shifting items on the right to fit.
  *
- * @param       vector_iterator sourceBegin: Begin iterator from another vector
- * @param       vector_iterator sourceEnd:   End iterator from another vector
- * @param       vector_iterator position:
+ * @param       IteratorType sourceBegin: Begin iterator from another vector
+ * @param       IteratorType sourceEnd:   End iterator from another vector
+ * @param       IteratorType position:
  *              Position in vector to start copy-inserting data at
  *
- * @retval      vector_iterator:
+ * @retval      IteratorType:
  *              Position at which the element has been inserted.
  *              (if multiple elements have been inserted, return position of
  *               the last inserted element).
@@ -795,13 +794,13 @@ pel::vector<ItemType>::insert(const IteratorType sourceBegin,
  * @brief       Insert elements in the middle of the vector from another vector,
  *              right-shifting items on the right to fit.
  *
- * @param       vector_iterator sourceBegin: Begin iterator from another vector
- * @param       vector_iterator sourceEnd:   End iterator from another vector
+ * @param       IteratorType sourceBegin: Begin iterator from another vector
+ * @param       IteratorType sourceEnd:   End iterator from another vector
  * @param       SizeType offset:
  *              Offset in vector to start copy-inserting data at
  *              [defaults : 0]
  *
- * @retval      vector_iterator:
+ * @retval      IteratorType:
  *              Position at which the element has been inserted.
  *              (if multiple elements have been inserted, return position of
  *               the last inserted element).
@@ -820,7 +819,7 @@ pel::vector<ItemType>::insert(const IteratorType sourceBegin,
         throw std::invalid_argument("Invalid insert offset");
     }
 
-    vector_iterator position = cbegin() + offset;
+    IteratorType position = cbegin() + offset;
 
     return insert(sourceBegin, sourceEnd, position);
 }
@@ -836,7 +835,7 @@ pel::vector<ItemType>::insert(const IteratorType sourceBegin,
  *              Offset in vector to start copy-inserting data at
  *              [defaults : 0]
  *
- * @retval      vector_iterator:
+ * @retval      IteratorType:
  *              Position at which the element has been inserted.
  *              (if multiple elements have been inserted, return position of
  *               the last inserted element).
@@ -853,7 +852,7 @@ pel::vector<ItemType>::insert(const InitializerListType ilist, SizeType offset)
         throw std::invalid_argument("Invalid insert offset");
     }
 
-    vector_iterator<ItemType> position = cbegin() + offset;
+    IteratorType<ItemType> position = cbegin() + offset;
 
     return insert(ilist.begin(), ilist.end(), position);
 }
@@ -864,23 +863,19 @@ pel::vector<ItemType>::insert(const InitializerListType ilist, SizeType offset)
  *              element.
  *
  * @param       ItemType& value: Value that will replace element
- * @param       vector_iterator position: Position of the element to replace
+ * @param       IteratorType position: Position of the element to replace
  *              [defaults : cbegin()]
  *
- * @retval      vector_iterator:
+ * @retval      IteratorType:
  *              Position at which the element has been replaced.
  *****************************************************************************/
 template<typename ItemType>
 constexpr inline typename pel::vector<ItemType>::IteratorType
-pel::vector<ItemType>::replace(const ItemType& value, IteratorType position)
+pel::vector<ItemType>::replace(const ItemType& value, SizeType offset)
 {
-    if constexpr(pel::vector_safeness == true)
-    {
-        check_if_valid(position);
-    }
+    this->operator[](offset) = value;
 
-    *position = value;
-    return position;
+    return m_beginIterator + offset;
 }
 
 
@@ -889,14 +884,14 @@ pel::vector<ItemType>::replace(const ItemType& value, IteratorType position)
  *
  * @param       ItemType& value: Value that will replace element
  *
- * @retval      vector_iterator: Iterator to the element that was replaced.
+ * @retval      IteratorType: Iterator to the element that was replaced.
  *                               (end iterator - 1)
  *****************************************************************************/
 template<typename ItemType>
 constexpr inline typename pel::vector<ItemType>::IteratorType
 pel::vector<ItemType>::replace_back(const ItemType& value)
 {
-    vector_iterator<ItemType> position = end() - 1;
+    IteratorType<ItemType> position = end() - 1;
 
     *position = value;
     return position;
@@ -908,14 +903,14 @@ pel::vector<ItemType>::replace_back(const ItemType& value)
  *
  * @param       ItemType& value: Value that will replace element
  *
- * @retval      vector_iterator: Iterator to the element that was replaced.
+ * @retval      IteratorType: Iterator to the element that was replaced.
  *                               (begin iterator)
  *****************************************************************************/
 template<typename ItemType>
 constexpr inline typename pel::vector<ItemType>::IteratorType
 pel::vector<ItemType>::replace_front(const ItemType& value)
 {
-    vector_iterator<ItemType> position = begin();
+    IteratorType<ItemType> position = begin();
 
     *position = value;
 
@@ -937,7 +932,7 @@ pel::vector<ItemType>::replace_front(const ItemType& value)
  * @note        Equivalent to std::vector's `size()` method
  *****************************************************************************/
 template<typename ItemType>
-constexpr inline typename pel::vector<ItemType>::SizeType
+[[nodiscard]] constexpr inline typename pel::vector<ItemType>::SizeType
 pel::vector<ItemType>::length() const noexcept
 {
     return m_length;
@@ -951,7 +946,7 @@ pel::vector<ItemType>::length() const noexcept
  * @retval      SizeType: Elements that can fit in the allocated space.
  *****************************************************************************/
 template<typename ItemType>
-constexpr inline typename pel::vector<ItemType>::SizeType
+[[nodiscard]] constexpr inline typename pel::vector<ItemType>::SizeType
 pel::vector<ItemType>::capacity() const noexcept
 {
     return m_capacity;
@@ -966,7 +961,7 @@ pel::vector<ItemType>::capacity() const noexcept
  *                    False if there are elements in the vector
  *****************************************************************************/
 template<typename ItemType>
-constexpr inline bool
+[[nodiscard]] constexpr inline bool
 pel::vector<ItemType>::is_empty() const noexcept
 {
     return length() == 0;
@@ -981,7 +976,7 @@ pel::vector<ItemType>::is_empty() const noexcept
  *                    False if there are not elements in the vector
  *****************************************************************************/
 template<typename ItemType>
-constexpr inline bool
+[[nodiscard]] constexpr inline bool
 pel::vector<ItemType>::is_not_empty() const noexcept
 {
     return !is_empty();
@@ -1087,7 +1082,7 @@ pel::vector<ItemType>::shrink_to_fit()
  * @throws      std::bad_alloc: Could not allocate block of memory
  *****************************************************************************/
 template<typename ItemType>
-constexpr inline std::string
+[[nodiscard]] constexpr inline std::string
 pel::vector<ItemType>::to_string() const
 {
     std::ostringstream os;
@@ -1197,7 +1192,7 @@ pel::vector<ItemType>::check_fit(SizeType extraLength)
  * @brief       Check if an iterator is located within the vector's bounds.
  *              If it is not, throw an exception.
  *
- * @param       vector_iterator iterator: Iterator to check.
+ * @param       IteratorType iterator: Iterator to check.
  *
  * @throws      std::invalid_argument("Invalid iterator"):
  *              If the iterator does not belong in the vector's boundaries.

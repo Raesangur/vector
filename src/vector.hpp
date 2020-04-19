@@ -3,11 +3,11 @@
 #include "./container_base/src/container_base.h"
 
 #include <algorithm>
+#include <cstdlib>
 #include <memory>
 #include <ostream>
 #include <sstream>
 #include <stdexcept>
-#include <stdlib.h>
 
 
 namespace pel
@@ -50,45 +50,48 @@ class vector : container_base<ItemType, vector_iterator<ItemType>>
 #pragma region Methods declarations
 
     /* Constructors */
-    constexpr vector(SizeType length = 0);
-    constexpr vector(SizeType length, const ItemType& defaultValue);
-    constexpr vector(const IteratorType beginIterator, const IteratorType endIterator);
+    constexpr explicit vector(SizeType length = 0);
+    constexpr explicit vector(SizeType length, const ItemType& defaultValue);
+    constexpr explicit vector(IteratorType beginIterator, IteratorType endIterator);
+    constexpr vector(InitializerListType ilist);
     constexpr vector(const vector<ItemType>& otherVector);
-    constexpr vector(const InitializerListType ilist);
+    constexpr vector& operator=(const vector<ItemType>& copy);
+    constexpr vector(vector<ItemType>&& movedVector) noexcept;
+    constexpr vector& operator=(vector<ItemType>&& move) noexcept;
 
     /* Destructor */
-    ~vector();
+    ~vector() override;
 
 
     /*********************************************************************/
     /* Element accessors ----------------------------------------------- */
-    constexpr ItemType&       at(SizeType index) override;
-    constexpr const ItemType& at(SizeType index) const override;
+    [[nodiscard]] constexpr ItemType&       at(SizeType index) override;
+    [[nodiscard]] constexpr const ItemType& at(SizeType index) const override;
 
-    constexpr ItemType&       front() override;
-    constexpr ItemType&       back() override;
-    constexpr const ItemType& front() const override;
-    constexpr const ItemType& back() const override;
+    [[nodiscard]] constexpr ItemType&       front() override;
+    [[nodiscard]] constexpr ItemType&       back() override;
+    [[nodiscard]] constexpr const ItemType& front() const override;
+    [[nodiscard]] constexpr const ItemType& back() const override;
 
-    constexpr ItemType*       data() noexcept;
-    constexpr const ItemType* data() const noexcept;
+    [[nodiscard]] constexpr ItemType*       data() noexcept;
+    [[nodiscard]] constexpr const ItemType* data() const noexcept;
 
 
-    constexpr SizeType index_of(const IteratorType iterator) const;
+    [[nodiscard]] constexpr SizeType index_of(IteratorType iterator) const;
 
     constexpr void assign(const ItemType& value, SizeType offset = 0, SizeType count = 1);
-    constexpr void assign(const InitializerListType ilist, SizeType offset = 0);
+    constexpr void assign(InitializerListType ilist, SizeType offset = 0);
 
 
     /*********************************************************************/
     /* Operator overloads ---------------------------------------------- */
-    constexpr ItemType&       operator[](SizeType index) override;
-    constexpr const ItemType& operator[](SizeType index) const override;
+    [[nodiscard]] constexpr ItemType&       operator[](SizeType index) override;
+    [[nodiscard]] constexpr const ItemType& operator[](SizeType index) const override;
 
     constexpr vector<ItemType>& operator+=(const ItemType& rhs);
 
-    constexpr vector<ItemType>& operator++(int);
-    constexpr vector<ItemType>& operator--(int);
+    constexpr vector<ItemType> operator++(int);
+    constexpr vector<ItemType> operator--(int);
 
     constexpr vector<ItemType>& operator>>(int steps);
     constexpr vector<ItemType>& operator<<(int steps);
@@ -96,54 +99,48 @@ class vector : container_base<ItemType, vector_iterator<ItemType>>
 
     /*********************************************************************/
     /* Iterators ------------------------------------------------------- */
-    constexpr IteratorType        begin() const noexcept override;
-    constexpr IteratorType        end() const noexcept override;
-    constexpr const IteratorType  cbegin() const noexcept override;
-    constexpr const IteratorType  cend() const noexcept override;
-    constexpr RIteratorType       rbegin() const noexcept;
-    constexpr RIteratorType       rend() const noexcept;
-    constexpr const RIteratorType crbegin() const noexcept;
-    constexpr const RIteratorType crend() const noexcept;
+    [[nodiscard]] constexpr IteratorType        begin() const noexcept override;
+    [[nodiscard]] constexpr IteratorType        end() const noexcept override;
+    [[nodiscard]] constexpr const IteratorType  cbegin() const noexcept override;
+    [[nodiscard]] constexpr const IteratorType  cend() const noexcept override;
+    [[nodiscard]] constexpr RIteratorType       rbegin() const noexcept;
+    [[nodiscard]] constexpr RIteratorType       rend() const noexcept;
+    [[nodiscard]] constexpr const RIteratorType crbegin() const noexcept;
+    [[nodiscard]] constexpr const RIteratorType crend() const noexcept;
 
 
     /*********************************************************************/
     /* Element management ---------------------------------------------- */
     constexpr void push_back(const ItemType& value);
-    constexpr void push_back(const InitializerListType ilist);
+    constexpr void push_back(InitializerListType ilist);
     constexpr void pop_back();
 
 
-    constexpr vector_iterator<ItemType> insert(const ItemType&    value,
-                                               const IteratorType position,
-                                               SizeType           count = 1);
+    constexpr IteratorType insert(const ItemType& value, IteratorType position, SizeType count = 1);
 
-    constexpr vector_iterator<ItemType> insert(const ItemType& value,
-                                               SizeType        offset,
-                                               SizeType        count = 1);
+    constexpr IteratorType insert(const ItemType& value, SizeType offset, SizeType count = 1);
 
-    constexpr vector_iterator<ItemType> insert(const IteratorType sourceBegin,
-                                               const IteratorType sourceEnd,
-                                               const IteratorType position);
+    constexpr IteratorType insert(IteratorType sourceBegin,
+                                  IteratorType sourceEnd,
+                                  IteratorType position);
 
-    constexpr vector_iterator<ItemType> insert(const IteratorType sourceBegin,
-                                               const IteratorType sourceEnd,
-                                               SizeType           offset = 0);
+    constexpr IteratorType insert(IteratorType sourceBegin,
+                                  IteratorType sourceEnd,
+                                  SizeType     offset = 0);
 
-    constexpr vector_iterator<ItemType> insert(const InitializerListType ilist,
-                                               SizeType                  offset = 0);
+    constexpr IteratorType insert(InitializerListType ilist, SizeType offset = 0);
 
-    constexpr vector_iterator<ItemType> replace_back(const ItemType& value);
-    constexpr vector_iterator<ItemType> replace_front(const ItemType& value);
-    constexpr vector_iterator<ItemType> replace(const ItemType& value,
-                                                IteratorType    position = cbegin());
+    constexpr IteratorType replace_back(const ItemType& value);
+    constexpr IteratorType replace_front(const ItemType& value);
+    constexpr IteratorType replace(const ItemType& value, SizeType offset = 0);
 
 
     /*********************************************************************/
     /* Memory ---------------------------------------------------------- */
-    constexpr SizeType length() const noexcept override;
-    constexpr SizeType capacity() const noexcept;
-    constexpr bool     is_empty() const noexcept override;
-    constexpr bool     is_not_empty() const noexcept override;
+    [[nodiscard]] constexpr SizeType length() const noexcept override;
+    [[nodiscard]] constexpr SizeType capacity() const noexcept;
+    [[nodiscard]] constexpr bool     is_empty() const noexcept override;
+    [[nodiscard]] constexpr bool     is_not_empty() const noexcept override;
 
     constexpr void reserve(SizeType newCapacity);
     constexpr void resize(SizeType newLength);
@@ -155,7 +152,7 @@ class vector : container_base<ItemType, vector_iterator<ItemType>>
 
     /*********************************************************************/
     /* Misc ------------------------------------------------------------ */
-    constexpr std::string to_string() const override;
+    [[nodiscard]] constexpr std::string to_string() const override;
 
 
     /*********************************************************************/
@@ -167,7 +164,7 @@ class vector : container_base<ItemType, vector_iterator<ItemType>>
     constexpr void change_size(SizeType newLength);
 
     constexpr void check_fit(SizeType extraLength);
-    constexpr void check_if_valid(const IteratorType iterator);
+    constexpr void check_if_valid(IteratorType iterator);
 #pragma endregion
 
 

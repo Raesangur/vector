@@ -1,2 +1,7 @@
 ﻿  main.cpp
-  vectors.vcxproj -> E:\GitHub\vector\bin\vectors.exe
+E:\GitHub\vector\src\./vector.inl(90,74): error C2220: the following warning is treated as an error
+E:\GitHub\vector\src\./vector.inl(90,74): warning C4459: declaration of 'ilist' hides global declaration
+E:\GitHub\vector\src\main.cpp(6,38): message : see declaration of 'ilist'
+E:\GitHub\vector\src\./vector.inl(90): message : while compiling class template member function 'pel::vector<int>::vector(std::initializer_list<int>)'
+E:\GitHub\vector\src\main.cpp(11): message : see reference to function template instantiation 'pel::vector<int>::vector(std::initializer_list<int>)' being compiled
+E:\GitHub\vector\src\main.cpp(11): message : see reference to class template instantiation 'pel::vector<int>' being compiled
