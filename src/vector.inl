@@ -422,7 +422,7 @@ pel::vector<ItemType>::operator+=(const ItemType& rhs_)
  * @retval      vector&: Reference the vector itself.
  *****************************************************************************/
 template<typename ItemType>
-constexpr inline pel::vector<ItemType>
+constexpr inline const pel::vector<ItemType>
 pel::vector<ItemType>::operator++(int)
 {
     reserve(capacity() + 1);
@@ -441,7 +441,7 @@ pel::vector<ItemType>::operator++(int)
  *              vector will be popped back and destroyed (safely).
  *****************************************************************************/
 template<typename ItemType>
-constexpr inline pel::vector<ItemType>
+constexpr inline const pel::vector<ItemType>
 pel::vector<ItemType>::operator--(int)
 {
     if(capacity() == length())

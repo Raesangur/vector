@@ -90,8 +90,8 @@ class vector : container_base<ItemType, vector_iterator<ItemType>>
 
     constexpr vector<ItemType>& operator+=(const ItemType& rhs_);
 
-    constexpr vector<ItemType> operator++(int);
-    constexpr vector<ItemType> operator--(int);
+    constexpr const vector<ItemType> operator++(int);
+    constexpr const vector<ItemType> operator--(int);
 
     constexpr vector<ItemType>& operator>>(int steps_);
     constexpr vector<ItemType>& operator<<(int steps_);
