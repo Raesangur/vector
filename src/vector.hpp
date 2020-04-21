@@ -130,7 +130,7 @@ class vector : container_base<ItemType, vector_iterator<ItemType>>
 
     constexpr IteratorType insert(IteratorType   sourceBegin_,
                                   IteratorType   sourceEnd_,
-                                  DifferenceType offset_);
+                                  DifferenceType offset_ = 0);
 
     constexpr IteratorType insert(InitializerListType ilist_, SizeType offset_ = 0);
 

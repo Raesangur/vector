@@ -104,7 +104,7 @@ template<typename ItemType>
 pel::vector<ItemType>::~vector()
 {
     /* Destroy all the elements in the vector */
-    std::destroy(begin(), begin());
+    std::destroy(begin(), end());
 
     /* Free allocated memory */
     std::free(begin().ptr());
@@ -311,7 +311,7 @@ pel::vector<ItemType>::assign(const ItemType& value_, DifferenceType offset_, Si
         check_fit(count_);
     }
 
-    std::fill_n(begin().ptr() + offset_, count_, value_);
+    std::fill_n(begin() + offset_, count_, value_);
 }
 
 
@@ -1172,7 +1172,7 @@ constexpr inline void
 pel::vector<ItemType>::change_size(SizeType newLength_)
 {
     m_length      = newLength_;
-    m_endIterator = &(begin()[length()]);
+    m_endIterator = IteratorType(&(begin()[length()]));
 }
 
 
@@ -1206,7 +1206,7 @@ pel::vector<ItemType>::check_fit(SizeType extraLength_)
  *****************************************************************************/
 template<typename ItemType>
 constexpr inline void
-pel::vector<ItemType>::check_if_valid(const IteratorType iterator_)
+pel::vector<ItemType>::check_if_valid(IteratorType iterator_)
 {
     if constexpr(pel::vector_safeness == true)
     {
