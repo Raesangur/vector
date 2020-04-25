@@ -13,6 +13,7 @@
 namespace pel
 {
 /** @todo Clear Clang-Tidy warnings */
+/** @todo Use new and delete operators rather than realloc and free */
 /** @todo Free memory automatically when not needed */
 /** @todo make things actually constexpr */
 /** @todo working reverse iterators */
