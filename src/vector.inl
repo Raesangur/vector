@@ -61,7 +61,7 @@ constexpr pel::vector<ItemType>::vector(SizeType length_, const ItemType& defaul
 {
     vector_constructor(length_);
 
-    std::fill((), end(), defaultValue_);
+    std::fill(begin(), end(), defaultValue_);
 }
 
 
