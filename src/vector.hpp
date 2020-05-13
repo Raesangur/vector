@@ -42,7 +42,7 @@ namespace pel
 {
 /** @todo Clear Clang-Tidy warnings */
 /** @todo Cross-compilation and cross-platformism */
-/** @todo Lambda constructor
+/** @todo Lambda constructor */
 /** @todo Use new and delete operators rather than realloc and free */
 /** @todo Free memory automatically when not needed */
 /** @todo make things actually constexpr */
