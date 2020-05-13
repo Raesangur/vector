@@ -4,7 +4,7 @@
  * @p       https://www.github.com/Raesangur
  * ----------------------------------------------------------------------------
  * MIT License
- * Copyright (c) 2020 Pascal-Emmanuel Lachance | Ràësangür
+ * Copyright (c) 2020 Pascal-Emmanuel Lachance | RÃ Ã«sangÃ¼r
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -41,6 +41,8 @@
 namespace pel
 {
 /** @todo Clear Clang-Tidy warnings */
+/** @todo Cross-compilation and cross-platformism */
+/** @todo Lambda constructor
 /** @todo Use new and delete operators rather than realloc and free */
 /** @todo Free memory automatically when not needed */
 /** @todo make things actually constexpr */
