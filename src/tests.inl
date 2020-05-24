@@ -4,7 +4,7 @@
 
 
 template<typename T>
-void incrementVector(pel::vector<T>& vec)
+void incrementVector(pel::vector<T>& vec) noexcept
 {
     for(T& i: vec)
     {
@@ -14,7 +14,7 @@ void incrementVector(pel::vector<T>& vec)
 
 
 template<typename T>
-void sortVector(pel::vector<T>& vec)
+void sortVector(pel::vector<T>& vec) noexcept
 {
     std::sort(vec.begin(), vec.end());
 }

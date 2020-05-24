@@ -42,7 +42,7 @@
  *****************************************************************************/
 template<typename ItemType>
 inline static std::ostream&
-operator<<(std::ostream& os_, const pel::vector<ItemType>& vec_)
+operator<<(std::ostream& os_, const pel::vector<ItemType>& vec_) noexcept
 {
     os_ << "[" << vec_.capacity() << "] [" << vec_.length() << "]\n";
     for(ItemType& element: vec_)
@@ -1131,7 +1131,7 @@ pel::vector<ItemType>::shrink_to_fit()
  *****************************************************************************/
 template<typename ItemType>
 [[nodiscard]] inline std::string
-pel::vector<ItemType>::to_string() const
+pel::vector<ItemType>::to_string() const noexcept
 {
     std::ostringstream os;
     os << *this;

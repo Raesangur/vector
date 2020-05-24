@@ -31,8 +31,8 @@
 #include "./container_base/src/container_base.h"
 
 #include <algorithm>
-#include <cstdlib>
 #include <cstddef>
+#include <cstdlib>
 #include <memory>
 #include <ostream>
 #include <sstream>
@@ -186,7 +186,7 @@ class vector : container_base<ItemType, vector_iterator<ItemType>>
 
     /*********************************************************************/
     /* Misc ------------------------------------------------------------ */
-    [[nodiscard]] std::string to_string() const override;
+    [[nodiscard]] std::string to_string() const noexcept override;
 
 
     /*********************************************************************/
@@ -206,8 +206,8 @@ class vector : container_base<ItemType, vector_iterator<ItemType>>
     private:
     SizeType     m_length        = 0;
     SizeType     m_capacity      = 0;
-    IteratorType m_beginIterator = nullptr;
-    IteratorType m_endIterator   = nullptr;
+    IteratorType m_beginIterator = IteratorType(nullptr);
+    IteratorType m_endIterator   = IteratorType(nullptr);
 
 
     /*********************************************************************/

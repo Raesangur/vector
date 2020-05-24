@@ -8,14 +8,22 @@ constexpr std::initializer_list<int> ilist = {100, 400, 69, 420, 00, 0x72, 643, 
 int
 main()
 {
-    pel::vector<int> vec1 = pel::vector<int>(ilist);
-    std::cout << vec1.to_string() << "\n";
+    try
+    {
+        pel::vector<int> vec1 = pel::vector<int>(ilist);
+        std::cout << vec1.to_string() << "\n";
 
-    incrementVector(vec1);
-    std::cout << vec1.to_string() << "\n";
+        incrementVector(vec1);
+        std::cout << vec1.to_string() << "\n";
 
-    sortVector(vec1);
-    std::cout << vec1.to_string() << "\n";
+        sortVector(vec1);
+        std::cout << vec1.to_string() << "\n";
 
-    return 0;
+        return 0;
+    }
+    catch (std::exception e)
+    {
+        std::cout << "exception catched: " << e.what() << '\n';
+        return 0;
+    }
 }
