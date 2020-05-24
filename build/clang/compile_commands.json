@@ -1,0 +1,7 @@
+[
+{
+  "directory": "/home/raesangur/GitHub/vector/build/clang",
+  "command": "/usr/bin/c++  -DUNICODE -D_CONSOLE -D_UNICODE -I/home/raesangur/GitHub/vector/.    -std=gnu++2a -o CMakeFiles/vectors.dir/src/main.cpp.o -c /home/raesangur/GitHub/vector/src/main.cpp",
+  "file": "/home/raesangur/GitHub/vector/src/main.cpp"
+}
+]
