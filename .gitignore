@@ -58,6 +58,14 @@ ipch/
 *.gch
 *.pch
 
+# CMake-generated files
+*.stamp.depend
+*.stamp
+*.check_cache
+*.cmake
+*.lastbuildstate
+
+
 
 # Local History for Visual Studio
 .localhistory/
@@ -85,3 +93,6 @@ ipch/
 # other
 *.ipch
 .vs
+*.log
+*.tlog
+*.bin
