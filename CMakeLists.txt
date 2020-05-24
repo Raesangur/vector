@@ -233,6 +233,7 @@ set(GCC_WARNINGS
 
 # Set warnings as errors
 set(CLANG_WARNINGS ${CLANG_WARNINGS} -Werror)
+set(GCC_WARNINGS ${GCC_WARNINGS} -Werror)
 set(MSVC_WARNINGS ${MSVC_WARNINGS} /WX)
 
 # Select a warning set
