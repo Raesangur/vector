@@ -1089,7 +1089,7 @@ pel::vector<ItemType>::resize(SizeType newLength_)
     }
 
     /* Check if freeing some memory is necessary */
-    /** @todo /
+    /** @todo */
 
     /* Resize */
     change_size(newLength_);
