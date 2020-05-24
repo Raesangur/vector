@@ -36,3 +36,11 @@ cd g++
 cmake ./../.. -D CMAKE_CXX_COMPILER=$gccPath > /dev/null 2>&1
 cmake --build .
 cd ..
+
+# Run Clang-Tidy on project
+echo "------------------------------"
+echo "Running clang-tidy"
+cd clang++
+../../run-clang-tidy.py -quiet
+cd ..
+
