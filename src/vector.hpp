@@ -32,6 +32,7 @@
 
 #include <algorithm>
 #include <cstdlib>
+#include <cstddef>
 #include <memory>
 #include <ostream>
 #include <sstream>
