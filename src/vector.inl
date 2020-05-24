@@ -924,7 +924,7 @@ template<typename ItemType>
 inline typename pel::vector<ItemType>::IteratorType
 pel::vector<ItemType>::replace(const ItemType& value_, SizeType offset_)
 {
-    this[offset_] = value_;
+    at(offset) = value_;
 
     return begin() + offset_;
 }
@@ -1164,7 +1164,7 @@ pel::vector<ItemType>::vector_constructor(SizeType size_)
     {
         if(size_ != 0)
         {
-            throw new std::bad_alloc();
+            throw std::bad_alloc();
         }
         else
         {
