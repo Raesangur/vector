@@ -924,7 +924,7 @@ template<typename ItemType>
 inline typename pel::vector<ItemType>::IteratorType
 pel::vector<ItemType>::replace(const ItemType& value_, SizeType offset_)
 {
-    at(offset) = value_;
+    at(offset_) = value_;
 
     return begin() + offset_;
 }
