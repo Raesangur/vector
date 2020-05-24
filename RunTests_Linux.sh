@@ -30,7 +30,7 @@ cmake --build .
 cd ..
 
 # Build G++ project and compile
-echo "-----------------------------"
+echo "------------------------------"
 echo "Building with g++"
 cd g++
 cmake ./../.. -D CMAKE_CXX_COMPILER=$gccPath > /dev/null 2>&1
