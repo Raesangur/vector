@@ -1,7 +1,7 @@
 #include <iostream>
 
-#include "./vector.hpp"
 #include "./tests.inl"
+#include "./vector.hpp"
 
 constexpr std::initializer_list<int> ilist = {100, 400, 69, 420, 00, 0x72, 643, 65535, 1, 2, 3};
 
