@@ -40,7 +40,6 @@
 
 namespace pel
 {
-{
 /** @todo Emplace_back function to construct at the end instead of copy at the end */
 /** @todo Clear Clang-Tidy warnings */
 /** @todo Lambda constructor */
