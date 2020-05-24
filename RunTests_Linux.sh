@@ -1,15 +1,13 @@
+#!/bin/bash
 # Get variables
-if [$1 -eq 0]
+if [ "$#" -eq "0" ]
   then
     clangPath = /usr/bin/clang++-10
-else
-    clangPath = $1
-
-if [$2 -eq 0]
-  then
     gccPath = /usr/bin/g++-10
 else
+    clangPath = $1
     gccPath = $2
+fi
 
 echo "Clang++: " $clangPath
 echo "G++: " $gccPath
