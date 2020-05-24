@@ -19,11 +19,13 @@ main()
         sortVector(vec1);
         std::cout << vec1.to_string() << "\n";
 
+        vec1.push_back(ilist);
+        std::cout << vec1.to_string() << "\n";
+
         return 0;
     }
-    catch (const std::exception& e)
+    catch (...)
     {
-        std::cout << "exception catched: " << e.what() << '\n';
-        return 0;
+        return 1;
     }
 }

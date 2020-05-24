@@ -186,7 +186,7 @@ class vector : container_base<ItemType, vector_iterator<ItemType>>
 
     /*********************************************************************/
     /* Misc ------------------------------------------------------------ */
-    [[nodiscard]] std::string to_string() const noexcept override;
+    [[nodiscard]] std::string to_string() const override;
 
 
     /*********************************************************************/

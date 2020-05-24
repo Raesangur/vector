@@ -82,8 +82,7 @@ pel::vector<ItemType>::vector(SizeType length_) : m_length(length_)
  * @retval      Constructed vector
  *****************************************************************************/
 template<typename ItemType>
-pel::vector<ItemType>::vector(SizeType length_, const ItemType& defaultValue_)
-: m_length(length_)
+pel::vector<ItemType>::vector(SizeType length_, const ItemType& defaultValue_) : m_length(length_)
 {
     vector_constructor(length_);
 
@@ -102,8 +101,7 @@ pel::vector<ItemType>::vector(SizeType length_, const ItemType& defaultValue_)
  * @retval      Constructed vector
  *****************************************************************************/
 template<typename ItemType>
-pel::vector<ItemType>::vector(const IteratorType beginIterator_,
-                                        const IteratorType endIterator_)
+pel::vector<ItemType>::vector(const IteratorType beginIterator_, const IteratorType endIterator_)
 : m_length(endIterator_ - beginIterator_)
 {
     vector_constructor(length());
@@ -154,11 +152,8 @@ pel::vector<ItemType>::vector(InitializerListType ilist_) : m_length(ilist_.size
 template<typename ItemType>
 pel::vector<ItemType>::~vector()
 {
-    /* Destroy all the elements in the vector */
-    std::destroy(begin(), end());
-
-    /* Free allocated memory */
-    std::free(begin().ptr());
+    /* Free and destroy elements in the allocated memory */
+    ::delete[] begin().ptr();
 }
 
 
@@ -1131,7 +1126,7 @@ pel::vector<ItemType>::shrink_to_fit()
  *****************************************************************************/
 template<typename ItemType>
 [[nodiscard]] inline std::string
-pel::vector<ItemType>::to_string() const noexcept
+pel::vector<ItemType>::to_string() const
 {
     std::ostringstream os;
     os << *this;
@@ -1158,8 +1153,10 @@ pel::vector<ItemType>::vector_constructor(SizeType size_)
     m_capacity = size_;
 
     /* Reallocate block of memory */
-    std::size_t blockSize = capacity() * sizeof(ItemType);
-    void*       tempPtr   = std::realloc(begin().ptr(), blockSize);
+    std::size_t blockSize = capacity();
+    ItemType* tempPtr = new ItemType[blockSize];
+
+    /* Check if allocation was successful */
     if(tempPtr == nullptr)
     {
         if(size_ != 0)
@@ -1173,6 +1170,12 @@ pel::vector<ItemType>::vector_constructor(SizeType size_)
             return;
         }
     }
+
+    /* Move data from old vector memory to new memory */
+    std::move(begin(), end(), tempPtr);
+    
+    /* Deallocate old memory */
+    delete[] begin().ptr();
 
     /* Set iterators */
     m_beginIterator = IteratorType(static_cast<ItemType*>(tempPtr));
