@@ -26,6 +26,20 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 
 # -----------------------------------------------------------------------------
+# Begin message
+# Select a warning set
+if(MSVC)
+    message(STATUS "Compiling with MSVC")
+elseif(CMAKE_CXX_COMPILER_ID MATCHES ".*Clang")
+    message(STATUS "Compiling with Clang")
+elseif(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+    message(STATUS "Compiling with GCC")
+else()
+    message(AUTHOR_WARNING "Unsupported '${CMAKE_CXX_COMPILER_ID}' compiler.")
+endif()
+
+
+# -----------------------------------------------------------------------------
 # Output directories
 
 # https://stackoverflow.com/questions/6594796/how-do-i-make-cmake-output-into-a-bin-dir
