@@ -56,7 +56,7 @@ operator<<(std::ostream& os_, const pel::vector<ItemType>& vec_)
 /*****************************************************************************/
 /* CONSTRUCTORS & DESTRUCTORS ---------------------------------------------- */
 /*****************************************************************************/
-#pragma region Constructors
+
 /******************************************************************************
  * @brief       Constructor for the vector class
  *
@@ -146,7 +146,6 @@ pel::vector<ItemType>::vector(InitializerListType ilist_) : m_length(ilist_.size
 }
 
 
-/* Destructor */
 /******************************************************************************
  * @brief       Destructor for the vector class
  *
@@ -161,13 +160,11 @@ pel::vector<ItemType>::~vector()
     /* Free allocated memory */
     std::free(begin().ptr());
 }
-#pragma endregion
 
 
 /*****************************************************************************/
 /* ELEMENT ACCESSORS ------------------------------------------------------- */
 /*****************************************************************************/
-#pragma region Element accessors
 
 /******************************************************************************
  * @brief       Obtain a reference to the element at a specified index
@@ -386,13 +383,11 @@ pel::vector<ItemType>::assign(InitializerListType ilist_, DifferenceType offset_
 
     std::copy(ilist_.begin(), ilist_.end(), begin() + offset_);
 }
-#pragma endregion
 
 
 /*****************************************************************************/
 /* OPERATOR OVERLOADS ------------------------------------------------------ */
 /*****************************************************************************/
-#pragma region Operator overloads
 
 /******************************************************************************
  * @brief       Overload of the brackets[] operator to access an element at a
@@ -540,13 +535,11 @@ pel::vector<ItemType>::operator<<(int steps_)
 
     return *this;
 }
-#pragma endregion
 
 
 /*****************************************************************************/
 /* ITERATORS --------------------------------------------------------------- */
 /*****************************************************************************/
-#pragma region Iterators
 
 /******************************************************************************
  * @brief       Returns an iterator to the beginning of the allocated data.
@@ -667,13 +660,11 @@ pel::vector<ItemType>::crend() const noexcept
 {
     return RIteratorType(begin());
 }
-#pragma endregion
 
 
 /*****************************************************************************/
 /* ELEMENT MANAGEMENT ------------------------------------------------------ */
 /*****************************************************************************/
-#pragma region Element management
 
 /******************************************************************************
  * @brief       Add an element to the end of the vector, after the current
@@ -975,13 +966,12 @@ pel::vector<ItemType>::replace_front(const ItemType& value_)
     position.value() = value_;
     return position;
 }
-#pragma endregion
 
 
 /*****************************************************************************/
 /* MEMORY ------------------------------------------------------------------ */
 /*****************************************************************************/
-#pragma region Memory
+
 /******************************************************************************
  * @brief       Simple accessor, return the length (number of elements)
  *              of the vector.
@@ -1126,13 +1116,12 @@ pel::vector<ItemType>::shrink_to_fit()
 
     reserve(length());
 }
-#pragma endregion
 
 
 /*****************************************************************************/
 /* MISC -------------------------------------------------------------------- */
 /*****************************************************************************/
-#pragma region Misc
+
 /******************************************************************************
  * @brief       Convert the content
  *
@@ -1148,13 +1137,11 @@ pel::vector<ItemType>::to_string() const
     os << *this;
     return os.str();
 }
-#pragma endregion
 
 
 /*****************************************************************************/
 /* PRIVATE METHODS --------------------------------------------------------- */
 /*****************************************************************************/
-#pragma region Private Methods
 
 /******************************************************************************
  * @brief       Allocates or reallocates memory on the heap. Also resize
@@ -1268,7 +1255,6 @@ pel::vector<ItemType>::check_if_valid(IteratorType iterator_)
         }
     }
 }
-#pragma endregion
 
 
 /*****************************************************************************/

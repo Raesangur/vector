@@ -40,8 +40,9 @@
 
 namespace pel
 {
+{
+/** @todo Emplace_back function to construct at the end instead of copy at the end */
 /** @todo Clear Clang-Tidy warnings */
-/** @todo Cross-compilation and cross-platformism */
 /** @todo Lambda constructor */
 /** @todo Use new and delete operators rather than realloc and free */
 /** @todo Free memory automatically when not needed */
@@ -56,7 +57,6 @@ constexpr bool vector_safeness = true;
 
 template<typename ItemType>
 using vector_iterator = iterator_base<ItemType>;
-// using vector_iterator = ItemType*;
 
 template<typename ItemType>
 using reverse_vector_iterator = iterator_base<ItemType>;
@@ -78,7 +78,6 @@ class vector : container_base<ItemType, vector_iterator<ItemType>>
 
     /*********************************************************************/
     /* Methods --------------------------------------------------------- */
-#pragma region Methods declarations
 
     /* Constructors */
     explicit vector(SizeType length_ = 0);
@@ -200,12 +199,10 @@ class vector : container_base<ItemType, vector_iterator<ItemType>>
 
     void check_fit(SizeType extraLength_);
     void check_if_valid(IteratorType iterator_);
-#pragma endregion
 
 
     /*********************************************************************/
     /* Variables ------------------------------------------------------- */
-#pragma region Variables
     private:
     SizeType     m_length        = 0;
     SizeType     m_capacity      = 0;
@@ -215,14 +212,11 @@ class vector : container_base<ItemType, vector_iterator<ItemType>>
 
     /*********************************************************************/
     /* Static variables ------------------------------------------------ */
-    inline SizeType
+    constexpr inline SizeType
     m_stepSize()
     {
         return 4;
     }
-
-
-#pragma endregion
 };
 
 };        // namespace pel
