@@ -1,7 +1,0 @@
-[
-{
-  "directory": "/home/raesangur/GitHub/vector/build/gcc",
-  "command": "/usr/bin/g++-10  -DUNICODE -D_CONSOLE -D_UNICODE -I/home/raesangur/GitHub/vector/.    -Wall -Wextra -Wshadow -Wnon-virtual-dtor -Wold-style-cast -Wcast-align -Wunused -Woverloaded-virtual -Wconversion -Wsign-conversion -Wnull-dereference -Wdouble-promotion -Wformat=2 -Wmisleading-indentation -Wduplicated-cond -Wduplicated-branches -Wlogical-op -Wuseless-cast -std=gnu++2a -o CMakeFiles/vectors.dir/src/main.cpp.o -c /home/raesangur/GitHub/vector/src/main.cpp",
-  "file": "/home/raesangur/GitHub/vector/src/main.cpp"
-}
-]
