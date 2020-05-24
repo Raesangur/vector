@@ -21,7 +21,7 @@ main()
 
         return 0;
     }
-    catch (std::exception e)
+    catch (const std::exception& e)
     {
         std::cout << "exception catched: " << e.what() << '\n';
         return 0;
