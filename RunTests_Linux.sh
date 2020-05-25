@@ -16,6 +16,9 @@ echo "G++: " $gccPath
 # Make sure the repository is up-to-date
 git pull > /dev/null 2>&1
 
+# Make sure clang-tidy can be run
+chmod +x run-clang-tidy.py > /dev/null 2>&1
+
 # Prepare build directories
 cd build
 rm -rf clang++ g++
@@ -25,7 +28,7 @@ mkdir clang++ g++
 echo "------------------------------"
 echo "Building with clang++"
 cd clang++
-cmake ./../.. -D CMAKE_CXX_COMPILER=$clangPath > /dev/null 2>&1
+cmake ./../.. -D CMAKE_CXX_COMPILER=$clangPath -fsanitize=address > /dev/null 2>&1
 cmake --build .
 cd ..
 
