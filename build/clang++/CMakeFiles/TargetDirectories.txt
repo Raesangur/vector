@@ -1,0 +1,3 @@
+/home/raesangur/GitHub/vector/build/clang++/CMakeFiles/rebuild_cache.dir
+/home/raesangur/GitHub/vector/build/clang++/CMakeFiles/edit_cache.dir
+/home/raesangur/GitHub/vector/build/clang++/CMakeFiles/vectors.dir

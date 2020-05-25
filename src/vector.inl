@@ -42,7 +42,7 @@
  *****************************************************************************/
 template<typename ItemType>
 inline static std::ostream&
-operator<<(std::ostream& os_, const pel::vector<ItemType>& vec_)
+operator<<(std::ostream& os_, const pel::vector<ItemType>& vec_) noexcept
 {
     os_ << "[" << vec_.capacity() << "] [" << vec_.length() << "]\n";
     for(ItemType& element: vec_)
@@ -82,8 +82,7 @@ pel::vector<ItemType>::vector(SizeType length_) : m_length(length_)
  * @retval      Constructed vector
  *****************************************************************************/
 template<typename ItemType>
-pel::vector<ItemType>::vector(SizeType length_, const ItemType& defaultValue_)
-: m_length(length_)
+pel::vector<ItemType>::vector(SizeType length_, const ItemType& defaultValue_) : m_length(length_)
 {
     vector_constructor(length_);
 
@@ -102,8 +101,7 @@ pel::vector<ItemType>::vector(SizeType length_, const ItemType& defaultValue_)
  * @retval      Constructed vector
  *****************************************************************************/
 template<typename ItemType>
-pel::vector<ItemType>::vector(const IteratorType beginIterator_,
-                                        const IteratorType endIterator_)
+pel::vector<ItemType>::vector(const IteratorType beginIterator_, const IteratorType endIterator_)
 : m_length(endIterator_ - beginIterator_)
 {
     vector_constructor(length());
@@ -154,11 +152,8 @@ pel::vector<ItemType>::vector(InitializerListType ilist_) : m_length(ilist_.size
 template<typename ItemType>
 pel::vector<ItemType>::~vector()
 {
-    /* Destroy all the elements in the vector */
-    std::destroy(begin(), end());
-
-    /* Free allocated memory */
-    std::free(begin().ptr());
+    /* Free and destroy elements in the allocated memory */
+    ::delete[] begin().ptr();
 }
 
 
@@ -720,6 +715,26 @@ pel::vector<ItemType>::pop_back()
 
 
 /******************************************************************************
+ * @brief       Constructs an element at the last position.
+ *              This function is often to be favored instead of 'push_back'
+ *              when building new items, since it avoids a copy.
+ * @param       The arguments needed to be passed to the constructor of an
+ *              element.
+ *****************************************************************************/
+template<typename ItemType>
+template<typename... Args>
+inline void
+pel::vector<ItemType>::emplace_back(Args&&... args)
+{
+    check_fit(1);
+
+    end().value() = ItemType(std::forward<Args>(args)...);
+
+    add_size(1);
+}
+
+
+/******************************************************************************
  * @brief       Insert an element in the middle of the vector, right-shifting
  *              items on the right to fit.
  *
@@ -924,7 +939,7 @@ template<typename ItemType>
 inline typename pel::vector<ItemType>::IteratorType
 pel::vector<ItemType>::replace(const ItemType& value_, SizeType offset_)
 {
-    this[offset_] = value_;
+    at(offset_) = value_;
 
     return begin() + offset_;
 }
@@ -1158,13 +1173,15 @@ pel::vector<ItemType>::vector_constructor(SizeType size_)
     m_capacity = size_;
 
     /* Reallocate block of memory */
-    std::size_t blockSize = capacity() * sizeof(ItemType);
-    void*       tempPtr   = std::realloc(begin().ptr(), blockSize);
+    std::size_t blockSize = capacity();
+    ItemType*   tempPtr   = new ItemType[blockSize];
+
+    /* Check if allocation was successful */
     if(tempPtr == nullptr)
     {
         if(size_ != 0)
         {
-            throw new std::bad_alloc();
+            throw std::bad_alloc();
         }
         else
         {
@@ -1173,6 +1190,12 @@ pel::vector<ItemType>::vector_constructor(SizeType size_)
             return;
         }
     }
+
+    /* Move data from old vector memory to new memory */
+    std::move(begin(), end(), tempPtr);
+
+    /* Deallocate old memory */
+    delete[] begin().ptr();
 
     /* Set iterators */
     m_beginIterator = IteratorType(static_cast<ItemType*>(tempPtr));

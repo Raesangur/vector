@@ -1,0 +1,35 @@
+﻿Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 16
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CMakePredefinedTargets", "CMakePredefinedTargets", "{2E984B74-B242-38B3-AE43-0A7386936D4A}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "vectors", "vectors.vcxproj", "{99C7E0BA-75A6-391F-BD61-723877F71927}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ALL_BUILD", "ALL_BUILD.vcxproj", "{1C5504C4-86FE-3E0B-A636-0D5516400DE5}"
+	ProjectSection(ProjectDependencies) = postProject
+		{99C7E0BA-75A6-391F-BD61-723877F71927} = {99C7E0BA-75A6-391F-BD61-723877F71927}
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Release|x64 = Release|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{99C7E0BA-75A6-391F-BD61-723877F71927}.Debug|x64.ActiveCfg = Debug|x64
+		{99C7E0BA-75A6-391F-BD61-723877F71927}.Debug|x64.Build.0 = Debug|x64
+		{99C7E0BA-75A6-391F-BD61-723877F71927}.Release|x64.ActiveCfg = Release|x64
+		{99C7E0BA-75A6-391F-BD61-723877F71927}.Release|x64.Build.0 = Release|x64
+		{1C5504C4-86FE-3E0B-A636-0D5516400DE5}.Debug|x64.ActiveCfg = Debug|x64
+		{1C5504C4-86FE-3E0B-A636-0D5516400DE5}.Release|x64.ActiveCfg = Release|x64
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{1C5504C4-86FE-3E0B-A636-0D5516400DE5} = {2E984B74-B242-38B3-AE43-0A7386936D4A}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {27ED839C-1724-3D74-ACA6-38B621387162}
+	EndGlobalSection
+	GlobalSection(ExtensibilityAddIns) = postSolution
+	EndGlobalSection
+EndGlobal

@@ -53,6 +53,7 @@ ipch/
 *.lo
 *.o
 *.obj
+*.bin
 
 # Precompiled Headers
 *.gch
@@ -60,11 +61,23 @@ ipch/
 
 # CMake-generated files
 *.stamp.depend
+*.internal
 *.stamp
 *.check_cache
 *.cmake
 *.lastbuildstate
-
+**/CMakeFiles/
+**/CMakeLists.txt.user
+**/CMakeCache.txt
+**/CMakeFiles
+**/CMakeScripts
+**/Testing
+**/Makefile
+**/cmake_install.cmake
+**/install_manifest.txt
+**/compile_commands.json
+**/CTestTestfile.cmake
+**/_deps
 
 
 # Local History for Visual Studio
