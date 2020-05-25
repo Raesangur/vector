@@ -5,7 +5,7 @@
  * ----------------------------------------------------------------------------
  * MIT License
  * Copyright (c) 2020 Pascal-Emmanuel Lachance | Ràësangür
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
  * deal in the Software without restriction, including without limitation the
@@ -42,7 +42,6 @@
 namespace pel
 {
 /** @todo Emplace_back function to construct at the end instead of copy at the end */
-/** @todo Clear Clang-Tidy warnings */
 /** @todo Lambda constructor */
 /** @todo Use new and delete operators rather than realloc and free */
 /** @todo Free memory automatically when not needed */
@@ -85,9 +84,9 @@ class vector : container_base<ItemType, vector_iterator<ItemType>>
     explicit vector(IteratorType beginIterator_, IteratorType endIterator_);
     vector(InitializerListType ilist_);
     vector(const vector<ItemType>& otherVector_);
-    vector& operator=(const vector<ItemType>& copy_);
-    vector(vector<ItemType>&& movedVector_) noexcept;
-    vector& operator=(vector<ItemType>&& move_) noexcept;
+    vector& operator=(const vector<ItemType>& copy_) = default;
+    vector(vector<ItemType>&& movedVector_) noexcept = default;
+    vector& operator=(vector<ItemType>&& move_) noexcept = default;
 
     /* Destructor */
     ~vector() override;
@@ -145,22 +144,18 @@ class vector : container_base<ItemType, vector_iterator<ItemType>>
     void push_back(InitializerListType ilist_);
     void pop_back();
 
+    template<typename... Args>
+    void emplace_back(Args&&... args);
 
-    IteratorType insert(const ItemType& value_,
-                                  IteratorType    position_,
-                                  SizeType        count_ = 1);
+    IteratorType insert(const ItemType& value_, IteratorType position_, SizeType count_ = 1);
 
-    IteratorType insert(const ItemType& value_,
-                                  DifferenceType  offset_,
-                                  SizeType        count_ = 1);
+    IteratorType insert(const ItemType& value_, DifferenceType offset_, SizeType count_ = 1);
 
-    IteratorType insert(IteratorType sourceBegin_,
-                                  IteratorType sourceEnd_,
-                                  IteratorType position_);
+    IteratorType insert(IteratorType sourceBegin_, IteratorType sourceEnd_, IteratorType position_);
 
     IteratorType insert(IteratorType   sourceBegin_,
-                                  IteratorType   sourceEnd_,
-                                  DifferenceType offset_ = 0);
+                        IteratorType   sourceEnd_,
+                        DifferenceType offset_ = 0);
 
     IteratorType insert(InitializerListType ilist_, SizeType offset_ = 0);
 

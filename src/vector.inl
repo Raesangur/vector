@@ -715,6 +715,25 @@ pel::vector<ItemType>::pop_back()
 
 
 /******************************************************************************
+ * @brief       Constructs an element at the last position.
+ *              This function is often to be favored instead of 'push_back'
+ *              when building new items, since it avoids a copy.
+ * @param       The arguments needed to be passed to the constructor of an
+ *              element.
+ *****************************************************************************/
+template<typename ItemType>
+template<typename... Args>
+inline void pel::vector<ItemType>::emplace_back(Args&&... args)
+{
+    check_fit(1);
+
+    end().value() = ItemType(std::forward<Args>(args)...);
+
+    add_size(1);
+}
+
+
+/******************************************************************************
  * @brief       Insert an element in the middle of the vector, right-shifting
  *              items on the right to fit.
  *

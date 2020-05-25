@@ -10,17 +10,23 @@ main()
 {
     try
     {
+        constexpr int magicNumber_42 = 42;
+
         pel::vector<int> vec1 = pel::vector<int>(ilist);
         std::cout << vec1.to_string() << "\n";
 
         incrementVector(vec1);
         std::cout << vec1.to_string() << "\n";
 
+        vec1.push_back(ilist);
+        std::cout << vec1.to_string() << "\n";
+
+        vec1.emplace_back(magicNumber_42);
+        std::cout << vec1.to_string() << "\n";
+
         sortVector(vec1);
         std::cout << vec1.to_string() << "\n";
 
-        vec1.push_back(ilist);
-        std::cout << vec1.to_string() << "\n";
 
         return 0;
     }
