@@ -53,6 +53,7 @@ ipch/
 *.lo
 *.o
 *.obj
+*.bin
 
 # Precompiled Headers
 *.gch
@@ -60,10 +61,13 @@ ipch/
 
 # CMake-generated files
 *.stamp.depend
+*.internal
 *.stamp
 *.check_cache
 *.cmake
 *.lastbuildstate
+CmakeCache.txt
+CMakeFiles/
 
 
 

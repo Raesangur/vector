@@ -723,7 +723,8 @@ pel::vector<ItemType>::pop_back()
  *****************************************************************************/
 template<typename ItemType>
 template<typename... Args>
-inline void pel::vector<ItemType>::emplace_back(Args&&... args)
+inline void
+pel::vector<ItemType>::emplace_back(Args&&... args)
 {
     check_fit(1);
 
@@ -1173,7 +1174,7 @@ pel::vector<ItemType>::vector_constructor(SizeType size_)
 
     /* Reallocate block of memory */
     std::size_t blockSize = capacity();
-    ItemType* tempPtr = new ItemType[blockSize];
+    ItemType*   tempPtr   = new ItemType[blockSize];
 
     /* Check if allocation was successful */
     if(tempPtr == nullptr)
@@ -1192,7 +1193,7 @@ pel::vector<ItemType>::vector_constructor(SizeType size_)
 
     /* Move data from old vector memory to new memory */
     std::move(begin(), end(), tempPtr);
-    
+
     /* Deallocate old memory */
     delete[] begin().ptr();
 
