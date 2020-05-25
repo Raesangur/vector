@@ -1,3 +1,0 @@
-/home/raesangur/GitHub/vector/build/g++/CMakeFiles/rebuild_cache.dir
-/home/raesangur/GitHub/vector/build/g++/CMakeFiles/edit_cache.dir
-/home/raesangur/GitHub/vector/build/g++/CMakeFiles/vectors.dir
