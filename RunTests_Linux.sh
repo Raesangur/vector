@@ -28,7 +28,7 @@ mkdir clang++ g++
 echo "------------------------------"
 echo "Building with clang++"
 cd clang++
-cmake ./../.. -D CMAKE_CXX_COMPILER=$clangPath -fsanitize=address > /dev/null 2>&1
+cmake ./../.. -D CMAKE_CXX_COMPILER=$clangPath > /dev/null 2>&1
 cmake --build .
 cd ..
 
@@ -47,3 +47,27 @@ cd clang++
 ../../run-clang-tidy.py -quiet
 cd ..
 
+# Run Clang Sanitizers on project
+echo "-----------------------------"
+echo "Running Clang Sanitizers"
+cd clang++
+mkdir address-sanitizer thread-sanitizer leak-sanitizer undefined-behavior-sanitizer
+echo "Address Sanitizer:"
+cd address-sanitizer
+cmake ../../../. -D CMAKE_CXX_COMPILER=$clangPath -DPEL_CLANG_USE_ADDRESS_SANITIZER=True > /dev/null 2>&1
+cmake --build .
+cd ..
+echo "Thread Sanitizer:"
+cd thread-sanitizer
+cmake ../../../. -D CMAKE_CXX_COMPILER=$clangPath -DPEL_CLANG_USE_THREAD_SANITIZER=True > /dev/null 2>&1
+cmake --build .
+cd ..
+echo "Leak Sanitizer:"
+cd leak-sanitizer
+cmake ../../../. -D CMAKE_CXX_COMPILER=$clangPath -DPEL_CLANG_USE_LEAK_SANITIZER=True > /dev/null 2>&1
+cmake --build .
+cd ..
+echo "Undefined Behavior Sanitizer:"
+cd undefined-behavior-sanitizer
+cmake ../../../. -D CMAKE_CXX_COMPILER=$clangPath -DPEL_CLANG_USE_UNDEFINED_BEHAVIOR_SANITIZER=True > /dev/null 2>&1
+cd ../..

@@ -166,7 +166,7 @@ set(MSVC_WARNINGS
     /wd4605     # remove warnings : '/Dmacro' specified on current command line, but was not specified when precompiled header was built
     /wd4608     # remove warnings : 'union_member' has already been initialized by another union member in the initializer list, 'union_member'
     /wd4628     # remove warnings : digraphs not supported with -Ze. Character sequence 'digraph' not interpreted as alternate token for 'char'
-    /wd4640	    # remove warnings :  'instance': construction of local static object is not thread-safe
+    /wd4640	# remove warnings :  'instance': construction of local static object is not thread-safe
     /wd4647     # remove warnings : behavior change: __is_pod(type) has different value in previous versions
     /wd4668     # remove warnings : 'symbol' is not defined as a preprocessor macro, replacing with '0' for 'directives'
     /wd4682     # remove warnings : 'symbol' : no directional parameter attribute specified, defaulting to [in]
@@ -250,6 +250,27 @@ endif()
 # Apply selected warnings
 target_compile_options(vectors PRIVATE ${PROJECT_WARNINGS})
 
+# -----------------------------------------------------------------------------
+# Clang sanitizers
+
+# These can be selected (one at the time), by invoking CMake with Clang as 
+# compiler, and passing "-DPEL_CLANG_USE_XXXXX_SANITIZER=True" as parameter.
+
+if(CMAKE_CXX_COMPILER_ID MATCHES ".*Clang")
+    if(PEL_CLANG_USE_ADDRESS_SANITIZER)
+       message(STATUS "Enabling Clang's Address Sanitizer") 
+       add_definitions(-fsanitize=address)
+    elseif(PEL_CLANG_USE_THREAD_SANITIZER)
+       message(STATUS "Enabling Clang's Thread Sanitizer")
+       add_definitions(-fsanitize=thread)
+    elseif(PEL_CLANG__USE_LEAK_SANITIZER)
+       message(STATUS "Enabling Clang's Memory Leak Sanitizer")
+       add_definitions(-fsanitize=leak)
+    elseif(PEL_CLANG_USE_UNDEFINED_BEHAVIOR_SANITIZER)
+       message(STATUS "Enabling Clang's Undefined Behavior Sanitizer")
+       add_definitions(-fsanitize=undefined)
+    endif()
+endif()
 
 
 # -----------------------------------------------------------------------------
