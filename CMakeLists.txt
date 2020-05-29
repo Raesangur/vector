@@ -165,7 +165,7 @@ set(MSVC_WARNINGS
     /wd4605     # remove warnings : '/Dmacro' specified on current command line, but was not specified when precompiled header was built
     /wd4608     # remove warnings : 'union_member' has already been initialized by another union member in the initializer list, 'union_member'
     /wd4628     # remove warnings : digraphs not supported with -Ze. Character sequence 'digraph' not interpreted as alternate token for 'char'
-    /wd4640	# remove warnings :  'instance': construction of local static object is not thread-safe
+    /wd4640     # remove warnings :  'instance': construction of local static object is not thread-safe
     /wd4647     # remove warnings : behavior change: __is_pod(type) has different value in previous versions
     /wd4668     # remove warnings : 'symbol' is not defined as a preprocessor macro, replacing with '0' for 'directives'
     /wd4682     # remove warnings : 'symbol' : no directional parameter attribute specified, defaulting to [in]
