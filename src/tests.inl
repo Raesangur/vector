@@ -1,8 +1,15 @@
+/**
+ * \file
+ */
+
 #include "./vector.hpp"
 
 #include <algorithm>
 
 
+/**
+ * \brief   This is a test function that increments all the values contained in a vector
+ */
 template<typename T>
 void incrementVector(pel::vector<T>& vec) noexcept
 {
