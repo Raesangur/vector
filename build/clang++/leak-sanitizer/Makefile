@@ -71,7 +71,7 @@ EQUALS = =
 CMAKE_SOURCE_DIR = /root/GitHub/vector
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /root/GitHub/vector/build/clang++
+CMAKE_BINARY_DIR = /root/GitHub/vector/build/clang++/leak-sanitizer
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -100,9 +100,9 @@ edit_cache/fast: edit_cache
 
 # The main all target
 all:
-	$(CMAKE_COMMAND) -E cmake_progress_start /root/GitHub/vector/build/clang++/CMakeFiles /root/GitHub/vector/build/clang++/CMakeFiles/progress.marks
+	$(CMAKE_COMMAND) -E cmake_progress_start /root/GitHub/vector/build/clang++/leak-sanitizer/CMakeFiles /root/GitHub/vector/build/clang++/leak-sanitizer/CMakeFiles/progress.marks
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 all
-	$(CMAKE_COMMAND) -E cmake_progress_start /root/GitHub/vector/build/clang++/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /root/GitHub/vector/build/clang++/leak-sanitizer/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
