@@ -196,7 +196,6 @@ class vector : container_base<ItemType, vector_iterator<ItemType>>
     /*********************************************************************************************/
     /* Variables ------------------------------------------------------------------------------- */
     private:
-    SizeType     m_length        = 0;
     SizeType     m_capacity      = 0;
     IteratorType m_beginIterator = IteratorType(nullptr);
     IteratorType m_endIterator   = IteratorType(nullptr);

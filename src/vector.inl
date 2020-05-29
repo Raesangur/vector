@@ -65,7 +65,7 @@ operator<<(std::ostream& os_, const vector<ItemType>& vec_) noexcept
  *              [defaults : 0]
  *************************************************************************************************/
 template<typename ItemType>
-vector<ItemType>::vector(SizeType length_) : m_length(length_)
+vector<ItemType>::vector(SizeType length_)
 {
     vector_constructor(length_);
 }
@@ -79,7 +79,7 @@ vector<ItemType>::vector(SizeType length_) : m_length(length_)
  * \param       defaultValue_: Value to initialize all the elements initially allocated with.
  *************************************************************************************************/
 template<typename ItemType>
-vector<ItemType>::vector(SizeType length_, const ItemType& defaultValue_) : m_length(length_)
+vector<ItemType>::vector(SizeType length_, const ItemType& defaultValue_)
 {
     vector_constructor(length_);
 
@@ -96,9 +96,8 @@ vector<ItemType>::vector(SizeType length_, const ItemType& defaultValue_) : m_le
  *************************************************************************************************/
 template<typename ItemType>
 vector<ItemType>::vector(const IteratorType beginIterator_, const IteratorType endIterator_)
-: m_length(endIterator_ - beginIterator_)
 {
-    vector_constructor(length());
+    vector_constructor(endIterator_ - beginIterator_);
 
     std::copy(beginIterator_, endIterator_, begin());
 }
@@ -112,9 +111,8 @@ vector<ItemType>::vector(const IteratorType beginIterator_, const IteratorType e
  *************************************************************************************************/
 template<typename ItemType>
 vector<ItemType>::vector(const vector<ItemType>& otherVector_)
-: m_length(otherVector_.length())
 {
-    vector_constructor(length());
+    vector_constructor(otherVector_.length());
 
     std::copy(otherVector_.begin(), otherVector_.begin(), begin());
 }
@@ -127,9 +125,9 @@ vector<ItemType>::vector(const vector<ItemType>& otherVector_)
  * \param       ilist_: Initializer list of all the values to put in a new vector.
  *************************************************************************************************/
 template<typename ItemType>
-vector<ItemType>::vector(InitializerListType ilist_) : m_length(ilist_.size())
+vector<ItemType>::vector(InitializerListType ilist_)
 {
-    vector_constructor(length());
+    vector_constructor(ilist_.size());
 
     std::copy(ilist_.begin(), ilist_.end(), begin());
 }
@@ -990,7 +988,7 @@ template<typename ItemType>
 [[nodiscard]] inline typename vector<ItemType>::SizeType
 vector<ItemType>::length() const noexcept
 {
-    return m_length;
+    return end() - begin();
 }
 
 
@@ -1224,8 +1222,7 @@ template<typename ItemType>
 inline void
 vector<ItemType>::change_size(SizeType newLength_)
 {
-    m_length      = newLength_;
-    m_endIterator = IteratorType(&(begin()[length()]));
+    m_endIterator = IteratorType(&(begin()[newLength_]));
 }
 
 
