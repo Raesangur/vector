@@ -151,9 +151,6 @@
     </ProjectReference>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="E:\GitHub\vector\src\container_base\src\container_base.h" />
-    <ClInclude Include="E:\GitHub\vector\src\container_base\src\iterator_base.h" />
-    <ClInclude Include="E:\GitHub\vector\src\container_base\src\test\testContainer.hpp" />
     <ClCompile Include="E:\GitHub\vector\src\main.cpp" />
     <ClInclude Include="E:\GitHub\vector\src\tests.inl" />
     <ClInclude Include="E:\GitHub\vector\src\vector.hpp" />

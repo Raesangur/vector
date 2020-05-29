@@ -1,7 +1,7 @@
 /**
- * @file    vector.hpp
- * @author  Pascal-Emmanuel Lachance
- * @p       https://www.github.com/Raesangur
+ * \file
+ * \author  Pascal-Emmanuel Lachance
+ * \p       https://www.github.com/Raesangur
  * ----------------------------------------------------------------------------
  * MIT License
  * Copyright (c) 2020 Pascal-Emmanuel Lachance | Ràësangür
@@ -41,14 +41,14 @@
 
 namespace pel
 {
-/** @todo Emplace_back function to construct at the end instead of copy at the end */
-/** @todo Lambda constructor */
-/** @todo Use new and delete operators rather than realloc and free */
-/** @todo Free memory automatically when not needed */
-/** @todo make things actually constexpr */
-/** @todo working reverse iterators */
-/** @todo Increase allocation step size automatically when needed */
-/**       @todo Make allocation step sizes align with the implementation's
+/** \todo Emplace_back function to construct at the end instead of copy at the end */
+/** \todo Lambda constructor */
+/** \todo Use new and delete operators rather than realloc and free */
+/** \todo Free memory automatically when not needed */
+/** \todo make things actually constexpr */
+/** \todo working reverse iterators */
+/** \todo Increase allocation step size automatically when needed */
+/**       \todo Make allocation step sizes align with the implementation's
                 memory allocations alignments and sizes. */
 
 
