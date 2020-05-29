@@ -6,6 +6,15 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="E:\GitHub\vector\src\container_base\src\container_base.h">
+      <Filter>src\container_base\src</Filter>
+    </ClInclude>
+    <ClInclude Include="E:\GitHub\vector\src\container_base\src\iterator_base.h">
+      <Filter>src\container_base\src</Filter>
+    </ClInclude>
+    <ClInclude Include="E:\GitHub\vector\src\container_base\src\test\testContainer.hpp">
+      <Filter>src\container_base\src\test</Filter>
+    </ClInclude>
     <ClInclude Include="E:\GitHub\vector\src\tests.inl">
       <Filter>src</Filter>
     </ClInclude>
@@ -24,6 +33,15 @@
   <ItemGroup>
     <Filter Include="src">
       <UniqueIdentifier>{5F2C011F-BAE3-3E7C-9F76-2E5311876713}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\container_base">
+      <UniqueIdentifier>{A1607F01-D178-38E3-85F3-290624CF1B7F}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\container_base\src">
+      <UniqueIdentifier>{F0226B30-B87E-3E2A-B0E2-E957444C126D}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\container_base\src\test">
+      <UniqueIdentifier>{7D6B7798-B498-377E-A610-6483A0614967}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

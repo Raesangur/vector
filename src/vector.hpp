@@ -2,32 +2,29 @@
  * \file
  * \author  Pascal-Emmanuel Lachance
  * \p       https://www.github.com/Raesangur
- * ----------------------------------------------------------------------------
+ * ------------------------------------------------------------------------------------------------
  * MIT License
  * Copyright (c) 2020 Pascal-Emmanuel Lachance | Ràësangür
  *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to
- * deal in the Software without restriction, including without limitation the
- * rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
- * sell copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of this software
+ * and associated documentation files (the "Software"), to deal in the Software without
+ * restriction, including without limitation the rights to use, copy, modify, merge, publish,
+ * distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the
+ * Software is furnished to do so, subject to the following conditions:
  *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
+ * The above copyright notice and this permission notice shall be included in all copies or
+ * substantial portions of the Software.
  *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
- * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
- * IN THE SOFTWARE.
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING
+ * BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+ * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+ * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 #pragma once
 
-/*****************************************************************************/
-/* File includes ----------------------------------------------------------- */
+/*************************************************************************************************/
+/* File includes ------------------------------------------------------------------------------- */
 #include "./container_base/src/container_base.h"
 
 #include <algorithm>
@@ -66,8 +63,8 @@ template<typename ItemType>
 class vector : container_base<ItemType, vector_iterator<ItemType>>
 {
     public:
-    /*********************************************************************/
-    /* Type definitions ------------------------------------------------ */
+    /*********************************************************************************************/
+    /* Type definitions ------------------------------------------------------------------------ */
     using SizeType            = std::size_t;
     using DifferenceType      = std::ptrdiff_t;
     using IteratorType        = vector_iterator<ItemType>;
@@ -75,8 +72,8 @@ class vector : container_base<ItemType, vector_iterator<ItemType>>
     using InitializerListType = std::initializer_list<ItemType>;
 
 
-    /*********************************************************************/
-    /* Methods --------------------------------------------------------- */
+    /*********************************************************************************************/
+    /* Methods --------------------------------------------------------------------------------- */
 
     /* Constructors */
     explicit vector(SizeType length_ = 0);
@@ -92,8 +89,8 @@ class vector : container_base<ItemType, vector_iterator<ItemType>>
     ~vector() override;
 
 
-    /*********************************************************************/
-    /* Element accessors ----------------------------------------------- */
+    /*********************************************************************************************/
+    /* Element accessors ----------------------------------------------------------------------- */
     [[nodiscard]] ItemType&       at(SizeType index_) override;
     [[nodiscard]] const ItemType& at(SizeType index_) const override;
 
@@ -112,8 +109,8 @@ class vector : container_base<ItemType, vector_iterator<ItemType>>
     void assign(InitializerListType ilist_, DifferenceType offset_ = 0);
 
 
-    /*********************************************************************/
-    /* Operator overloads ---------------------------------------------- */
+    /*********************************************************************************************/
+    /* Operator overloads ---------------------------------------------------------------------- */
     [[nodiscard]] ItemType&       operator[](SizeType index_) override;
     [[nodiscard]] const ItemType& operator[](SizeType index_) const override;
 
@@ -126,8 +123,8 @@ class vector : container_base<ItemType, vector_iterator<ItemType>>
     vector<ItemType>& operator<<(int steps_);
 
 
-    /*********************************************************************/
-    /* Iterators ------------------------------------------------------- */
+    /*********************************************************************************************/
+    /* Iterators ------------------------------------------------------------------------------- */
     [[nodiscard]] IteratorType        begin() const noexcept override;
     [[nodiscard]] IteratorType        end() const noexcept override;
     [[nodiscard]] const IteratorType  cbegin() const noexcept override;
@@ -138,8 +135,8 @@ class vector : container_base<ItemType, vector_iterator<ItemType>>
     [[nodiscard]] const RIteratorType crend() const noexcept;
 
 
-    /*********************************************************************/
-    /* Element management ---------------------------------------------- */
+    /*********************************************************************************************/
+    /* Element management ---------------------------------------------------------------------- */
     void push_back(const ItemType& value_);
     void push_back(InitializerListType ilist_);
     void pop_back();
@@ -164,8 +161,8 @@ class vector : container_base<ItemType, vector_iterator<ItemType>>
     IteratorType replace(const ItemType& value_, SizeType offset_ = 0);
 
 
-    /*********************************************************************/
-    /* Memory ---------------------------------------------------------- */
+    /*********************************************************************************************/
+    /* Memory ---------------------------------------------------------------------------------- */
     [[nodiscard]] SizeType length() const noexcept override;
     [[nodiscard]] SizeType capacity() const noexcept;
     [[nodiscard]] bool     is_empty() const noexcept override;
@@ -179,13 +176,13 @@ class vector : container_base<ItemType, vector_iterator<ItemType>>
     void shrink_to_fit();
 
 
-    /*********************************************************************/
-    /* Misc ------------------------------------------------------------ */
+    /*********************************************************************************************/
+    /* Misc ------------------------------------------------------------------------------------ */
     [[nodiscard]] std::string to_string() const override;
 
 
-    /*********************************************************************/
-    /* Private methods ------------------------------------------------- */
+    /*********************************************************************************************/
+    /* Private methods ------------------------------------------------------------------------- */
     private:
     inline void vector_constructor(SizeType size_);
 
@@ -196,8 +193,8 @@ class vector : container_base<ItemType, vector_iterator<ItemType>>
     void check_if_valid(IteratorType iterator_);
 
 
-    /*********************************************************************/
-    /* Variables ------------------------------------------------------- */
+    /*********************************************************************************************/
+    /* Variables ------------------------------------------------------------------------------- */
     private:
     SizeType     m_length        = 0;
     SizeType     m_capacity      = 0;
@@ -205,8 +202,8 @@ class vector : container_base<ItemType, vector_iterator<ItemType>>
     IteratorType m_endIterator   = IteratorType(nullptr);
 
 
-    /*********************************************************************/
-    /* Static variables ------------------------------------------------ */
+    /*********************************************************************************************/
+    /* Static variables ------------------------------------------------------------------------ */
     constexpr inline SizeType
     m_stepSize()
     {
