@@ -27,7 +27,6 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 # -----------------------------------------------------------------------------
 # Begin message
-# Select a warning set
 if(MSVC)
     message(STATUS "Compiling with MSVC")
 elseif(CMAKE_CXX_COMPILER_ID MATCHES ".*Clang")
