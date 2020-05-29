@@ -987,7 +987,8 @@ template<typename ItemType>
 [[nodiscard]] inline typename vector<ItemType>::SizeType
 vector<ItemType>::length() const noexcept
 {
-    return end() - begin();
+    DifferenceType diff = end() - begin();
+    return static_cast<SizeType>(diff);
 }
 
 
