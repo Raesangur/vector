@@ -55,12 +55,12 @@ mkdir address-sanitizer thread-sanitizer leak-sanitizer undefined-behavior-sanit
 echo "Address Sanitizer:"
 cd address-sanitizer
 cmake ../../../. -D CMAKE_CXX_COMPILER=$clangPath -DPEL_CLANG_USE_ADDRESS_SANITIZER=True > /dev/null 2>&1
-cmake --build .
+#cmake --build .
 cd ..
 echo "Thread Sanitizer:"
 cd thread-sanitizer
 cmake ../../../. -D CMAKE_CXX_COMPILER=$clangPath -DPEL_CLANG_USE_THREAD_SANITIZER=True > /dev/null 2>&1
-cmake --build .
+#cmake --build .
 cd ..
 echo "Leak Sanitizer:"
 cd leak-sanitizer
@@ -70,4 +70,5 @@ cd ..
 echo "Undefined Behavior Sanitizer:"
 cd undefined-behavior-sanitizer
 cmake ../../../. -D CMAKE_CXX_COMPILER=$clangPath -DPEL_CLANG_USE_UNDEFINED_BEHAVIOR_SANITIZER=True > /dev/null 2>&1
+#cmake --build .
 cd ../..
