@@ -703,7 +703,6 @@ vector<ItemType>::pop_back()
     }
 
     std::destroy_at(--end());
-    m_length--;
 }
 
 
@@ -1100,7 +1099,6 @@ vector<ItemType>::clear()
 {
     std::destroy(begin(), end());
 
-    m_length      = 0;
     m_endIterator = cbegin();
 }
 
