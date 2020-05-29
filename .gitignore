@@ -37,6 +37,9 @@
 *.svclog
 *.scc
 
+# Doxygen generated documentation
+/doc/*
+
 # Visual C++ cache files
 ipch/
 *.aps
