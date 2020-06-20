@@ -17,7 +17,7 @@ echo "G++: " $gccPath
 git pull > /dev/null 2>&1
 
 # Make sure clang-tidy can be run
-chmod +x run-clang-tidy.py > /dev/null 2>&1
+chmod +x ./tools/run-clang-tidy.py > /dev/null 2>&1
 
 # Prepare build directories
 cd build
@@ -44,7 +44,7 @@ cd ..
 echo "------------------------------"
 echo "Running clang-tidy"
 cd clang++
-../../run-clang-tidy.py -quiet
+../../tools/run-clang-tidy.py -quiet
 cd ..
 
 # Run Clang Sanitizers on project
@@ -71,4 +71,9 @@ echo "Undefined Behavior Sanitizer:"
 cd undefined-behavior-sanitizer
 cmake ../../../. -D CMAKE_CXX_COMPILER=$clangPath -DPEL_CLANG_USE_UNDEFINED_BEHAVIOR_SANITIZER=True > /dev/null 2>&1
 #cmake --build .
-cd ../..
+cd ../../..
+
+# Generate Doxygen documentation
+echo "-----------------------------"
+echo "Generating documentation"
+doxygen ./tools/Doxyfile
