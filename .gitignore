@@ -110,3 +110,4 @@ ipch/
 *.log
 *.tlog
 *.bin
+**/Makefile
