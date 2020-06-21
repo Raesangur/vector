@@ -19,7 +19,7 @@ do
         runASan)          runASan=${VALUE} ;;                   # Bool : Run clang Address Sanitizer on project.
         runTSan)          runTSan=${VALUE} ;;                   # Bool : Run clang Thread Sanitizer on project.
         runLSan)          runLSan=${VALUE} ;;                   # Bool : Run clang Leak Sanitizer on project.
-        runUBSan)         runUBSan${VALUE} ;;                   # Bool : Run clang Undefined Behavior Sanitizer on project.
+        runUBSan)         runUBSan=${VALUE} ;;                  # Bool : Run clang Undefined Behavior Sanitizer on project.
         runDoxygen)       runDoxygen=${VALUE} ;;                # Bool : Run doxygen and generate documentation for project
         *)                echo "Invalid argument " ${ARGUMENT}
     esac
