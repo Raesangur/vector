@@ -27,6 +27,14 @@
 namespace pel
 {
 
+#ifdef DEBUG
+#    include <iostream>
+#    define  DEBUGPRINT(x) std::cout << x << std::endl;
+#else
+#    define  DEBUGPRINT(x) 
+#endif
+
+
 /**
  **************************************************************************************************
  * \brief       Overload of the left-shift << operator to print a vector's
@@ -44,11 +52,19 @@ template<typename ItemType>
 inline static std::ostream&
 operator<<(std::ostream& os_, const vector<ItemType>& vec_) noexcept
 {
+    DEBUGPRINT("ostream operator");
     os_ << "[" << vec_.capacity() << "] [" << vec_.length() << "]\n";
+    DEBUGPRINT("First conversion complete");
+    std::ostringstream oss;
+    oss << os_.rdbuf();
+    DEBUGPRINT(oss.str());
     for(ItemType& element: vec_)
     {
         os_ << element << '\n';
     }
+    std::ostringstream oss2;
+    oss2 << os_.rdbuf();
+    DEBUGPRINT(oss2.str());
     return os_;
 }
 
@@ -1137,6 +1153,7 @@ template<typename ItemType>
 [[nodiscard]] inline std::string
 vector<ItemType>::to_string() const
 {
+    DEBUGPRINT("Turning vector into string");
     std::ostringstream os;
     os << *this;
     return os.str();
@@ -1159,6 +1176,7 @@ template<typename ItemType>
 inline void
 vector<ItemType>::vector_constructor(SizeType size_)
 {
+    DEBUGPRINT("vector constructing");
     m_capacity = size_;
 
     /* Reallocate block of memory */
@@ -1179,16 +1197,19 @@ vector<ItemType>::vector_constructor(SizeType size_)
             return;
         }
     }
+    DEBUGPRINT("Allocation successful");
 
     /* Move data from old vector memory to new memory */
     std::move(begin(), end(), tempPtr);
-
+    DEBUGPRINT("Moving data successful");
+    
     /* Deallocate old memory */
     delete[] begin().ptr();
 
     /* Set iterators */
     m_beginIterator = IteratorType(static_cast<ItemType*>(tempPtr));
     m_endIterator   = IteratorType(&(begin()[length()]));
+    DEBUGPRINT("Setting iterators successful");
 }
 
 
