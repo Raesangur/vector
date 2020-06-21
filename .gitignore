@@ -37,6 +37,11 @@
 *.svclog
 *.scc
 
+# Compilation files
+**/Makefile
+**/compile_commands.json
+**/build/*/vectors
+
 # Doxygen generated documentation
 /doc/*
 
@@ -110,4 +115,3 @@ ipch/
 *.log
 *.tlog
 *.bin
-**/Makefile
