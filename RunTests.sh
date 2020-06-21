@@ -1,18 +1,40 @@
 #!/bin/bash
+
+# ------------------------------
 # Get variables
-if [ "$#" -eq "0" ]
-  then
-    clangPath=/usr/bin/clang++-10
+
+# https://unix.stackexchange.com/questions/129391/passing-named-arguments-to-shell-scripts
+for ARGUMENT in "$@"
+do
+    KEY=$(echo $ARGUMENT | cut -f1 -d=)
+    VALUE=$(echo $ARGUMENT | cut -f2 -d=)
+
+    case "$KEY" in
+        gccPath)          clangPath=${VALUE} ;;
+        clangPath)        clangPath=${VALUE} ;;
+        *)
+    esac
+done
+
+# Check if variables exist and assign values to them if they dont
+if [ -z "$gccPath" ]
+then
     gccPath=/usr/bin/g++-10
 else
-    clangPath=$1
-    gccPath=$2
+    echo "G++: " $gccPath
 fi
 
-echo "Clang++: " $clangPath
-echo "G++: " $gccPath
+if [ -z "$clangPath" ]
+then
+    clangPath=/usr/bin/clang++-10
+else
+    echo "Clang++: " $clangPath
+fi
 
+# Temporary Exit - TO REMOVE
+exit
 
+# ------------------------------
 # Make sure the repository is up-to-date
 git pull > /dev/null 2>&1
 
@@ -55,7 +77,7 @@ mkdir address-sanitizer thread-sanitizer leak-sanitizer undefined-behavior-sanit
 echo "Address Sanitizer:"
 cd address-sanitizer
 cmake ../../../. -D CMAKE_CXX_COMPILER=$clangPath -DPEL_CLANG_USE_ADDRESS_SANITIZER=True > /dev/null 2>&1
-#cmake --build .
+cmake --build .
 cd ..
 echo "Thread Sanitizer:"
 cd thread-sanitizer
