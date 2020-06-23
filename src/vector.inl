@@ -1,10 +1,10 @@
-/**
+ï»¿/**
  * \file
  * \author  Pascal-Emmanuel Lachance
  * \p       https://www.github.com/Raesangur
  * ------------------------------------------------------------------------------------------------
  * MIT License
- * Copyright (c) 2020 Pascal-Emmanuel Lachance | Ràësangür
+ * Copyright (c) 2020 Pascal-Emmanuel Lachance | RÃ Ã«sangÃ¼r
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software
  * and associated documentation files (the "Software"), to deal in the Software without
@@ -27,13 +27,6 @@
 namespace pel
 {
 
-#ifdef DEBUG
-#    include <iostream>
-#    define  DEBUGPRINT(x) std::cout << x << std::endl;
-#else
-#    define  DEBUGPRINT(x) 
-#endif
-
 
 /**
  **************************************************************************************************
@@ -52,19 +45,14 @@ template<typename ItemType>
 inline static std::ostream&
 operator<<(std::ostream& os_, const vector<ItemType>& vec_) noexcept
 {
-    DEBUGPRINT("ostream operator");
-    os_ << "[" << vec_.capacity() << "] [" << vec_.length() << "]\n";
-    DEBUGPRINT("First conversion complete");
-    std::ostringstream oss;
-    oss << os_.rdbuf();
-    DEBUGPRINT(oss.str());
-    for(ItemType& element: vec_)
+    /* Add capacity and length header */
+    os_ << "Capacity : [" << vec_.capacity() << "]   |   Length: [" << vec_.length() << "]\n";
+
+    for(ItemType& element : vec_)
     {
         os_ << element << '\n';
     }
-    std::ostringstream oss2;
-    oss2 << os_.rdbuf();
-    DEBUGPRINT(oss2.str());
+
     return os_;
 }
 
@@ -727,7 +715,7 @@ vector<ItemType>::pop_back()
  * \brief       Constructs an element at the last position.
  *              This function is often to be favored instead of 'push_back' when building new
  *              items, since it avoids a copy.
- *              
+ *
  * \param       args: The arguments needed to be passed to the constructor of an element.
  *************************************************************************************************/
 template<typename ItemType>
@@ -836,8 +824,8 @@ vector<ItemType>::insert(const ItemType& value_, DifferenceType offset_, SizeTyp
 template<typename ItemType>
 inline typename vector<ItemType>::IteratorType
 vector<ItemType>::insert(const IteratorType sourceBegin_,
-                              const IteratorType sourceEnd_,
-                              const IteratorType position_)
+                         const IteratorType sourceEnd_,
+                         const IteratorType position_)
 {
     if constexpr(vector_safeness == true)
     {
@@ -876,8 +864,8 @@ vector<ItemType>::insert(const IteratorType sourceBegin_,
 template<typename ItemType>
 inline typename vector<ItemType>::IteratorType
 vector<ItemType>::insert(const IteratorType sourceBegin_,
-                              const IteratorType sourceEnd_,
-                              DifferenceType     offset_)
+                         const IteratorType sourceEnd_,
+                         DifferenceType     offset_)
 {
     if constexpr(vector_safeness)
     {
@@ -1153,7 +1141,6 @@ template<typename ItemType>
 [[nodiscard]] inline std::string
 vector<ItemType>::to_string() const
 {
-    DEBUGPRINT("Turning vector into string");
     std::ostringstream os;
     os << *this;
     return os.str();
@@ -1176,7 +1163,6 @@ template<typename ItemType>
 inline void
 vector<ItemType>::vector_constructor(SizeType size_)
 {
-    DEBUGPRINT("vector constructing");
     m_capacity = size_;
 
     /* Reallocate block of memory */
@@ -1197,19 +1183,17 @@ vector<ItemType>::vector_constructor(SizeType size_)
             return;
         }
     }
-    DEBUGPRINT("Allocation successful");
 
     /* Move data from old vector memory to new memory */
     std::move(begin(), end(), tempPtr);
-    DEBUGPRINT("Moving data successful");
-    
+
     /* Deallocate old memory */
     delete[] begin().ptr();
 
     /* Set iterators */
-    m_beginIterator = IteratorType(static_cast<ItemType*>(tempPtr));
-    m_endIterator   = IteratorType(&(begin()[length()]));
-    DEBUGPRINT("Setting iterators successful");
+    DifferenceType ptrDiff = static_cast<DifferenceType>(length());
+    m_beginIterator        = IteratorType(static_cast<ItemType*>(tempPtr));
+    m_endIterator          = IteratorType(begin() + ptrDiff);
 }
 
 
@@ -1287,7 +1271,7 @@ vector<ItemType>::check_if_valid(IteratorType iterator_)
     }
 }
 
-} // namespace pel
+}        // namespace pel
 
 /*************************************************************************************************/
 /* END OF FILE --------------------------------------------------------------------------------- */

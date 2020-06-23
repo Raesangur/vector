@@ -1,4 +1,4 @@
-/**
+﻿/**
  * \file
  * \author  Pascal-Emmanuel Lachance
  * \p       https://www.github.com/Raesangur
