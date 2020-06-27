@@ -86,6 +86,7 @@ template<typename ItemType>
 vector<ItemType>::vector(SizeType length_, const ItemType& defaultValue_)
 {
     vector_constructor(length_);
+    add_size(length_);
 
     std::fill(begin(), end(), defaultValue_);
 }
@@ -104,6 +105,31 @@ vector<ItemType>::vector(const IteratorType beginIterator_, const IteratorType e
     vector_constructor(endIterator_ - beginIterator_);
 
     std::copy(beginIterator_, endIterator_, begin());
+}
+
+
+/**
+ **************************************************************************************************
+ * \brief       Move-based constructor for the vector class.
+ *              Takes the arguments used to  an `ItemType` object, and forwards them.
+ *
+ * \param       length_ : Number of elements to create
+ * \param       args_ :   Arguments to forward to the `ItemType` constructor
+ *************************************************************************************************/
+template<typename ItemType>
+template<typename... Args>
+vector<ItemType>::vector(SizeType length_, Args&&... args_)
+{
+    vector_constructor(length_);
+    add_size(length_);
+
+    auto builder = [&](ItemType& element) {
+        auto allocator = AllocatorType();
+        std::allocator_traits<AllocatorType>::construct(
+          allocator, &element, std::forward<Args>(args_)...);
+    };
+
+    std::for_each(begin(), end(), builder);
 }
 
 
@@ -721,11 +747,11 @@ vector<ItemType>::pop_back()
 template<typename ItemType>
 template<typename... Args>
 inline void
-vector<ItemType>::emplace_back(Args&&... args)
+vector<ItemType>::emplace_back(Args&&... args_)
 {
     check_fit(1);
 
-    end().value() = ItemType(std::forward<Args>(args)...);
+    end().value() = ItemType(std::forward<Args>(args_)...);
 
     add_size(1);
 }
@@ -1166,8 +1192,8 @@ vector<ItemType>::vector_constructor(SizeType size_)
     m_capacity = size_;
 
     /* Reallocate block of memory */
-    std::size_t blockSize = capacity();
-    ItemType*   tempPtr   = new ItemType[blockSize];
+    const std::size_t blockSize = capacity();
+    ItemType*         tempPtr   = new ItemType[blockSize];
 
     /* Check if allocation was successful */
     if(tempPtr == nullptr)
@@ -1191,9 +1217,9 @@ vector<ItemType>::vector_constructor(SizeType size_)
     delete[] begin().ptr();
 
     /* Set iterators */
-    DifferenceType ptrDiff = static_cast<DifferenceType>(length());
-    m_beginIterator        = IteratorType(static_cast<ItemType*>(tempPtr));
-    m_endIterator          = IteratorType(begin() + ptrDiff);
+    const DifferenceType ptrDiff = DifferenceType(length());
+    m_beginIterator              = IteratorType(static_cast<ItemType*>(tempPtr));
+    m_endIterator                = IteratorType(begin() + ptrDiff);
 }
 
 

@@ -44,6 +44,7 @@ namespace pel
 /** \todo Free memory automatically when not needed */
 /** \todo make things actually constexpr */
 /** \todo working reverse iterators */
+/** \todo support allocators */
 /** \todo Increase allocation step size automatically when needed */
 /**       \todo Make allocation step sizes align with the implementation's
                 memory allocations alignments and sizes. */
@@ -62,9 +63,11 @@ using reverse_vector_iterator = iterator_base<ItemType>;
 template<typename ItemType>
 class vector : container_base<ItemType, vector_iterator<ItemType>>
 {
-    public:
+public:
     /*********************************************************************************************/
     /* Type definitions ------------------------------------------------------------------------ */
+    using AllocatorType = std::allocator<ItemType>;
+
     using SizeType            = std::size_t;
     using DifferenceType      = std::ptrdiff_t;
     using IteratorType        = vector_iterator<ItemType>;
@@ -79,6 +82,10 @@ class vector : container_base<ItemType, vector_iterator<ItemType>>
     explicit vector(SizeType length_ = 0);
     explicit vector(SizeType length_, const ItemType& defaultValue_);
     explicit vector(IteratorType beginIterator_, IteratorType endIterator_);
+
+    template<typename... Args>
+    explicit vector(SizeType length_, Args&&... args_);
+
     vector(InitializerListType ilist_);
     vector(const vector<ItemType>& otherVector_);
     vector& operator=(const vector<ItemType>& copy_) = default;
@@ -142,7 +149,7 @@ class vector : container_base<ItemType, vector_iterator<ItemType>>
     void pop_back();
 
     template<typename... Args>
-    void emplace_back(Args&&... args);
+    void emplace_back(Args&&... args_);
 
     IteratorType insert(const ItemType& value_, IteratorType position_, SizeType count_ = 1);
 
@@ -183,7 +190,7 @@ class vector : container_base<ItemType, vector_iterator<ItemType>>
 
     /*********************************************************************************************/
     /* Private methods ------------------------------------------------------------------------- */
-    private:
+private:
     inline void vector_constructor(SizeType size_);
 
     void add_size(SizeType addedLength_);
@@ -195,7 +202,7 @@ class vector : container_base<ItemType, vector_iterator<ItemType>>
 
     /*********************************************************************************************/
     /* Variables ------------------------------------------------------------------------------- */
-    private:
+private:
     SizeType     m_capacity      = 0;
     IteratorType m_beginIterator = IteratorType(nullptr);
     IteratorType m_endIterator   = IteratorType(nullptr);
