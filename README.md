@@ -13,4 +13,4 @@ On Ubuntu 20.04 (running on WSL)
 - `cmake` 3.17.1
 - `doxygen` 1.8.16
 
-Plus `msbuild` 16.5 with Visual Studio 2019 on Windows 10
+Plus `msbuild` 16.5 with Visual Studio 16 2019 on Windows 10
