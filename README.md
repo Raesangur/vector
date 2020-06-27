@@ -9,7 +9,7 @@ On Ubuntu 20.04 (running on WSL)
 - `g++` 10.1
 - `clang++` 10.0
 - `clang-tidy` 10.0
-- `clang-format` 10.0
+- `clang-format` 11
 - `cmake` 3.17.1
 - `doxygen` 1.8.16
 
