@@ -123,11 +123,15 @@ vector<ItemType>::vector(SizeType length_, Args&&... args_)
     vector_constructor(length_);
     add_size(length_);
 
-    auto builder = [&](ItemType& element) {
-        auto allocator = AllocatorType();
-        std::allocator_traits<AllocatorType>::construct(
-          allocator, &element, std::forward<Args>(args_)...);
-    };
+    /* clang-tidy off */
+    auto builder = [&](ItemType& element)
+        {
+            using traits = std::allocator_traits<AllocatorType>;
+
+            AllocatorType allocator = AllocatorType();
+            traits::construct(allocator, &element, std::forward<Args>(args_)...);
+        };
+    /* clang-tidy on */
 
     std::for_each(begin(), end(), builder);
 }
@@ -212,6 +216,22 @@ vector<ItemType>::at(SizeType index_) const
 
 
 /**
+**************************************************************************************************
+* \brief       Obtain the iterator to the element at the specified index.
+*
+* \param       index_: Index of the element to get.
+*
+* \retval      IteratorType: Iterator to the item at the specified index.
+*************************************************************************************************/
+template<typename ItemType>
+[[nodiscard]] inline typename vector<ItemType>::IteratorType
+vector<ItemType>::iterator_at(DifferenceType index_) const
+{
+    return cbegin() + index_;
+}
+
+
+/**
  **************************************************************************************************
  * \brief       Get the element at the front of the vector.
  *
@@ -232,7 +252,7 @@ vector<ItemType>::front()
             throw std::length_error("Could not access element - No memory allocated");
         }
     }
-    return begin().value();
+    return *begin();
 }
 
 
@@ -257,7 +277,7 @@ vector<ItemType>::back()
             throw std::length_error("Could not access element - No memory allocated");
         }
     }
-    return *(end().ptr() - 1);
+    return *(end() - 1);
 }
 
 
@@ -282,7 +302,7 @@ vector<ItemType>::front() const
             throw std::length_error("Could not access element - No memory allocated");
         }
     }
-    return begin().value();
+    return *cbegin();
 }
 
 
@@ -307,7 +327,7 @@ vector<ItemType>::back() const
             throw std::length_error("Could not access element - No memory allocated");
         }
     }
-    return *(end().ptr() - 1);
+    return *(end() - 1);
 }
 
 
@@ -759,6 +779,67 @@ vector<ItemType>::emplace_back(Args&&... args_)
 
 /**
  **************************************************************************************************
+ * \brief       Constructs an element in the middle of the vector, right-shifting items on the
+ *              right to fit.
+ *
+ * \param       position_: Position in vector to insert the element.
+ * \param       count_:    Number of elements to insert from the initial offset.
+ * \param       args:      The arguments needed to be passed to the constructor of an element.
+ *
+ * \retval      IteratorType: Position at which the element has been constructed.
+ *                            (if multiple elements have been inserted, return position of the last
+ *                             inserted element).
+ *************************************************************************************************/
+template<typename ItemType>
+template<typename... Args>
+inline typename vector<ItemType>::IteratorType
+vector<ItemType>::emplace(IteratorType position_, SizeType count_, Args&&... args_)
+{
+    if constexpr(vector_safeness == true)
+    {
+        check_if_valid(position_);
+    }
+
+    check_fit(count_);
+    add_size(count_);
+
+    std::shift_right(position_, end(), count_);
+
+    for(SizeType i = 0; i < count_; i++)
+    {
+        position_[i] = ItemType(std::forward<Args>(args_)...);
+    }
+
+    return position_ + count_;
+}
+
+
+/**
+**************************************************************************************************
+* \brief       Constructs an element in the middle of the vector, right-shifting items on the
+*              right to fit.
+*
+* \param       offset_:   Position to insert the element at.
+* \param       count_:    Number of elements to insert from the initial offset.
+* \param       args:      The arguments needed to be passed to the constructor of an element.
+*
+* \retval      IteratorType: Position at which the element has been constructed.
+*                            (if multiple elements have been inserted, return position of the last
+*                             inserted element).
+*************************************************************************************************/
+template<typename ItemType>
+template<typename... Args>
+inline typename vector<ItemType>::IteratorType
+vector<ItemType>::emplace(DifferenceType offset_, SizeType count_, Args&&... args_)
+{
+    IteratorType position = cbegin() + offset_;
+
+    return emplace(position, count_, std::forward<Args>(args)...);
+}
+
+
+/**
+ **************************************************************************************************
  * \brief       Insert an element in the middle of the vector, right-shifting items on the right to
  *              fit.
  *
@@ -780,12 +861,7 @@ vector<ItemType>::insert(const ItemType& value_, const IteratorType position_, S
         check_if_valid(position_);
     }
 
-    if(count_ == 0)
-    {
-        return begin();
-    }
-
-    check_fit(1);
+    check_fit(count_);
     add_size(count_);
 
     std::shift_right(position_, end(), count_);
@@ -820,14 +896,6 @@ template<typename ItemType>
 inline typename vector<ItemType>::IteratorType
 vector<ItemType>::insert(const ItemType& value_, DifferenceType offset_, SizeType count_)
 {
-    if constexpr(vector_safeness == true)
-    {
-        if(offset_ > length())
-        {
-            throw std::invalid_argument("Invalid insert offset");
-        }
-    }
-
     IteratorType position = cbegin() + offset_;
 
     return insert(value_, position, count_);

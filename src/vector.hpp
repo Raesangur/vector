@@ -38,9 +38,7 @@
 
 namespace pel
 {
-/** \todo Emplace_back function to construct at the end instead of copy at the end */
 /** \todo Lambda constructor */
-/** \todo Use new and delete operators rather than realloc and free */
 /** \todo Free memory automatically when not needed */
 /** \todo make things actually constexpr */
 /** \todo working reverse iterators */
@@ -100,6 +98,7 @@ public:
     /* Element accessors ----------------------------------------------------------------------- */
     [[nodiscard]] ItemType&       at(SizeType index_) override;
     [[nodiscard]] const ItemType& at(SizeType index_) const override;
+    [[nodiscard]] IteratorType    iterator_at(DifferenceType index_) const override;
 
     [[nodiscard]] ItemType&       front() override;
     [[nodiscard]] ItemType&       back() override;
@@ -151,6 +150,12 @@ public:
     template<typename... Args>
     void emplace_back(Args&&... args_);
 
+    template<typename... Args>
+    IteratorType emplace(IteratorType position_, SizeType count_, Args&&... args_);
+
+    template<typename... Args>
+    IteratorType emplace(DifferenceType offset_, SizeType count_, Args&&... args_);
+
     IteratorType insert(const ItemType& value_, IteratorType position_, SizeType count_ = 1);
 
     IteratorType insert(const ItemType& value_, DifferenceType offset_, SizeType count_ = 1);
@@ -162,6 +167,7 @@ public:
                         DifferenceType offset_ = 0);
 
     IteratorType insert(InitializerListType ilist_, SizeType offset_ = 0);
+
 
     IteratorType replace_back(const ItemType& value_);
     IteratorType replace_front(const ItemType& value_);

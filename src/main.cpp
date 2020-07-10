@@ -31,10 +31,11 @@
 int
 main()
 {
-    std::cout << "Starting vector project\n";
     try
     {
-        for(std::size_t i = 1; i < 20; i++)
+        std::cout << "Starting vector project\n";
+        constexpr std::uint32_t maxSize = 20;
+        for(std::size_t i = 1; i < maxSize; i++)
         {
             constexpr std::uint32_t attempts = 10000;
             std::cout << "\nBuilding vector of " << i << "elements\n";
@@ -48,7 +49,7 @@ main()
     }
     catch(...)
     {
-        std::cout << "Uh oh\n";
+        //std::cout << "Uh oh\n";
         return 1;
     }
 }

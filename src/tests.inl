@@ -22,7 +22,7 @@ public:
         beg_ = clock_::now();
     }
 
-    double
+    [[nodiscard]] double
     elapsed() const noexcept
     {
         return std::chrono::duration_cast<second_>(clock_::now() - beg_).count();
