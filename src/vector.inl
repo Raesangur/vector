@@ -68,11 +68,11 @@ operator<<(std::ostream& os_, const vector<ItemType, AllocatorType>& vec_) noexc
  * \param       length_: Number of elements to allocate.
  *              [defaults : 0]
  * \param       alloc_:  Allocator to use for all memory allocations
- *              [defaults : AllocatoType{}]
+ *              [defaults : AllocatorType{}]
  *************************************************************************************************/
 template<typename ItemType, typename AllocatorType>
 vector<ItemType, AllocatorType>::vector(SizeType length_, const AllocatorType& alloc_)
-: m_allocator {alloc_}
+: m_allocator{alloc_}
 {
     vector_constructor(length_);
 }
@@ -85,13 +85,13 @@ vector<ItemType, AllocatorType>::vector(SizeType length_, const AllocatorType& a
  * \param       length_: Number of elements to allocate.
  * \param       value_:  Value to initialize all the elements initially allocated with.
  * \param       alloc_:  Allocator to use for all memory allocations
- *              [defaults : AllocatoType{}]
+ *              [defaults : AllocatorType{}]
  *************************************************************************************************/
 template<typename ItemType, typename AllocatorType>
 vector<ItemType, AllocatorType>::vector(SizeType             length_,
                                         const ItemType&      value_,
                                         const AllocatorType& alloc_)
-: m_allocator {alloc_}
+: m_allocator{alloc_}
 {
     vector_constructor(length_);
     add_size(length_);
@@ -113,13 +113,13 @@ vector<ItemType, AllocatorType>::vector(SizeType             length_,
  * \param       beginIterator_: Begin iterator of another vector to start copying from.
  * \param       endIterator_:   End iterator of another vector to end the copy.
  * \param       alloc_:         Allocator to use for all memory allocations
- *              [defaults : AllocatoType{}]
+ *              [defaults : AllocatorType{}]
  *************************************************************************************************/
 template<typename ItemType, typename AllocatorType>
 vector<ItemType, AllocatorType>::vector(const IteratorType   beginIterator_,
                                         const IteratorType   endIterator_,
                                         const AllocatorType& alloc_)
-: m_allocator {alloc_}
+: m_allocator{alloc_}
 {
     vector_constructor(endIterator_ - beginIterator_);
 
@@ -135,14 +135,14 @@ vector<ItemType, AllocatorType>::vector(const IteratorType   beginIterator_,
  * \param       length_ : Number of elements to create
  * \param       args_ :   Arguments to forward to the `ItemType` constructor
  * \param       alloc_:   Allocator to use for all memory allocations
- *              [defaults : AllocatoType{}]
+ *              [defaults : AllocatorType{}]
  *************************************************************************************************/
 template<typename ItemType, typename AllocatorType>
 template<typename... Args>
 vector<ItemType, AllocatorType>::vector(SizeType length_,
                                         Args&&... args_,
                                         const AllocatorType& alloc_)
-: m_allocator {alloc_}
+: m_allocator{alloc_}
 {
     vector_constructor(length_);
     add_size(length_);
@@ -165,38 +165,90 @@ vector<ItemType, AllocatorType>::vector(SizeType length_,
  *
  * \param       otherVector_: Vector to copy data from.
  * \param       alloc_:       Allocator to use for all memory allocations
- *              [defaults : AllocatoType{}]
+ *              [defaults : AllocatorType{}]
  *************************************************************************************************/
 template<typename ItemType, typename AllocatorType>
 template<typename OtherAllocatorType>
 vector<ItemType, AllocatorType>::vector(const vector<ItemType, OtherAllocatorType>& otherVector_,
                                         const AllocatorType&                        alloc_)
-: m_allocator {alloc_}
+: m_allocator{alloc_}
 {
     vector_constructor(otherVector_.length());
 
     std::copy(otherVector_.begin(), otherVector_.begin(), begin());
+}
+
+template<typename ItemType, typename AllocatorType>
+vector<ItemType, AllocatorType>&
+vector<ItemType, AllocatorType>::operator=(const vector<ItemType, AllocatorType>& copy_)
+{
+    return operator=<ItemType, AllocatorType>(copy_);
 }
 
 /**
  **************************************************************************************************
  * \brief       Copy assignment operator for the vector class.
  *
- * \param       otherVector_: Vector to copy data from.
- * \param       alloc_:       Allocator to use for all memory allocations
- *              [defaults : AllocatoType{}]
+ * \param       copy_: Vector to copy data from.
  *************************************************************************************************/
 template<typename ItemType, typename AllocatorType>
 template<typename OtherAllocatorType>
 typename vector<ItemType, AllocatorType>&
 vector<ItemType, AllocatorType>::operator=(const vector<ItemType, OtherAllocatorType>& copy_)
 {
-    vector_constructor(otherVector_.length());
+    vector_constructor(copy_.length());
 
-    std::copy(otherVector_.begin(), otherVector_.begin(), begin());
-    m_allocator = otherVector_.get_allocator();
+    std::copy(copy_.begin(), copy_.begin(), begin());
+    m_allocator = copy_.get_allocator();
 }
 
+
+/**
+ **************************************************************************************************
+ * \brief       Move constructor for the vector class.
+ *
+ * \param       otherVector_: Vector to move data from.
+ * \param       alloc_:       Allocator to use for all memory allocations
+ *              [defaults : AllocatorType{}]
+ *************************************************************************************************/
+template<typename ItemType, typename AllocatorType>
+template<typename OtherAllocatorType>
+vector<ItemType, AllocatorType>::vector(vector<ItemType, OtherAllocatorType>&& move_,
+                                        AllocatorType&                         alloc_)
+: m_allocator{alloc_},
+  m_beginIterator{std::move(move_.m_beginIterator)},
+  m_endIterator{std::move(move_.m_endIterator)},
+  m_capacity{move_.m_capacity}
+{
+}
+
+/**
+ **************************************************************************************************
+ * \brief       Move assignment operator for the vector class.
+ *
+ * \param       move__: Vector to move data from.
+ *
+ * \note        Will do nothing if attempting to move a vector into itself
+ *************************************************************************************************/
+template<typename ItemType, typename AllocatorType>
+template<typename OtherAllocatorType>
+typename vector<ItemType, AllocatorType>&
+vector<ItemType, AllocatorType>::operator=(vector<ItemType, OtherAllocatorType>&& move_)
+{
+    if(this != std::addressof(move_))
+    {
+        /* Grab the other vector's resources */
+        m_allocator     = move_.get_allocator();
+        m_beginIterator = move_.begin();
+        m_endIterator   = move_.end();
+        m_capacity      = move_.capacity();
+
+        /* Invalidate the other vector */
+        move_.m_beginIterator = IteratorType{nullptr};
+        move_.m_endIterator   = IteratorType{nullptr};
+    }
+    return *this;
+}
 
 /**
  **************************************************************************************************
@@ -204,17 +256,16 @@ vector<ItemType, AllocatorType>::operator=(const vector<ItemType, OtherAllocator
  *
  * \param       ilist_: Initializer list of all the values to put in a new vector.
  * \param       alloc_: Allocator to use for all memory allocations
- *              [defaults : AllocatoType{}]
+ *              [defaults : AllocatorType{}]
  *************************************************************************************************/
 template<typename ItemType, typename AllocatorType>
 vector<ItemType, AllocatorType>::vector(InitializerListType ilist_, const AllocatorType& alloc_)
-: m_allocator {alloc_}
+: m_allocator{alloc_}
 {
     vector_constructor(ilist_.size());
 
     std::copy(ilist_.begin(), ilist_.end(), begin());
     change_size(ilist_.size());
-    
 }
 
 

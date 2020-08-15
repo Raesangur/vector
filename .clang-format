@@ -3,33 +3,33 @@ BasedOnStyle:           Mozilla
 AccessModifierOffset:   -4
 
 AlignAfterOpenBracket:          Align
-AlignConsecutiveMacros:         'true'
-AlignConsecutiveAssignments:    'true'
-AlignConsecutiveDeclarations:   'true'
+AlignConsecutiveMacros:         true
+AlignConsecutiveAssignments:    true
+AlignConsecutiveDeclarations:   true
 AlignEscapedNewlines:           Right
-AlignOperands:                  'true'
-AlignTrailingComments:          'true'
+AlignOperands:                  true
+AlignTrailingComments:          true
 
-AllowAllArgumentsOnNextLine:                'true'
-AllowAllConstructorInitializersOnNextLine:  'true'
-AllowAllParametersOfDeclarationOnNextLine:  'true'
-AllowShortBlocksOnASingleLine:              'false'
-AllowShortCaseLabelsOnASingleLine:          'false'
+AllowAllArgumentsOnNextLine:                true
+AllowAllConstructorInitializersOnNextLine:  true
+AllowAllParametersOfDeclarationOnNextLine:  true
+AllowShortBlocksOnASingleLine:              false
+AllowShortCaseLabelsOnASingleLine:          false
 AllowShortFunctionsOnASingleLine:           None
 AllowShortIfStatementsOnASingleLine:        Never
 AllowShortLambdasOnASingleLine:             None
-AllowShortLoopsOnASingleLine:               'false'
+AllowShortLoopsOnASingleLine:               false
 
 AlwaysBreakAfterDefinitionReturnType:   All
 AlwaysBreakAfterReturnType:             AllDefinitions
-AlwaysBreakBeforeMultilineStrings:      'true'
-AlwaysBreakTemplateDeclarations:        'Yes'
-BinPackArguments:                       'false'
+AlwaysBreakBeforeMultilineStrings:      true
+AlwaysBreakTemplateDeclarations:        Yes
+BinPackArguments:                       false
 
-BreakAfterJavaFieldAnnotations:         'true'
+BreakAfterJavaFieldAnnotations:         true
 BreakBeforeBinaryOperators:             None
 BreakBeforeBraces: Allman
-BreakBeforeTernaryOperators:            'true'
+BreakBeforeTernaryOperators:            true
 BreakConstructorInitializers:           BeforeColon
 BreakInheritanceList:                   BeforeColon
 
@@ -55,41 +55,41 @@ BraceWrapping:
     SplitEmptyNamespace:    true
 BreakBeforeBraces: Custom
 
-BreakStringLiterals:                    'true'
-ColumnLimit:                            '100'
-CompactNamespaces:                      'false'
+BreakStringLiterals:                    true
+ColumnLimit:                            100
+CompactNamespaces:                      false
 
-ConstructorInitializerAllOnOneLineOrOnePerLine: 'true'
-ConstructorInitializerIndentWidth:              '0'
-Cpp11BracedListStyle:                           'true'
+ConstructorInitializerAllOnOneLineOrOnePerLine: true
+ConstructorInitializerIndentWidth:              0
+Cpp11BracedListStyle:                           true
 
-DerivePointerAlignment:     'false'
-DisableFormat:              'false'
-FixNamespaceComments:       'true'
+DerivePointerAlignment:     false
+DisableFormat:              false
+FixNamespaceComments:       true
 IncludeBlocks:              Preserve
-IndentCaseLabels:           'true'
-IndentWidth:                '4'
+IndentCaseLabels:           true
+IndentWidth:                4
 Language:                   Cpp
-MaxEmptyLinesToKeep:        '4'
+MaxEmptyLinesToKeep:        4
 NamespaceIndentation:       None
 PointerAlignment:           Left
-SortIncludes:               'true'
-SortUsingDeclarations:      'true'
+SortIncludes:               true
+SortUsingDeclarations:      true
 
-SpaceBeforeAssignmentOperators:     'true'
-SpaceBeforeCpp11BracedList:         'true'
-SpaceBeforeCtorInitializerColon:    'true'
-SpaceBeforeInheritanceColon:        'true'
+SpaceBeforeAssignmentOperators:     true
+SpaceBeforeCpp11BracedList:         false
+SpaceBeforeCtorInitializerColon:    true
+SpaceBeforeInheritanceColon:        true
 SpaceBeforeParens:                  Never
-SpaceBeforeRangeBasedForLoopColon:  'true'
-SpaceInEmptyParentheses:            'false'
-SpacesBeforeTrailingComments:       '8'
-SpacesInAngles:                     'false'
-SpacesInCStyleCastParentheses:      'false'
-SpacesInParentheses:                'false'
-SpacesInSquareBrackets:             'false'
+SpaceBeforeRangeBasedForLoopColon:  true
+SpaceInEmptyParentheses:            false
+SpacesBeforeTrailingComments:       8
+SpacesInAngles:                     false
+SpacesInCStyleCastParentheses:      false
+SpacesInParentheses:                false
+SpacesInSquareBrackets:             false
 
-TabWidth:   '4'
+TabWidth:   4
 UseTab:     Never
 
 ...

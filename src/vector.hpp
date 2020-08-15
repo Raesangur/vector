@@ -35,16 +35,15 @@
 #include <sstream>
 #include <stdexcept>
 
-#pragma warning (disable:4626)
 namespace pel
 {
 /** \todo Lambda constructor */
-/** \todo Free memory automatically when not needed */
-/** \todo make things actually constexpr */
-/** \todo working reverse iterators */
+/** \todo Add back move operations */
 /** \todo Increase allocation step size automatically when needed */
 /**       \todo Make allocation step sizes align with the implementation's
                 memory allocations alignments and sizes. */
+/** \todo working reverse iterators */
+/** \todo make things actually constexpr */
 
 
 constexpr bool vector_safeness = true;
@@ -79,31 +78,32 @@ public:
     /* Methods --------------------------------------------------------------------------------- */
 
     /* Constructors */
-    explicit vector(SizeType length_ = 0, const AllocatorType& alloc_ = AllocatorType {});
+    explicit vector(SizeType length_ = 0, const AllocatorType& alloc_ = AllocatorType{});
     explicit vector(SizeType             length_,
                     const ItemType&      value_,
-                    const AllocatorType& alloc_ = AllocatorType {});
+                    const AllocatorType& alloc_ = AllocatorType{});
     explicit vector(IteratorType         beginIterator_,
                     IteratorType         endIterator_,
-                    const AllocatorType& alloc_ = AllocatorType {});
+                    const AllocatorType& alloc_ = AllocatorType{});
 
     template<typename... Args>
     explicit vector(SizeType length_,
                     Args&&... args_,
-                    const AllocatorType& alloc_ = AllocatorType {});
+                    const AllocatorType& alloc_ = AllocatorType{});
 
-    vector(InitializerListType ilist_, const AllocatorType& alloc_ = AllocatorType {});
+    vector(InitializerListType ilist_, const AllocatorType& alloc_ = AllocatorType{});
 
-    template<typename OtherAllocatorType>
+    template<typename OtherAllocatorType = AllocatorType>
     vector(const vector<ItemType, OtherAllocatorType>& otherVector_,
-           const AllocatorType&                        alloc_ = AllocatorType {});
-    template<typename OtherAllocatorType>
+           const AllocatorType&                        alloc_ = AllocatorType{});
+    template<typename OtherAllocatorType = AllocatorType>
     vector& operator=(const vector<ItemType, OtherAllocatorType>& copy_);
+    vector& operator=(const vector& copy_);
 
-    /*template<typename OtherAllocatorType>
-    vector(vector<ItemType, OtherAllocatorType>&& movedVector_) noexcept = default;
-    template<typename OtherAllocatorType>
-    vector& operator=(vector<ItemType, OtherAllocatorType>&& move_) noexcept = default;*/
+    template<typename OtherAllocatorType = AllocatorType>
+    vector(vector<ItemType, OtherAllocatorType>&& move_, AllocatorType& alloc_ = AllocatorType{});
+    template<typename OtherAllocatorType = AllocatorType>
+    vector& operator=(vector<ItemType, OtherAllocatorType>&& move_);
 
     /* Destructor */
     ~vector() override;
@@ -228,7 +228,7 @@ private:
     SizeType      m_capacity      = 0;
     IteratorType  m_beginIterator = IteratorType(nullptr);
     IteratorType  m_endIterator   = IteratorType(nullptr);
-    AllocatorType m_allocator {};
+    AllocatorType m_allocator{};
 
 
     /*********************************************************************************************/
@@ -241,6 +241,5 @@ private:
 };
 
 };        // namespace pel
-#pragma warning (default:4626)
 
 #include "./vector.inl"
