@@ -23,6 +23,8 @@
  */
 
 #include <iostream>
+#include <tuple>
+#include <variant>
 
 #include "./tests.inl"
 #include "./vector.hpp"
