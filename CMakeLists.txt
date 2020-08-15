@@ -172,6 +172,7 @@ set(MSVC_WARNINGS
     /wd4686     # remove warnings : 'user-defined type': possible change in behavior, change in UDT return calling convention
     /wd4692     # remove warnings : 'function': signature of non-private member contains assembly private native type 'native_type'
     /wd4710     # remove warnings : 'function': function not inlined
+    /wd4711     # remove warnings : 'function': selected for automatic inline expansion
     /wd4738     # remove warnings : storing 32-bit float result in memory, possible loss of performance
     /wd4746     # remove warnings : volatile access of 'expression' is subject to /volatile:<iso|ms> setting; consider using __iso_volatile_load/store intrinsic functions
     /wd4749     # remove warnings : conditionally supported: offsetof applied to non-standard-layout type 'type'

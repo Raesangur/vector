@@ -1,4 +1,4 @@
-/**
+﻿/**
  * \file
  * \author  Pascal-Emmanuel Lachance
  * \p       https://www.github.com/Raesangur
@@ -30,6 +30,7 @@
 #include <algorithm>
 #include <cstddef>
 #include <cstdlib>
+#include <functional>
 #include <memory>
 #include <ostream>
 #include <sstream>
@@ -38,15 +39,11 @@
 
 namespace pel
 {
-/** \todo Emplace_back function to construct at the end instead of copy at the end */
-/** \todo Lambda constructor */
-/** \todo Use new and delete operators rather than realloc and free */
-/** \todo Free memory automatically when not needed */
-/** \todo make things actually constexpr */
-/** \todo working reverse iterators */
 /** \todo Increase allocation step size automatically when needed */
 /**       \todo Make allocation step sizes align with the implementation's
                 memory allocations alignments and sizes. */
+/** \todo working reverse iterators */
+/** \todo make things actually constexpr */
 
 
 constexpr bool vector_safeness = true;
@@ -59,12 +56,17 @@ using reverse_vector_iterator = iterator_base<ItemType>;
 // using reverse_vector_iterator = std::reverse_iterator<vector_iterator<ItemType>>;
 
 
-template<typename ItemType>
+template<typename ItemType, typename AllocatorType = std::allocator<ItemType>>
 class vector : container_base<ItemType, vector_iterator<ItemType>>
 {
-    public:
+    static_assert(std::is_same_v<ItemType, typename AllocatorType::value_type>,
+                  "Allocator must match element type");
+
+public:
     /*********************************************************************************************/
     /* Type definitions ------------------------------------------------------------------------ */
+    using AllocatorTraits = std::allocator_traits<AllocatorType>;
+
     using SizeType            = std::size_t;
     using DifferenceType      = std::ptrdiff_t;
     using IteratorType        = vector_iterator<ItemType>;
@@ -73,18 +75,46 @@ class vector : container_base<ItemType, vector_iterator<ItemType>>
 
 
     /*********************************************************************************************/
-    /* Methods --------------------------------------------------------------------------------- */
+    /* Constructors ---------------------------------------------------------------------------- */
+    explicit vector(SizeType length_ = 0, const AllocatorType& alloc_ = AllocatorType{});
+    explicit vector(SizeType             length_,
+                    const ItemType&      value_,
+                    const AllocatorType& alloc_ = AllocatorType{});
+    explicit vector(IteratorType         beginIterator_,
+                    IteratorType         endIterator_,
+                    const AllocatorType& alloc_ = AllocatorType{});
 
-    /* Constructors */
-    explicit vector(SizeType length_ = 0);
-    explicit vector(SizeType length_, const ItemType& defaultValue_);
-    explicit vector(IteratorType beginIterator_, IteratorType endIterator_);
-    vector(InitializerListType ilist_);
-    vector(const vector<ItemType>& otherVector_);
-    vector& operator=(const vector<ItemType>& copy_) = default;
-    vector(vector<ItemType>&& movedVector_) noexcept = default;
-    vector& operator=(vector<ItemType>&& move_) noexcept = default;
+    /*-----------------------------------------------*/
+    /* Copy constructor and copy-assignment operator */
+    template<typename OtherAllocatorType = AllocatorType>
+    vector(const vector<ItemType, OtherAllocatorType>& otherVector_,
+           const AllocatorType&                        alloc_ = AllocatorType{});
+    template<typename OtherAllocatorType = AllocatorType>
+    vector& operator=(const vector<ItemType, OtherAllocatorType>& copy_);
+    vector& operator=(const vector& copy_);
 
+    /*-----------------------------------------------*/
+    /* Move constructor and move-assignment operator */
+    template<typename OtherAllocatorType = AllocatorType>
+    vector(vector<ItemType, OtherAllocatorType>&& move_, AllocatorType& alloc_ = AllocatorType{});
+    template<typename OtherAllocatorType = AllocatorType>
+    vector& operator=(vector<ItemType, OtherAllocatorType>&& move_);
+
+
+    /*----------------------*/
+    /* Special constructors */
+    vector(InitializerListType ilist_, const AllocatorType& alloc_ = AllocatorType{});
+
+    template<typename... Args>
+    explicit vector(SizeType length_,
+                    Args&&... args_,
+                    const AllocatorType& alloc_ = AllocatorType{});
+
+    explicit vector(SizeType                      length_,
+                    std::function<ItemType(void)> function_,
+                    const AllocatorType&          alloc_ = AllocatorType{});
+
+    /*------------*/
     /* Destructor */
     ~vector() override;
 
@@ -93,6 +123,7 @@ class vector : container_base<ItemType, vector_iterator<ItemType>>
     /* Element accessors ----------------------------------------------------------------------- */
     [[nodiscard]] ItemType&       at(SizeType index_) override;
     [[nodiscard]] const ItemType& at(SizeType index_) const override;
+    [[nodiscard]] IteratorType    iterator_at(DifferenceType index_) const override;
 
     [[nodiscard]] ItemType&       front() override;
     [[nodiscard]] ItemType&       back() override;
@@ -114,13 +145,13 @@ class vector : container_base<ItemType, vector_iterator<ItemType>>
     [[nodiscard]] ItemType&       operator[](SizeType index_) override;
     [[nodiscard]] const ItemType& operator[](SizeType index_) const override;
 
-    vector<ItemType>& operator+=(const ItemType& rhs_);
+    vector<ItemType, AllocatorType>& operator+=(const ItemType& rhs_);
 
-    const vector<ItemType> operator++(int);
-    const vector<ItemType> operator--(int);
+    const vector<ItemType, AllocatorType> operator++(int);
+    const vector<ItemType, AllocatorType> operator--(int);
 
-    vector<ItemType>& operator>>(int steps_);
-    vector<ItemType>& operator<<(int steps_);
+    vector<ItemType, AllocatorType>& operator>>(int steps_);
+    vector<ItemType, AllocatorType>& operator<<(int steps_);
 
 
     /*********************************************************************************************/
@@ -142,7 +173,13 @@ class vector : container_base<ItemType, vector_iterator<ItemType>>
     void pop_back();
 
     template<typename... Args>
-    void emplace_back(Args&&... args);
+    void emplace_back(Args&&... args_);
+
+    template<typename... Args>
+    IteratorType emplace(IteratorType position_, SizeType count_, Args&&... args_);
+
+    template<typename... Args>
+    IteratorType emplace(DifferenceType offset_, SizeType count_, Args&&... args_);
 
     IteratorType insert(const ItemType& value_, IteratorType position_, SizeType count_ = 1);
 
@@ -156,6 +193,7 @@ class vector : container_base<ItemType, vector_iterator<ItemType>>
 
     IteratorType insert(InitializerListType ilist_, SizeType offset_ = 0);
 
+
     IteratorType replace_back(const ItemType& value_);
     IteratorType replace_front(const ItemType& value_);
     IteratorType replace(const ItemType& value_, SizeType offset_ = 0);
@@ -163,10 +201,11 @@ class vector : container_base<ItemType, vector_iterator<ItemType>>
 
     /*********************************************************************************************/
     /* Memory ---------------------------------------------------------------------------------- */
-    [[nodiscard]] SizeType length() const noexcept override;
-    [[nodiscard]] SizeType capacity() const noexcept;
-    [[nodiscard]] bool     is_empty() const noexcept override;
-    [[nodiscard]] bool     is_not_empty() const noexcept override;
+    [[nodiscard]] SizeType             length() const noexcept override;
+    [[nodiscard]] SizeType             capacity() const noexcept;
+    [[nodiscard]] bool                 is_empty() const noexcept override;
+    [[nodiscard]] bool                 is_not_empty() const noexcept override;
+    [[nodiscard]] const AllocatorType& get_allocator() const noexcept;
 
     void reserve(SizeType newCapacity_);
     void resize(SizeType newLength_);
@@ -183,8 +222,8 @@ class vector : container_base<ItemType, vector_iterator<ItemType>>
 
     /*********************************************************************************************/
     /* Private methods ------------------------------------------------------------------------- */
-    private:
-    inline void vector_constructor(SizeType size_);
+private:
+    void vector_constructor(SizeType size_);
 
     void add_size(SizeType addedLength_);
     void change_size(SizeType newLength_);
@@ -195,10 +234,11 @@ class vector : container_base<ItemType, vector_iterator<ItemType>>
 
     /*********************************************************************************************/
     /* Variables ------------------------------------------------------------------------------- */
-    private:
-    SizeType     m_capacity      = 0;
-    IteratorType m_beginIterator = IteratorType(nullptr);
-    IteratorType m_endIterator   = IteratorType(nullptr);
+private:
+    SizeType      m_capacity      = 0;
+    IteratorType  m_beginIterator = IteratorType(nullptr);
+    IteratorType  m_endIterator   = IteratorType(nullptr);
+    AllocatorType m_allocator{};
 
 
     /*********************************************************************************************/
@@ -212,4 +252,8 @@ class vector : container_base<ItemType, vector_iterator<ItemType>>
 
 };        // namespace pel
 
+
 #include "./vector.inl"
+
+/*************************************************************************************************/
+/* ----- END OF FILE ----- */
