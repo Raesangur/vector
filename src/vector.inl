@@ -41,9 +41,9 @@ namespace pel
  * \note        This method is not directly part of the pel::vector class, and is rather appended
  *              to the std::ostream class.
  *************************************************************************************************/
-template<typename ItemType, typename AllocType>
+template<typename ItemType, typename AllocatorType>
 inline static std::ostream&
-operator<<(std::ostream& os_, const vector<ItemType, AllocType>& vec_) noexcept
+operator<<(std::ostream& os_, const vector<ItemType, AllocatorType>& vec_) noexcept
 {
     /* Add capacity and length header */
     os_ << "Capacity : [" << vec_.capacity() << "]   |   Length: [" << vec_.length() << "]\n";
@@ -68,8 +68,8 @@ operator<<(std::ostream& os_, const vector<ItemType, AllocType>& vec_) noexcept
  * \param       length_: Number of elements to allocate.
  *              [defaults : 0]
  *************************************************************************************************/
-template<typename ItemType, typename AllocType>
-vector<ItemType, AllocType>::vector(SizeType length_)
+template<typename ItemType, typename AllocatorType>
+vector<ItemType, AllocatorType>::vector(SizeType length_)
 {
     vector_constructor(length_);
 }
@@ -80,15 +80,22 @@ vector<ItemType, AllocType>::vector(SizeType length_)
  * \brief       Default-value constructor for the vector class.
  *
  * \param       length_: Number of elements to allocate.
- * \param       defaultValue_: Value to initialize all the elements initially allocated with.
+ * \param       value_:  Value to initialize all the elements initially allocated with.
  *************************************************************************************************/
-template<typename ItemType, typename AllocType>
-vector<ItemType, AllocType>::vector(SizeType length_, const ItemType& defaultValue_)
+template<typename ItemType, typename AllocatorType>
+vector<ItemType, AllocatorType>::vector(SizeType length_, const ItemType& value_)
 {
     vector_constructor(length_);
     add_size(length_);
 
-    std::fill(begin(), end(), defaultValue_);
+    /* clang-format off */
+    std::for_each(begin(), end(),
+                  [&](ItemType& item)
+                  {
+                      AllocatorTraits::construct(m_allocator, &item, value_);
+                  });
+    /* clang-format on */
+    // std::fill(begin(), end(), value_);
 }
 
 
@@ -99,8 +106,9 @@ vector<ItemType, AllocType>::vector(SizeType length_, const ItemType& defaultVal
  * \param       beginIterator_: Begin iterator of another vector to start copying from.
  * \param       endIterator_:   End iterator of another vector to end the copy.
  *************************************************************************************************/
-template<typename ItemType, typename AllocType>
-vector<ItemType, AllocType>::vector(const IteratorType beginIterator_, const IteratorType endIterator_)
+template<typename ItemType, typename AllocatorType>
+vector<ItemType, AllocatorType>::vector(const IteratorType beginIterator_,
+                                        const IteratorType endIterator_)
 {
     vector_constructor(endIterator_ - beginIterator_);
 
@@ -116,23 +124,18 @@ vector<ItemType, AllocType>::vector(const IteratorType beginIterator_, const Ite
  * \param       length_ : Number of elements to create
  * \param       args_ :   Arguments to forward to the `ItemType` constructor
  *************************************************************************************************/
-template<typename ItemType, typename AllocType>
+template<typename ItemType, typename AllocatorType>
 template<typename... Args>
-vector<ItemType, AllocType>::vector(SizeType length_, Args&&... args_)
+vector<ItemType, AllocatorType>::vector(SizeType length_, Args&&... args_)
 {
     vector_constructor(length_);
     add_size(length_);
 
     /* clang-tidy off */
-    auto builder = [&](ItemType& element)
-        {
-            using traits = std::allocator_traits<AllocatorType>;
-
-            AllocatorType allocator = AllocatorType();
-            traits::construct(allocator, &element, std::forward<Args>(args_)...);
-        };
+    auto builder = [&](ItemType& element) {
+        AllocatorTraits::construct(m_allocator, &element, std::forward<Args>(args_)...);
+    };
     /* clang-tidy on */
-
     std::for_each(begin(), end(), builder);
 }
 
@@ -143,8 +146,8 @@ vector<ItemType, AllocType>::vector(SizeType length_, Args&&... args_)
  *
  * \param       otherVector_: Vector to copy data from.
  *************************************************************************************************/
-template<typename ItemType, typename AllocType>
-vector<ItemType, AllocType>::vector(const vector<ItemType, AllocType>& otherVector_)
+template<typename ItemType, typename AllocatorType>
+vector<ItemType, AllocatorType>::vector(const vector<ItemType, AllocatorType>& otherVector_)
 {
     vector_constructor(otherVector_.length());
 
@@ -158,8 +161,8 @@ vector<ItemType, AllocType>::vector(const vector<ItemType, AllocType>& otherVect
  *
  * \param       ilist_: Initializer list of all the values to put in a new vector.
  *************************************************************************************************/
-template<typename ItemType, typename AllocType>
-vector<ItemType, AllocType>::vector(InitializerListType ilist_)
+template<typename ItemType, typename AllocatorType>
+vector<ItemType, AllocatorType>::vector(InitializerListType ilist_)
 {
     vector_constructor(ilist_.size());
 
@@ -171,11 +174,11 @@ vector<ItemType, AllocType>::vector(InitializerListType ilist_)
  **************************************************************************************************
  * \brief       Destructor for the vector class.
  *************************************************************************************************/
-template<typename ItemType, typename AllocType>
-vector<ItemType, AllocType>::~vector()
+template<typename ItemType, typename AllocatorType>
+vector<ItemType, AllocatorType>::~vector()
 {
     /* Free and destroy elements in the allocated memory */
-    ::delete[] begin().ptr();
+    AllocatorTraits::deallocate(m_allocator, begin().ptr(), capacity());
 }
 
 
@@ -191,9 +194,9 @@ vector<ItemType, AllocType>::~vector()
  *
  * \retval      ItemType&: Reference to the item at the specified index.
  *************************************************************************************************/
-template<typename ItemType, typename AllocType>
+template<typename ItemType, typename AllocatorType>
 [[nodiscard]] inline ItemType&
-vector<ItemType, AllocType>::at(SizeType index_)
+vector<ItemType, AllocatorType>::at(SizeType index_)
 {
     return this->operator[](index_);
 }
@@ -207,9 +210,9 @@ vector<ItemType, AllocType>::at(SizeType index_)
  *
  * \retval      ItemType&: Const reference to the item at the specified index.
  *************************************************************************************************/
-template<typename ItemType, typename AllocType>
+template<typename ItemType, typename AllocatorType>
 [[nodiscard]] inline const ItemType&
-vector<ItemType, AllocType>::at(SizeType index_) const
+vector<ItemType, AllocatorType>::at(SizeType index_) const
 {
     return this->operator[](index_);
 }
@@ -223,9 +226,9 @@ vector<ItemType, AllocType>::at(SizeType index_) const
 *
 * \retval      IteratorType: Iterator to the item at the specified index.
 *************************************************************************************************/
-template<typename ItemType, typename AllocType>
-[[nodiscard]] inline typename vector<ItemType, AllocType>::IteratorType
-vector<ItemType, AllocType>::iterator_at(DifferenceType index_) const
+template<typename ItemType, typename AllocatorType>
+[[nodiscard]] inline typename vector<ItemType, AllocatorType>::IteratorType
+vector<ItemType, AllocatorType>::iterator_at(DifferenceType index_) const
 {
     return cbegin() + index_;
 }
@@ -241,9 +244,9 @@ vector<ItemType, AllocType>::iterator_at(DifferenceType index_) const
  *              If there was no memory allocated for the elements, accessing even just the first
  *              element would cause errors.
  *************************************************************************************************/
-template<typename ItemType, typename AllocType>
+template<typename ItemType, typename AllocatorType>
 [[nodiscard]] inline ItemType&
-vector<ItemType, AllocType>::front()
+vector<ItemType, AllocatorType>::front()
 {
     if constexpr(vector_safeness == true)
     {
@@ -266,9 +269,9 @@ vector<ItemType, AllocType>::front()
  *              If there was no memory allocated for the elements, accessing even just the first
  *              element would cause errors.
  *************************************************************************************************/
-template<typename ItemType, typename AllocType>
+template<typename ItemType, typename AllocatorType>
 [[nodiscard]] inline ItemType&
-vector<ItemType, AllocType>::back()
+vector<ItemType, AllocatorType>::back()
 {
     if constexpr(vector_safeness == true)
     {
@@ -291,9 +294,9 @@ vector<ItemType, AllocType>::back()
  *              If there was no memory allocated for the elements, accessing even just the first
  *              element would cause errors.
  *************************************************************************************************/
-template<typename ItemType, typename AllocType>
+template<typename ItemType, typename AllocatorType>
 [[nodiscard]] inline const ItemType&
-vector<ItemType, AllocType>::front() const
+vector<ItemType, AllocatorType>::front() const
 {
     if constexpr(vector_safeness == true)
     {
@@ -316,9 +319,9 @@ vector<ItemType, AllocType>::front() const
  *              If there was no memory allocated for the elements, accessing even just the first
  *              element would cause errors.
  *************************************************************************************************/
-template<typename ItemType, typename AllocType>
+template<typename ItemType, typename AllocatorType>
 [[nodiscard]] inline const ItemType&
-vector<ItemType, AllocType>::back() const
+vector<ItemType, AllocatorType>::back() const
 {
     if constexpr(vector_safeness == true)
     {
@@ -337,9 +340,9 @@ vector<ItemType, AllocType>::back() const
  *
  * \retval      ItemType*: Pointer to the beginning of the vector's data.
  *************************************************************************************************/
-template<typename ItemType, typename AllocType>
+template<typename ItemType, typename AllocatorType>
 [[nodiscard]] inline ItemType*
-vector<ItemType, AllocType>::data() noexcept
+vector<ItemType, AllocatorType>::data() noexcept
 {
     return begin().ptr();
 }
@@ -351,9 +354,9 @@ vector<ItemType, AllocType>::data() noexcept
  *
  * \retval      ItemType*: Const pointer to the beginning of the vector's data.
  *************************************************************************************************/
-template<typename ItemType, typename AllocType>
+template<typename ItemType, typename AllocatorType>
 [[nodiscard]] inline const ItemType*
-vector<ItemType, AllocType>::data() const noexcept
+vector<ItemType, AllocatorType>::data() const noexcept
 {
     return begin().ptr();
 }
@@ -367,9 +370,9 @@ vector<ItemType, AllocType>::data() const noexcept
  *
  * \retval      SizeType: index of the iterator.
  *************************************************************************************************/
-template<typename ItemType, typename AllocType>
-[[nodiscard]] inline typename vector<ItemType, AllocType>::DifferenceType
-vector<ItemType, AllocType>::index_of(IteratorType iterator_) const
+template<typename ItemType, typename AllocatorType>
+[[nodiscard]] inline typename vector<ItemType, AllocatorType>::DifferenceType
+vector<ItemType, AllocatorType>::index_of(IteratorType iterator_) const
 {
     if constexpr(vector_safeness == true)
     {
@@ -390,9 +393,11 @@ vector<ItemType, AllocType>::index_of(IteratorType iterator_) const
  * \param       count_:  Number of elements to be assigned a new value.
  *              [defaults : 1]
  *************************************************************************************************/
-template<typename ItemType, typename AllocType>
+template<typename ItemType, typename AllocatorType>
 inline void
-vector<ItemType, AllocType>::assign(const ItemType& value_, DifferenceType offset_, SizeType count_)
+vector<ItemType, AllocatorType>::assign(const ItemType& value_,
+                                        DifferenceType  offset_,
+                                        SizeType        count_)
 {
     if constexpr(vector_safeness == true)
     {
@@ -411,9 +416,9 @@ vector<ItemType, AllocType>::assign(const ItemType& value_, DifferenceType offse
  * \param       offset_: Offset at which data should be assigned.
  *              [defaults : 0]
  *************************************************************************************************/
-template<typename ItemType, typename AllocType>
+template<typename ItemType, typename AllocatorType>
 inline void
-vector<ItemType, AllocType>::assign(InitializerListType ilist_, DifferenceType offset_)
+vector<ItemType, AllocatorType>::assign(InitializerListType ilist_, DifferenceType offset_)
 {
     if constexpr(vector_safeness == true)
     {
@@ -439,9 +444,9 @@ vector<ItemType, AllocType>::assign(InitializerListType ilist_, DifferenceType o
  * \throws      std::length_error("Index out of range")
  *              If the index is out of the vector's length.
  *************************************************************************************************/
-template<typename ItemType, typename AllocType>
+template<typename ItemType, typename AllocatorType>
 [[nodiscard]] inline ItemType&
-vector<ItemType, AllocType>::operator[](SizeType index_)
+vector<ItemType, AllocatorType>::operator[](SizeType index_)
 {
     if constexpr(vector_safeness == true)
     {
@@ -466,9 +471,9 @@ vector<ItemType, AllocType>::operator[](SizeType index_)
  * \throws      std::length_error("Index out of range")
  *              If the index is out of the vector's length.
  *************************************************************************************************/
-template<typename ItemType, typename AllocType>
+template<typename ItemType, typename AllocatorType>
 [[nodiscard]] inline const ItemType&
-vector<ItemType, AllocType>::operator[](SizeType index_) const
+vector<ItemType, AllocatorType>::operator[](SizeType index_) const
 {
     if constexpr(vector_safeness == true)
     {
@@ -491,9 +496,9 @@ vector<ItemType, AllocType>::operator[](SizeType index_) const
  *
  * \retval      vector&: Reference the vector itself.
  *************************************************************************************************/
-template<typename ItemType, typename AllocType>
-inline vector<ItemType, AllocType>&
-vector<ItemType, AllocType>::operator+=(const ItemType& rhs_)
+template<typename ItemType, typename AllocatorType>
+inline vector<ItemType, AllocatorType>&
+vector<ItemType, AllocatorType>::operator+=(const ItemType& rhs_)
 {
     push_back(rhs_);
     return *this;
@@ -507,9 +512,9 @@ vector<ItemType, AllocType>::operator+=(const ItemType& rhs_)
  *
  * \retval      vector&: Reference the vector itself.
  *************************************************************************************************/
-template<typename ItemType, typename AllocType>
-inline const vector<ItemType, AllocType>
-vector<ItemType, AllocType>::operator++(int)
+template<typename ItemType, typename AllocatorType>
+inline const vector<ItemType, AllocatorType>
+vector<ItemType, AllocatorType>::operator++(int)
 {
     reserve(capacity() + 1);
     return *this;
@@ -527,9 +532,9 @@ vector<ItemType, AllocType>::operator++(int)
  *              it's current size, the last element of the vector will be popped back and
  *              destroyed (safely).
  *************************************************************************************************/
-template<typename ItemType, typename AllocType>
-inline const vector<ItemType, AllocType>
-vector<ItemType, AllocType>::operator--(int)
+template<typename ItemType, typename AllocatorType>
+inline const vector<ItemType, AllocatorType>
+vector<ItemType, AllocatorType>::operator--(int)
 {
     if(capacity() == length())
     {
@@ -549,9 +554,9 @@ vector<ItemType, AllocType>::operator--(int)
  *
  * \retval      vector&: Reference the vector itself.
  *************************************************************************************************/
-template<typename ItemType, typename AllocType>
-inline vector<ItemType, AllocType>&
-vector<ItemType, AllocType>::operator>>(int steps_)
+template<typename ItemType, typename AllocatorType>
+inline vector<ItemType, AllocatorType>&
+vector<ItemType, AllocatorType>::operator>>(int steps_)
 {
     std::shift_right(cbegin(), cend(), steps_);
 
@@ -567,9 +572,9 @@ vector<ItemType, AllocType>::operator>>(int steps_)
  *
  * \retval      vector&: Reference the vector itself.
  *************************************************************************************************/
-template<typename ItemType, typename AllocType>
-inline vector<ItemType, AllocType>&
-vector<ItemType, AllocType>::operator<<(int steps_)
+template<typename ItemType, typename AllocatorType>
+inline vector<ItemType, AllocatorType>&
+vector<ItemType, AllocatorType>::operator<<(int steps_)
 {
     std::shift_left(cbegin(), cend(), steps_);
 
@@ -587,9 +592,9 @@ vector<ItemType, AllocType>::operator<<(int steps_)
  *
  * \retval      IteratorType: Iterator to the start of the vector's memory.
  *************************************************************************************************/
-template<typename ItemType, typename AllocType>
-[[nodiscard]] inline typename vector<ItemType, AllocType>::IteratorType
-vector<ItemType, AllocType>::begin() const noexcept
+template<typename ItemType, typename AllocatorType>
+[[nodiscard]] inline typename vector<ItemType, AllocatorType>::IteratorType
+vector<ItemType, AllocatorType>::begin() const noexcept
 {
     return m_beginIterator;
 }
@@ -604,9 +609,9 @@ vector<ItemType, AllocType>::begin() const noexcept
  * \note        This iterator does not point directly to the end of the memory, but to one element
  *              after the end of the memory.
  *************************************************************************************************/
-template<typename ItemType, typename AllocType>
-[[nodiscard]] inline typename vector<ItemType, AllocType>::IteratorType
-vector<ItemType, AllocType>::end() const noexcept
+template<typename ItemType, typename AllocatorType>
+[[nodiscard]] inline typename vector<ItemType, AllocatorType>::IteratorType
+vector<ItemType, AllocatorType>::end() const noexcept
 {
     return m_endIterator;
 }
@@ -618,9 +623,9 @@ vector<ItemType, AllocType>::end() const noexcept
  *
  * \retval      IteratorType: Const iterator to the start of the vector's memory.
  *************************************************************************************************/
-template<typename ItemType, typename AllocType>
-[[nodiscard]] inline const typename vector<ItemType, AllocType>::IteratorType
-vector<ItemType, AllocType>::cbegin() const noexcept
+template<typename ItemType, typename AllocatorType>
+[[nodiscard]] inline const typename vector<ItemType, AllocatorType>::IteratorType
+vector<ItemType, AllocatorType>::cbegin() const noexcept
 {
     return m_beginIterator;
 }
@@ -632,9 +637,9 @@ vector<ItemType, AllocType>::cbegin() const noexcept
  *
  * \retval      IteratorType: Const iterator to the end of the vector's memory.
  *************************************************************************************************/
-template<typename ItemType, typename AllocType>
-[[nodiscard]] inline const typename vector<ItemType, AllocType>::IteratorType
-vector<ItemType, AllocType>::cend() const noexcept
+template<typename ItemType, typename AllocatorType>
+[[nodiscard]] inline const typename vector<ItemType, AllocatorType>::IteratorType
+vector<ItemType, AllocatorType>::cend() const noexcept
 {
     return m_endIterator;
 }
@@ -647,9 +652,9 @@ vector<ItemType, AllocType>::cend() const noexcept
  * \retval      IteratorType: Iterator to the reversed start of the vector's memory.
  *                            (end - 1)
  *************************************************************************************************/
-template<typename ItemType, typename AllocType>
-[[nodiscard]] inline typename vector<ItemType, AllocType>::RIteratorType
-vector<ItemType, AllocType>::rbegin() const noexcept
+template<typename ItemType, typename AllocatorType>
+[[nodiscard]] inline typename vector<ItemType, AllocatorType>::RIteratorType
+vector<ItemType, AllocatorType>::rbegin() const noexcept
 {
     return RIteratorType(end());
 }
@@ -662,9 +667,9 @@ vector<ItemType, AllocType>::rbegin() const noexcept
  * \retval      IteratorType: Iterator to the reversed of the vector's memory.
  *                            (begin - 1)
  *************************************************************************************************/
-template<typename ItemType, typename AllocType>
-[[nodiscard]] inline typename vector<ItemType, AllocType>::RIteratorType
-vector<ItemType, AllocType>::rend() const noexcept
+template<typename ItemType, typename AllocatorType>
+[[nodiscard]] inline typename vector<ItemType, AllocatorType>::RIteratorType
+vector<ItemType, AllocatorType>::rend() const noexcept
 {
     return RIteratorType(begin());
 }
@@ -677,9 +682,9 @@ vector<ItemType, AllocType>::rend() const noexcept
  * \retval      IteratorType: Const iterator to the reversed start of the vector's memory.
  *                            (end - 1)
  *************************************************************************************************/
-template<typename ItemType, typename AllocType>
-[[nodiscard]] inline const typename vector<ItemType, AllocType>::RIteratorType
-vector<ItemType, AllocType>::crbegin() const noexcept
+template<typename ItemType, typename AllocatorType>
+[[nodiscard]] inline const typename vector<ItemType, AllocatorType>::RIteratorType
+vector<ItemType, AllocatorType>::crbegin() const noexcept
 {
     return RIteratorType(end());
 }
@@ -692,9 +697,9 @@ vector<ItemType, AllocType>::crbegin() const noexcept
  * \retval      IteratorType: Const iterator to the reversed of the vector's memory.
  *                            (begin - 1)
  *************************************************************************************************/
-template<typename ItemType, typename AllocType>
-[[nodiscard]] inline const typename vector<ItemType, AllocType>::RIteratorType
-vector<ItemType, AllocType>::crend() const noexcept
+template<typename ItemType, typename AllocatorType>
+[[nodiscard]] inline const typename vector<ItemType, AllocatorType>::RIteratorType
+vector<ItemType, AllocatorType>::crend() const noexcept
 {
     return RIteratorType(begin());
 }
@@ -710,9 +715,9 @@ vector<ItemType, AllocType>::crend() const noexcept
  *
  * \param       value_: Element to push back at the end of the vector.
  *************************************************************************************************/
-template<typename ItemType, typename AllocType>
+template<typename ItemType, typename AllocatorType>
 inline void
-vector<ItemType, AllocType>::push_back(const ItemType& value_)
+vector<ItemType, AllocatorType>::push_back(const ItemType& value_)
 {
     check_fit(1);
 
@@ -728,9 +733,9 @@ vector<ItemType, AllocType>::push_back(const ItemType& value_)
  *
  * \param       ilist_: Initializer list containing elements to push back at the end of the vector.
  *************************************************************************************************/
-template<typename ItemType, typename AllocType>
+template<typename ItemType, typename AllocatorType>
 inline void
-vector<ItemType, AllocType>::push_back(const InitializerListType ilist_)
+vector<ItemType, AllocatorType>::push_back(const InitializerListType ilist_)
 {
     check_fit(ilist_.size());
 
@@ -743,9 +748,9 @@ vector<ItemType, AllocType>::push_back(const InitializerListType ilist_)
  **************************************************************************************************
  * \brief       Remove the last element of the vector.
  *************************************************************************************************/
-template<typename ItemType, typename AllocType>
+template<typename ItemType, typename AllocatorType>
 inline void
-vector<ItemType, AllocType>::pop_back()
+vector<ItemType, AllocatorType>::pop_back()
 {
     if(length() == 0)
     {
@@ -764,10 +769,10 @@ vector<ItemType, AllocType>::pop_back()
  *
  * \param       args: The arguments needed to be passed to the constructor of an element.
  *************************************************************************************************/
-template<typename ItemType, typename AllocType>
+template<typename ItemType, typename AllocatorType>
 template<typename... Args>
 inline void
-vector<ItemType, AllocType>::emplace_back(Args&&... args_)
+vector<ItemType, AllocatorType>::emplace_back(Args&&... args_)
 {
     check_fit(1);
 
@@ -790,10 +795,10 @@ vector<ItemType, AllocType>::emplace_back(Args&&... args_)
  *                            (if multiple elements have been inserted, return position of the last
  *                             inserted element).
  *************************************************************************************************/
-template<typename ItemType, typename AllocType>
+template<typename ItemType, typename AllocatorType>
 template<typename... Args>
-inline typename vector<ItemType, AllocType>::IteratorType
-vector<ItemType, AllocType>::emplace(IteratorType position_, SizeType count_, Args&&... args_)
+inline typename vector<ItemType, AllocatorType>::IteratorType
+vector<ItemType, AllocatorType>::emplace(IteratorType position_, SizeType count_, Args&&... args_)
 {
     if constexpr(vector_safeness == true)
     {
@@ -827,10 +832,10 @@ vector<ItemType, AllocType>::emplace(IteratorType position_, SizeType count_, Ar
 *                            (if multiple elements have been inserted, return position of the last
 *                             inserted element).
 *************************************************************************************************/
-template<typename ItemType, typename AllocType>
+template<typename ItemType, typename AllocatorType>
 template<typename... Args>
-inline typename vector<ItemType, AllocType>::IteratorType
-vector<ItemType, AllocType>::emplace(DifferenceType offset_, SizeType count_, Args&&... args_)
+inline typename vector<ItemType, AllocatorType>::IteratorType
+vector<ItemType, AllocatorType>::emplace(DifferenceType offset_, SizeType count_, Args&&... args_)
 {
     IteratorType position = cbegin() + offset_;
 
@@ -852,9 +857,11 @@ vector<ItemType, AllocType>::emplace(DifferenceType offset_, SizeType count_, Ar
  *                            (if multiple elements have been inserted, return position of the last
  *                             inserted element).
  *************************************************************************************************/
-template<typename ItemType, typename AllocType>
-inline typename vector<ItemType, AllocType>::IteratorType
-vector<ItemType, AllocType>::insert(const ItemType& value_, const IteratorType position_, SizeType count_)
+template<typename ItemType, typename AllocatorType>
+inline typename vector<ItemType, AllocatorType>::IteratorType
+vector<ItemType, AllocatorType>::insert(const ItemType&    value_,
+                                        const IteratorType position_,
+                                        SizeType           count_)
 {
     if constexpr(vector_safeness == true)
     {
@@ -892,9 +899,11 @@ vector<ItemType, AllocType>::insert(const ItemType& value_, const IteratorType p
  * \throws      std::invalid_argument("Invalid insert offset")
  *              Offset was out of bounds.
  *************************************************************************************************/
-template<typename ItemType, typename AllocType>
-inline typename vector<ItemType, AllocType>::IteratorType
-vector<ItemType, AllocType>::insert(const ItemType& value_, DifferenceType offset_, SizeType count_)
+template<typename ItemType, typename AllocatorType>
+inline typename vector<ItemType, AllocatorType>::IteratorType
+vector<ItemType, AllocatorType>::insert(const ItemType& value_,
+                                        DifferenceType  offset_,
+                                        SizeType        count_)
 {
     IteratorType position = cbegin() + offset_;
 
@@ -915,11 +924,11 @@ vector<ItemType, AllocType>::insert(const ItemType& value_, DifferenceType offse
  *                            (if multiple elements have been inserted, return position of the last
  *                             inserted element).
  *************************************************************************************************/
-template<typename ItemType, typename AllocType>
-inline typename vector<ItemType, AllocType>::IteratorType
-vector<ItemType, AllocType>::insert(const IteratorType sourceBegin_,
-                         const IteratorType sourceEnd_,
-                         const IteratorType position_)
+template<typename ItemType, typename AllocatorType>
+inline typename vector<ItemType, AllocatorType>::IteratorType
+vector<ItemType, AllocatorType>::insert(const IteratorType sourceBegin_,
+                                        const IteratorType sourceEnd_,
+                                        const IteratorType position_)
 {
     if constexpr(vector_safeness == true)
     {
@@ -955,11 +964,11 @@ vector<ItemType, AllocType>::insert(const IteratorType sourceBegin_,
  * \throws      std::invalid_argument("Invalid insert offset")
  *              Offset was out of bounds.
  *************************************************************************************************/
-template<typename ItemType, typename AllocType>
-inline typename vector<ItemType, AllocType>::IteratorType
-vector<ItemType, AllocType>::insert(const IteratorType sourceBegin_,
-                         const IteratorType sourceEnd_,
-                         DifferenceType     offset_)
+template<typename ItemType, typename AllocatorType>
+inline typename vector<ItemType, AllocatorType>::IteratorType
+vector<ItemType, AllocatorType>::insert(const IteratorType sourceBegin_,
+                                        const IteratorType sourceEnd_,
+                                        DifferenceType     offset_)
 {
     if constexpr(vector_safeness)
     {
@@ -991,9 +1000,9 @@ vector<ItemType, AllocType>::insert(const IteratorType sourceBegin_,
  * \throws      std::invalid_argument("Invalid insert offset")
  *              Offset was out of bounds.
  *************************************************************************************************/
-template<typename ItemType, typename AllocType>
-inline typename vector<ItemType, AllocType>::IteratorType
-vector<ItemType, AllocType>::insert(const InitializerListType ilist_, SizeType offset_)
+template<typename ItemType, typename AllocatorType>
+inline typename vector<ItemType, AllocatorType>::IteratorType
+vector<ItemType, AllocatorType>::insert(const InitializerListType ilist_, SizeType offset_)
 {
     if constexpr(vector_safeness == true)
     {
@@ -1019,9 +1028,9 @@ vector<ItemType, AllocType>::insert(const InitializerListType ilist_, SizeType o
  *
  * \retval      IteratorType: Position at which the element has been replaced.
  *************************************************************************************************/
-template<typename ItemType, typename AllocType>
-inline typename vector<ItemType, AllocType>::IteratorType
-vector<ItemType, AllocType>::replace(const ItemType& value_, SizeType offset_)
+template<typename ItemType, typename AllocatorType>
+inline typename vector<ItemType, AllocatorType>::IteratorType
+vector<ItemType, AllocatorType>::replace(const ItemType& value_, SizeType offset_)
 {
     at(offset_) = value_;
 
@@ -1038,9 +1047,9 @@ vector<ItemType, AllocType>::replace(const ItemType& value_, SizeType offset_)
  * \retval      IteratorType: Iterator to the element that was replaced.
  *                            (end iterator - 1)
  *************************************************************************************************/
-template<typename ItemType, typename AllocType>
-inline typename vector<ItemType, AllocType>::IteratorType
-vector<ItemType, AllocType>::replace_back(const ItemType& value_)
+template<typename ItemType, typename AllocatorType>
+inline typename vector<ItemType, AllocatorType>::IteratorType
+vector<ItemType, AllocatorType>::replace_back(const ItemType& value_)
 {
     IteratorType position = end() - 1;
 
@@ -1058,9 +1067,9 @@ vector<ItemType, AllocType>::replace_back(const ItemType& value_)
  * \retval      IteratorType: Iterator to the element that was replaced.
  *                            (begin iterator)
  *************************************************************************************************/
-template<typename ItemType, typename AllocType>
-inline typename vector<ItemType, AllocType>::IteratorType
-vector<ItemType, AllocType>::replace_front(const ItemType& value_)
+template<typename ItemType, typename AllocatorType>
+inline typename vector<ItemType, AllocatorType>::IteratorType
+vector<ItemType, AllocatorType>::replace_front(const ItemType& value_)
 {
     IteratorType position = begin();
 
@@ -1081,9 +1090,9 @@ vector<ItemType, AllocType>::replace_front(const ItemType& value_)
  *
  * \note        Equivalent to std::vector's `size()` method.
  *************************************************************************************************/
-template<typename ItemType, typename AllocType>
-[[nodiscard]] inline typename vector<ItemType, AllocType>::SizeType
-vector<ItemType, AllocType>::length() const noexcept
+template<typename ItemType, typename AllocatorType>
+[[nodiscard]] inline typename vector<ItemType, AllocatorType>::SizeType
+vector<ItemType, AllocatorType>::length() const noexcept
 {
     DifferenceType diff = end() - begin();
     return static_cast<SizeType>(diff);
@@ -1096,9 +1105,9 @@ vector<ItemType, AllocType>::length() const noexcept
  *
  * \retval      SizeType: Elements that can fit in the allocated space.
  *************************************************************************************************/
-template<typename ItemType, typename AllocType>
-[[nodiscard]] inline typename vector<ItemType, AllocType>::SizeType
-vector<ItemType, AllocType>::capacity() const noexcept
+template<typename ItemType, typename AllocatorType>
+[[nodiscard]] inline typename vector<ItemType, AllocatorType>::SizeType
+vector<ItemType, AllocatorType>::capacity() const noexcept
 {
     return m_capacity;
 }
@@ -1111,9 +1120,9 @@ vector<ItemType, AllocType>::capacity() const noexcept
  * \retval      bool: True if there are no elements in the vector.
  *                    False if there are elements in the vector.
  *************************************************************************************************/
-template<typename ItemType, typename AllocType>
+template<typename ItemType, typename AllocatorType>
 [[nodiscard]] inline bool
-vector<ItemType, AllocType>::is_empty() const noexcept
+vector<ItemType, AllocatorType>::is_empty() const noexcept
 {
     return length() == 0;
 }
@@ -1126,9 +1135,9 @@ vector<ItemType, AllocType>::is_empty() const noexcept
  * \retval      bool: True if there are elements in the vector.
  *                    False if there are not elements in the vector.
  *************************************************************************************************/
-template<typename ItemType, typename AllocType>
+template<typename ItemType, typename AllocatorType>
 [[nodiscard]] inline bool
-vector<ItemType, AllocType>::is_not_empty() const noexcept
+vector<ItemType, AllocatorType>::is_not_empty() const noexcept
 {
     return !is_empty();
 }
@@ -1143,9 +1152,9 @@ vector<ItemType, AllocType>::is_not_empty() const noexcept
  * \note        This function works for shrinking as well as expanding the vector's allocated
  *              memory space.
  *************************************************************************************************/
-template<typename ItemType, typename AllocType>
+template<typename ItemType, typename AllocatorType>
 inline void
-vector<ItemType, AllocType>::reserve(SizeType newCapacity_)
+vector<ItemType, AllocatorType>::reserve(SizeType newCapacity_)
 {
     /* Check if resizing is necessary */
     if(newCapacity_ == capacity())
@@ -1170,9 +1179,9 @@ vector<ItemType, AllocType>::reserve(SizeType newCapacity_)
  *              resize() changes the amount of elements contained in the vector, and can call
  *              \ref reserve() if in need of more memory.
  *************************************************************************************************/
-template<typename ItemType, typename AllocType>
+template<typename ItemType, typename AllocatorType>
 inline void
-vector<ItemType, AllocType>::resize(SizeType newLength_)
+vector<ItemType, AllocatorType>::resize(SizeType newLength_)
 {
     /* Check if reserving memory is necessary */
     if(newLength_ > capacity())
@@ -1192,9 +1201,9 @@ vector<ItemType, AllocType>::resize(SizeType newLength_)
  **************************************************************************************************
  * \brief       Destroy all elements currently in the vector and set its length to 0.
  *************************************************************************************************/
-template<typename ItemType, typename AllocType>
+template<typename ItemType, typename AllocatorType>
 inline void
-vector<ItemType, AllocType>::clear()
+vector<ItemType, AllocatorType>::clear()
 {
     std::destroy(begin(), end());
 
@@ -1207,9 +1216,9 @@ vector<ItemType, AllocType>::clear()
  * \brief       Shrink allocated memory to fit exactly the number of elements currently being
  *              contained in the vector.
  *************************************************************************************************/
-template<typename ItemType, typename AllocType>
+template<typename ItemType, typename AllocatorType>
 inline void
-vector<ItemType, AllocType>::shrink_to_fit()
+vector<ItemType, AllocatorType>::shrink_to_fit()
 {
     if(length() == capacity())
     {
@@ -1231,9 +1240,9 @@ vector<ItemType, AllocType>::shrink_to_fit()
  * \retval      A string containing the capacity, the size, and all the elements converted to a
  *              string.
  *************************************************************************************************/
-template<typename ItemType, typename AllocType>
+template<typename ItemType, typename AllocatorType>
 [[nodiscard]] inline std::string
-vector<ItemType, AllocType>::to_string() const
+vector<ItemType, AllocatorType>::to_string() const
 {
     std::ostringstream os;
     os << *this;
@@ -1253,45 +1262,25 @@ vector<ItemType, AllocType>::to_string() const
  *
  * \throws      std::bad_alloc: Could not allocate block of memory.
  *************************************************************************************************/
-template<typename ItemType, typename AllocType>
+template<typename ItemType, typename AllocatorType>
 inline void
-vector<ItemType, AllocType>::vector_constructor(SizeType size_)
+vector<ItemType, AllocatorType>::vector_constructor(SizeType size_)
 {
-    m_capacity = size_;
-
     /* Reallocate block of memory */
-    const std::size_t blockSize = capacity();
-    ItemType*         tempPtr   = new ItemType[blockSize];
-
-   /* AllocatorType allocator;
-     allocator.allocate(size_);*/
-
-
-    /* Check if allocation was successful */
-    if(tempPtr == nullptr)
-    {
-        if(size_ != 0)
-        {
-            throw std::bad_alloc();
-        }
-        else
-        {
-            m_beginIterator = IteratorType(reinterpret_cast<ItemType*>(this));
-            m_endIterator   = IteratorType(reinterpret_cast<ItemType*>(this));
-            return;
-        }
-    }
+    ItemType* tempPtr = AllocatorTraits::allocate(m_allocator, size_);
+    ItemType* oldPtr  = begin().ptr();
 
     /* Move data from old vector memory to new memory */
     std::move(begin(), end(), tempPtr);
 
-    /* Deallocate old memory */
-    delete[] begin().ptr();
-
     /* Set iterators */
-    const DifferenceType ptrDiff = DifferenceType(length());
-    m_beginIterator              = IteratorType(static_cast<ItemType*>(tempPtr));
-    m_endIterator                = IteratorType(begin() + ptrDiff);
+    DifferenceType diff = length();
+    m_beginIterator     = IteratorType(static_cast<ItemType*>(tempPtr));
+    m_endIterator       = IteratorType(begin() + diff);
+
+    /* Deallocate old memory */
+    m_allocator.deallocate(oldPtr, capacity());
+    m_capacity = size_;
 }
 
 
@@ -1301,9 +1290,9 @@ vector<ItemType, AllocType>::vector_constructor(SizeType size_)
  *
  * \param       addedLength_: Numbers of elements to add to the current length.
  *************************************************************************************************/
-template<typename ItemType, typename AllocType>
+template<typename ItemType, typename AllocatorType>
 inline void
-vector<ItemType, AllocType>::add_size(SizeType addedLength_)
+vector<ItemType, AllocatorType>::add_size(SizeType addedLength_)
 {
     change_size(length() + addedLength_);
 }
@@ -1320,9 +1309,9 @@ vector<ItemType, AllocType>::add_size(SizeType addedLength_)
  *              It should only be called when sure that the vector can hold all the added elements.
  *              (using a function such as \ref check_fit() is recommended).
  *************************************************************************************************/
-template<typename ItemType, typename AllocType>
+template<typename ItemType, typename AllocatorType>
 inline void
-vector<ItemType, AllocType>::change_size(SizeType newLength_)
+vector<ItemType, AllocatorType>::change_size(SizeType newLength_)
 {
     m_endIterator = IteratorType(&(begin()[newLength_]));
 }
@@ -1335,9 +1324,9 @@ vector<ItemType, AllocType>::change_size(SizeType newLength_)
  *
  * \param       extraLength_: Numbers of elements to add to the current length.
  *************************************************************************************************/
-template<typename ItemType, typename AllocType>
+template<typename ItemType, typename AllocatorType>
 inline void
-vector<ItemType, AllocType>::check_fit(SizeType extraLength_)
+vector<ItemType, AllocatorType>::check_fit(SizeType extraLength_)
 {
     if(length() + extraLength_ > capacity())
     {
@@ -1356,9 +1345,9 @@ vector<ItemType, AllocType>::check_fit(SizeType extraLength_)
  * \throws      std::invalid_argument("Invalid iterator"):
  *              If the iterator does not belong in the vector's boundaries.
  *************************************************************************************************/
-template<typename ItemType, typename AllocType>
+template<typename ItemType, typename AllocatorType>
 inline void
-vector<ItemType, AllocType>::check_if_valid(IteratorType iterator_)
+vector<ItemType, AllocatorType>::check_if_valid(IteratorType iterator_)
 {
     if constexpr(vector_safeness == true)
     {

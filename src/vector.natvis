@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?> 
 <AutoVisualizer xmlns="http://schemas.microsoft.com/vstudio/debugger/natvis/2010">
   <Type Name ="pel::vector&lt;*&gt;">
-    <DisplayString>{{ length = {length()} }}</DisplayString>
+    <DisplayString>{{ length = {m_endIterator.m_ptr - m_beginIterator.m_ptr} }}</DisplayString>
     <Expand>
-      <Item Name ="[length]"> length() </Item>
+      <Item Name ="[length]"> m_endIterator.m_ptr - m_beginIterator.m_ptr </Item>
       <Item Name ="[capacity]"> m_capacity </Item>
       <ArrayItems>
-        <Size> m_endIterator.ptr() - m_beginIterator.ptr() </Size>
-        <ValuePointer> m_beginIterator </ValuePointer>
+        <Size> m_endIterator.m_ptr - m_beginIterator.m_ptr </Size>
+        <ValuePointer> m_beginIterator.m_ptr </ValuePointer>
       </ArrayItems>
     </Expand>
   </Type>

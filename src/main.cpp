@@ -23,8 +23,6 @@
  */
 
 #include <iostream>
-#include <tuple>
-#include <variant>
 
 #include "./tests.inl"
 #include "./vector.hpp"
@@ -36,16 +34,8 @@ main()
     try
     {
         std::cout << "Starting vector project\n";
-        constexpr std::uint32_t maxSize = 20;
-        for(std::size_t i = 1; i < maxSize; i++)
-        {
-            constexpr std::uint32_t attempts = 10000;
-            std::cout << "\nBuilding vector of " << i << "elements\n";
 
-            constructNormalVector(attempts, i);
-            constructVectorNormally(attempts, i);
-            constructVectorByMove(attempts, i);
-        }
+
 
         return 0;
     }

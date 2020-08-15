@@ -58,16 +58,16 @@ using reverse_vector_iterator = iterator_base<ItemType>;
 // using reverse_vector_iterator = std::reverse_iterator<vector_iterator<ItemType>>;
 
 
-template<typename ItemType, typename AllocType = std::allocator<ItemType>>
+template<typename ItemType, typename AllocatorType = std::allocator<ItemType>>
 class vector : container_base<ItemType, vector_iterator<ItemType>>
 {
-    static_assert(std::is_same_v<ItemType, AllocType::value_type>,
+    static_assert(std::is_same_v<ItemType, typename AllocatorType::value_type>,
                   "Allocator must match element type");
 
 public:
     /*********************************************************************************************/
     /* Type definitions ------------------------------------------------------------------------ */
-    using AllocTraits = std::allocator_traits<AllocType>;
+    using AllocatorTraits = std::allocator_traits<AllocatorType>;
 
     using SizeType            = std::size_t;
     using DifferenceType      = std::ptrdiff_t;
@@ -88,10 +88,10 @@ public:
     explicit vector(SizeType length_, Args&&... args_);
 
     vector(InitializerListType ilist_);
-    vector(const vector<ItemType, AllocType>& otherVector_);
-    vector& operator=(const vector<ItemType, AllocType>& copy_) = default;
-    vector(vector<ItemType, AllocType>&& movedVector_) noexcept = default;
-    vector& operator=(vector<ItemType, AllocType>&& move_) noexcept = default;
+    vector(const vector<ItemType, AllocatorType>& otherVector_);
+    vector& operator=(const vector<ItemType, AllocatorType>& copy_) = default;
+    vector(vector<ItemType, AllocatorType>&& movedVector_) noexcept = default;
+    vector& operator=(vector<ItemType, AllocatorType>&& move_) noexcept = default;
 
     /* Destructor */
     ~vector() override;
@@ -123,13 +123,13 @@ public:
     [[nodiscard]] ItemType&       operator[](SizeType index_) override;
     [[nodiscard]] const ItemType& operator[](SizeType index_) const override;
 
-    vector<ItemType, AllocType>& operator+=(const ItemType& rhs_);
+    vector<ItemType, AllocatorType>& operator+=(const ItemType& rhs_);
 
-    const vector<ItemType, AllocType> operator++(int);
-    const vector<ItemType, AllocType> operator--(int);
+    const vector<ItemType, AllocatorType> operator++(int);
+    const vector<ItemType, AllocatorType> operator--(int);
 
-    vector<ItemType, AllocType>& operator>>(int steps_);
-    vector<ItemType, AllocType>& operator<<(int steps_);
+    vector<ItemType, AllocatorType>& operator>>(int steps_);
+    vector<ItemType, AllocatorType>& operator<<(int steps_);
 
 
     /*********************************************************************************************/
@@ -215,7 +215,7 @@ private:
     SizeType     m_capacity      = 0;
     IteratorType m_beginIterator = IteratorType(nullptr);
     IteratorType m_endIterator   = IteratorType(nullptr);
-    AllocType    m_allocator {};
+    AllocatorType    m_allocator {};
 
 
     /*********************************************************************************************/
