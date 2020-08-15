@@ -24,6 +24,7 @@
 #pragma once
 #include "./vector.hpp"
 
+
 namespace pel
 {
 
@@ -124,38 +125,6 @@ vector<ItemType, AllocatorType>::vector(const IteratorType   beginIterator_,
     vector_constructor(endIterator_ - beginIterator_);
 
     std::copy(beginIterator_, endIterator_, begin());
-}
-
-
-/**
- **************************************************************************************************
- * \brief       Move-based constructor for the vector class.
- *              Takes the arguments used to  an `ItemType` object, and forwards them.
- *
- * \param       length_ : Number of elements to create
- * \param       args_ :   Arguments to forward to the `ItemType` constructor
- * \param       alloc_:   Allocator to use for all memory allocations
- *              [defaults : AllocatorType{}]
- *************************************************************************************************/
-template<typename ItemType, typename AllocatorType>
-template<typename... Args>
-vector<ItemType, AllocatorType>::vector(SizeType length_,
-                                        Args&&... args_,
-                                        const AllocatorType& alloc_)
-: m_allocator{alloc_}
-{
-    vector_constructor(length_);
-    add_size(length_);
-
-    /* clang-format off */
-    auto builder = [&](ItemType& element)
-                   {
-                       AllocatorTraits::construct(m_allocator,
-                                                  &element,
-                                                  std::forward<Args>(args_)...);
-                   };
-    /* clang-format on */
-    std::for_each(begin(), end(), builder);
 }
 
 
@@ -266,6 +235,62 @@ vector<ItemType, AllocatorType>::vector(InitializerListType ilist_, const Alloca
 
     std::copy(ilist_.begin(), ilist_.end(), begin());
     change_size(ilist_.size());
+}
+
+
+/**
+ **************************************************************************************************
+ * \brief       Move-based constructor for the vector class.
+ *              Takes the arguments used to  an `ItemType` object, and forwards them.
+ *
+ * \param       length_ : Number of elements to create
+ * \param       args_ :   Arguments to forward to the `ItemType` constructor
+ * \param       alloc_:   Allocator to use for all memory allocations
+ *              [defaults : AllocatorType{}]
+ *************************************************************************************************/
+template<typename ItemType, typename AllocatorType>
+template<typename... Args>
+vector<ItemType, AllocatorType>::vector(SizeType length_,
+                                        Args&&... args_,
+                                        const AllocatorType& alloc_)
+: m_allocator{alloc_}
+{
+    vector_constructor(length_);
+    add_size(length_);
+
+    /* clang-format off */
+    auto builder = [&](ItemType& element)
+                   {
+                       AllocatorTraits::construct(m_allocator,
+                                                  &element,
+                                                  std::forward<Args>(args_)...);
+                   };
+    /* clang-format on */
+    std::for_each(begin(), end(), builder);
+}
+
+
+/**
+ **************************************************************************************************
+ * \brief       Generator-taking constructor for the vector class.
+ *              Takes a generator function as parameter to create `length_` items in the vector.
+ *
+ * \param       length_ :   Number of elements to create
+ * \param       function_ : Function (returning `ItemType` and taking no arguments) called to
+ *                          initialize all the values in the vector.
+ * \param       alloc_:     Allocator to use for all memory allocations
+ *              [defaults : AllocatorType{}]
+ *************************************************************************************************/
+template<typename ItemType, typename AllocatorType>
+vector<ItemType, AllocatorType>::vector(SizeType                      length_,
+                                        std::function<ItemType(void)> function_,
+                                        const AllocatorType&          alloc_)
+: m_allocator{alloc_}
+{
+    vector_constructor(length_);
+    add_size(length_);
+
+    std::generate(begin(), end(), function_);
 }
 
 
@@ -1375,7 +1400,7 @@ vector<ItemType, AllocatorType>::to_string() const
  * \throws      std::bad_alloc: Could not allocate block of memory.
  *************************************************************************************************/
 template<typename ItemType, typename AllocatorType>
-inline void
+void
 vector<ItemType, AllocatorType>::vector_constructor(SizeType size_)
 {
     /* Reallocate block of memory */

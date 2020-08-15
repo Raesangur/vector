@@ -30,15 +30,15 @@
 #include <algorithm>
 #include <cstddef>
 #include <cstdlib>
+#include <functional>
 #include <memory>
 #include <ostream>
 #include <sstream>
 #include <stdexcept>
 
+
 namespace pel
 {
-/** \todo Lambda constructor */
-/** \todo Add back move operations */
 /** \todo Increase allocation step size automatically when needed */
 /**       \todo Make allocation step sizes align with the implementation's
                 memory allocations alignments and sizes. */
@@ -75,9 +75,7 @@ public:
 
 
     /*********************************************************************************************/
-    /* Methods --------------------------------------------------------------------------------- */
-
-    /* Constructors */
+    /* Constructors ---------------------------------------------------------------------------- */
     explicit vector(SizeType length_ = 0, const AllocatorType& alloc_ = AllocatorType{});
     explicit vector(SizeType             length_,
                     const ItemType&      value_,
@@ -86,13 +84,8 @@ public:
                     IteratorType         endIterator_,
                     const AllocatorType& alloc_ = AllocatorType{});
 
-    template<typename... Args>
-    explicit vector(SizeType length_,
-                    Args&&... args_,
-                    const AllocatorType& alloc_ = AllocatorType{});
-
-    vector(InitializerListType ilist_, const AllocatorType& alloc_ = AllocatorType{});
-
+    /*-----------------------------------------------*/
+    /* Copy constructor and copy-assignment operator */
     template<typename OtherAllocatorType = AllocatorType>
     vector(const vector<ItemType, OtherAllocatorType>& otherVector_,
            const AllocatorType&                        alloc_ = AllocatorType{});
@@ -100,11 +93,28 @@ public:
     vector& operator=(const vector<ItemType, OtherAllocatorType>& copy_);
     vector& operator=(const vector& copy_);
 
+    /*-----------------------------------------------*/
+    /* Move constructor and move-assignment operator */
     template<typename OtherAllocatorType = AllocatorType>
     vector(vector<ItemType, OtherAllocatorType>&& move_, AllocatorType& alloc_ = AllocatorType{});
     template<typename OtherAllocatorType = AllocatorType>
     vector& operator=(vector<ItemType, OtherAllocatorType>&& move_);
 
+
+    /*----------------------*/
+    /* Special constructors */
+    vector(InitializerListType ilist_, const AllocatorType& alloc_ = AllocatorType{});
+
+    template<typename... Args>
+    explicit vector(SizeType length_,
+                    Args&&... args_,
+                    const AllocatorType& alloc_ = AllocatorType{});
+
+    explicit vector(SizeType                      length_,
+                    std::function<ItemType(void)> function_,
+                    const AllocatorType&          alloc_ = AllocatorType{});
+
+    /*------------*/
     /* Destructor */
     ~vector() override;
 
@@ -213,7 +223,7 @@ public:
     /*********************************************************************************************/
     /* Private methods ------------------------------------------------------------------------- */
 private:
-    inline void vector_constructor(SizeType size_);
+    void vector_constructor(SizeType size_);
 
     void add_size(SizeType addedLength_);
     void change_size(SizeType newLength_);
@@ -242,4 +252,8 @@ private:
 
 };        // namespace pel
 
+
 #include "./vector.inl"
+
+/*************************************************************************************************/
+/* ----- END OF FILE ----- */

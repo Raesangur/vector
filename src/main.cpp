@@ -37,13 +37,16 @@ main()
     {
         std::cout << "Starting vector project\n";
 
-        std::array<std::uint8_t, 2000>      bigArray {0};
-        std::pmr::monotonic_buffer_resource memResource {bigArray.data(), bigArray.size()};
-        pel::vector<int, std::pmr::polymorphic_allocator<int>> myVec {
-          std::initializer_list {1, 2, 3, 4, 5, 6},
-          std::pmr::polymorphic_allocator<int> {&memResource}};
+        int toto = 0;
 
-
+        std::array<std::uint8_t, 2000>      bigArray{0};
+        std::pmr::monotonic_buffer_resource memResource{bigArray.data(), bigArray.size()};
+        pel::vector<int, std::pmr::polymorphic_allocator<int>> myVec(
+          10,
+          [&]() {
+              return toto++;
+          },
+          std::pmr::polymorphic_allocator<int>{&memResource});
 
         return static_cast<int>(myVec.length());
     }
