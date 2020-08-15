@@ -35,14 +35,13 @@
 #include <sstream>
 #include <stdexcept>
 
-
+#pragma warning (disable:4626)
 namespace pel
 {
 /** \todo Lambda constructor */
 /** \todo Free memory automatically when not needed */
 /** \todo make things actually constexpr */
 /** \todo working reverse iterators */
-/** \todo support allocators */
 /** \todo Increase allocation step size automatically when needed */
 /**       \todo Make allocation step sizes align with the implementation's
                 memory allocations alignments and sizes. */
@@ -80,18 +79,31 @@ public:
     /* Methods --------------------------------------------------------------------------------- */
 
     /* Constructors */
-    explicit vector(SizeType length_ = 0);
-    explicit vector(SizeType length_, const ItemType& defaultValue_);
-    explicit vector(IteratorType beginIterator_, IteratorType endIterator_);
+    explicit vector(SizeType length_ = 0, const AllocatorType& alloc_ = AllocatorType {});
+    explicit vector(SizeType             length_,
+                    const ItemType&      value_,
+                    const AllocatorType& alloc_ = AllocatorType {});
+    explicit vector(IteratorType         beginIterator_,
+                    IteratorType         endIterator_,
+                    const AllocatorType& alloc_ = AllocatorType {});
 
     template<typename... Args>
-    explicit vector(SizeType length_, Args&&... args_);
+    explicit vector(SizeType length_,
+                    Args&&... args_,
+                    const AllocatorType& alloc_ = AllocatorType {});
 
-    vector(InitializerListType ilist_);
-    vector(const vector<ItemType, AllocatorType>& otherVector_);
-    vector& operator=(const vector<ItemType, AllocatorType>& copy_) = default;
-    vector(vector<ItemType, AllocatorType>&& movedVector_) noexcept = default;
-    vector& operator=(vector<ItemType, AllocatorType>&& move_) noexcept = default;
+    vector(InitializerListType ilist_, const AllocatorType& alloc_ = AllocatorType {});
+
+    template<typename OtherAllocatorType>
+    vector(const vector<ItemType, OtherAllocatorType>& otherVector_,
+           const AllocatorType&                        alloc_ = AllocatorType {});
+    template<typename OtherAllocatorType>
+    vector& operator=(const vector<ItemType, OtherAllocatorType>& copy_);
+
+    /*template<typename OtherAllocatorType>
+    vector(vector<ItemType, OtherAllocatorType>&& movedVector_) noexcept = default;
+    template<typename OtherAllocatorType>
+    vector& operator=(vector<ItemType, OtherAllocatorType>&& move_) noexcept = default;*/
 
     /* Destructor */
     ~vector() override;
@@ -179,10 +191,11 @@ public:
 
     /*********************************************************************************************/
     /* Memory ---------------------------------------------------------------------------------- */
-    [[nodiscard]] SizeType length() const noexcept override;
-    [[nodiscard]] SizeType capacity() const noexcept;
-    [[nodiscard]] bool     is_empty() const noexcept override;
-    [[nodiscard]] bool     is_not_empty() const noexcept override;
+    [[nodiscard]] SizeType             length() const noexcept override;
+    [[nodiscard]] SizeType             capacity() const noexcept;
+    [[nodiscard]] bool                 is_empty() const noexcept override;
+    [[nodiscard]] bool                 is_not_empty() const noexcept override;
+    [[nodiscard]] const AllocatorType& get_allocator() const noexcept;
 
     void reserve(SizeType newCapacity_);
     void resize(SizeType newLength_);
@@ -212,10 +225,10 @@ private:
     /*********************************************************************************************/
     /* Variables ------------------------------------------------------------------------------- */
 private:
-    SizeType     m_capacity      = 0;
-    IteratorType m_beginIterator = IteratorType(nullptr);
-    IteratorType m_endIterator   = IteratorType(nullptr);
-    AllocatorType    m_allocator {};
+    SizeType      m_capacity      = 0;
+    IteratorType  m_beginIterator = IteratorType(nullptr);
+    IteratorType  m_endIterator   = IteratorType(nullptr);
+    AllocatorType m_allocator {};
 
 
     /*********************************************************************************************/
@@ -228,5 +241,6 @@ private:
 };
 
 };        // namespace pel
+#pragma warning (default:4626)
 
 #include "./vector.inl"

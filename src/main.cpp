@@ -22,7 +22,9 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+#include <array>
 #include <iostream>
+#include <memory_resource>
 
 #include "./tests.inl"
 #include "./vector.hpp"
@@ -35,13 +37,19 @@ main()
     {
         std::cout << "Starting vector project\n";
 
+        std::array<std::uint8_t, 2000>      bigArray {0};
+        std::pmr::monotonic_buffer_resource memResource {bigArray.data(), bigArray.size()};
+        pel::vector<int, std::pmr::polymorphic_allocator<int>> myVec {
+          std::initializer_list {1, 2, 3, 4, 5, 6},
+          std::pmr::polymorphic_allocator<int> {&memResource}};
 
 
-        return 0;
+
+        return static_cast<int>(myVec.length());
     }
     catch(...)
     {
-        //std::cout << "Uh oh\n";
+        // std::cout << "Uh oh\n";
         return 1;
     }
 }

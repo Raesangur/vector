@@ -58,6 +58,10 @@ sortVector(pel::vector<T>& vec) noexcept
 
 
 
+
+/*------------------------------------*/
+/* Benchmarking functions */
+
 double
 constructVectorNormally(std::uint32_t iterations, std::size_t elements = 1)
 {
@@ -90,9 +94,12 @@ double
 constructVectorByMove(std::uint32_t iterations, std::size_t elements = 1)
 {
     const Timer tmr;
+    const char* message = "Hello World";
     for(std::uint32_t i = 0; i < iterations; i++)
     {
-        pel::vector<std::string> vec(elements, std::move("Hello World"));
+        #pragma warning (disable:26478)
+        pel::vector<std::string> vec(elements, message);
+        #pragma warning (default:26478)
     }
     const double result = tmr.elapsed();
     std::cout << "Move test: " << result << '\n';
