@@ -1012,6 +1012,14 @@ vector<ItemType, AllocatorType>::push_back(const InitializerListType ilist_)
     add_size(ilist_.size());
 }
 
+
+/**
+ **************************************************************************************************
+ * \brief       Add elements from another vector to the end of the vector, after the current 
+ *              last item.
+ *
+ * \param       otherVector_: Vector containing elements to push back at the end of the vector.
+ *************************************************************************************************/
 template<typename ItemType, typename AllocatorType>
 template<typename OtherAllocatorType>
 inline void
