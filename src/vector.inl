@@ -1012,6 +1012,17 @@ vector<ItemType, AllocatorType>::push_back(const InitializerListType ilist_)
     add_size(ilist_.size());
 }
 
+template<typename ItemType, typename AllocatorType>
+template<typename OtherAllocatorType>
+inline void
+vector<ItemType, AllocatorType>::push_back(const vector<ItemType, OtherAllocatorType>& otherVector_)
+{
+    check_fit(otherVector_.length());
+
+    std::copy(otherVector_.cbegin(), otherVector_.cend(), end());
+    add_size(otherVector_.length());
+}
+
 
 /**
  **************************************************************************************************

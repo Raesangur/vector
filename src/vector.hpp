@@ -172,9 +172,11 @@ public:
 
     /*********************************************************************************************/
     /* Element management ---------------------------------------------------------------------- */
+    void pop_back();
     void push_back(const ItemType& value_);
     void push_back(InitializerListType ilist_);
-    void pop_back();
+    template<typename OtherAllocatorType = AllocatorType>
+    void push_back(const vector<ItemType, OtherAllocatorType>& otherVector_);
 
     template<typename... Args>
     void emplace_back(Args&&... args_);
