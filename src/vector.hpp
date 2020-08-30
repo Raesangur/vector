@@ -28,8 +28,7 @@
 #include "./container_base/src/container_base.h"
 
 #include <algorithm>
-#include <cstddef>
-#include <cstdlib>
+#include <compare>
 #include <functional>
 #include <memory>
 #include <ostream>
@@ -80,8 +79,9 @@ public:
     /*-----------------------------------------------*/
     /* Copy constructor and copy-assignment operator */
     template<typename OtherAllocatorType = AllocatorType>
-    vector(const vector<ItemType, OtherAllocatorType>& otherVector_,
-           const AllocatorType&                        alloc_ = AllocatorType{});
+    explicit vector(const vector<ItemType, OtherAllocatorType>& otherVector_,
+                    const AllocatorType&                        alloc_ = AllocatorType{});
+    explicit vector(const vector& otherVector_);
     template<typename OtherAllocatorType = AllocatorType>
     vector& operator=(const vector<ItemType, OtherAllocatorType>& copy_);
     vector& operator=(const vector& copy_);
@@ -89,7 +89,8 @@ public:
     /*-----------------------------------------------*/
     /* Move constructor and move-assignment operator */
     template<typename OtherAllocatorType = AllocatorType>
-    vector(vector<ItemType, OtherAllocatorType>&& move_, AllocatorType& alloc_ = AllocatorType{});
+    explicit vector(vector<ItemType, OtherAllocatorType>&& move_,
+                    AllocatorType&                         alloc_ = AllocatorType{});
     template<typename OtherAllocatorType = AllocatorType>
     vector& operator=(vector<ItemType, OtherAllocatorType>&& move_);
 
@@ -145,6 +146,16 @@ public:
 
     vector<ItemType, AllocatorType>& operator>>(int steps_);
     vector<ItemType, AllocatorType>& operator<<(int steps_);
+
+    [[nodiscard]] bool operator==(const vector& otherVector_) const;
+    [[nodiscard]] bool operator!=(const vector& otherVector_) const;
+    [[nodiscard]] bool operator<(const vector& otherVector_) const;
+    [[nodiscard]] bool operator>(const vector& otherVector_) const;
+    [[nodiscard]] bool operator<=(const vector& otherVector_) const;
+    [[nodiscard]] bool operator>=(const vector& otherVector_) const;
+#ifdef __cpp_impl_three_way_comparison
+    [[nodiscard]] std::strong_ordering operator<=>(const vector& otherVector_) const;
+#endif
 
 
     /*********************************************************************************************/
@@ -221,7 +232,7 @@ private:
     void add_size(SizeType addedLength_);
     void change_size(SizeType newLength_);
 
-    void check_fit(SizeType extraLength_);
+    void           check_fit(SizeType extraLength_);
     constexpr void check_if_valid(IteratorType iterator_);
 
     SizeType step_size() noexcept;

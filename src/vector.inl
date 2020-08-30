@@ -148,10 +148,12 @@ vector<ItemType, AllocatorType>::vector(const vector<ItemType, OtherAllocatorTyp
 }
 
 template<typename ItemType, typename AllocatorType>
-vector<ItemType, AllocatorType>&
-vector<ItemType, AllocatorType>::operator=(const vector<ItemType, AllocatorType>& copy_)
+vector<ItemType, AllocatorType>::vector(const vector& otherVector_)
+: m_allocator{otherVector_.get_allocator()}
 {
-    return operator=<ItemType, AllocatorType>(copy_);
+    vector_constructor(otherVector_.length());
+
+    std::copy(otherVector_.begin(), otherVector_.begin(), begin());
 }
 
 /**
@@ -169,6 +171,13 @@ vector<ItemType, AllocatorType>::operator=(const vector<ItemType, OtherAllocator
 
     std::copy(copy_.begin(), copy_.begin(), begin());
     m_allocator = copy_.get_allocator();
+}
+
+template<typename ItemType, typename AllocatorType>
+vector<ItemType, AllocatorType>&
+vector<ItemType, AllocatorType>::operator=(const vector<ItemType, AllocatorType>& copy_)
+{
+    return operator=<ItemType, AllocatorType>(copy_);
 }
 
 
@@ -704,6 +713,142 @@ vector<ItemType, AllocatorType>::operator<<(int steps_)
 
     return *this;
 }
+
+
+/**
+ **************************************************************************************************
+ * \brief       Overload of the equality == operator to compare the values of two vectors.
+ *
+ * \param       otherVector_: The other vector to compare with
+ *
+ * \retval      true if all the values within both vectors are equal
+ *************************************************************************************************/
+template<typename ItemType, typename AllocatorType>
+[[nodiscard]] inline bool
+vector<ItemType, AllocatorType>::operator==(const vector& otherVector_) const
+{
+    bool isSameLength = length() == otherVector_.length();
+    if(isSameLength == true)
+    {
+        bool isEqual = std::equal(begin(), end(), otherVector_.begin());
+        return isEqual;
+    }
+}
+
+
+/**
+ **************************************************************************************************
+ * \brief       Overload of the inequality != operator to compare the values of two vectors.
+ *
+ * \param       otherVector_: The other vector to compare with
+ *
+ * \retval      true if any value is different between the vectors or if their size differ.
+ *************************************************************************************************/
+template<typename ItemType, typename AllocatorType>
+[[nodiscard]] inline bool
+vector<ItemType, AllocatorType>::operator!=(const vector& otherVector_) const
+{
+    return !(*this == otherVector_);
+}
+
+/**
+ **************************************************************************************************
+ * \brief       Overload of the less-than < operator to compare the values of two vectors.
+ *              Uses lexicographical comparison to compare the values of the vectors.
+ *
+ * \param       otherVector_: The other vector to compare with
+ *
+ * \retval      true if this vector is lexicographically less than the other.
+ *************************************************************************************************/
+template<typename ItemType, typename AllocatorType>
+[[nodiscard]] inline bool
+vector<ItemType, AllocatorType>::operator<(const vector& otherVector_) const
+{
+    bool isLess =
+      std::lexicographical_compare(begin(), end(), otherVector_.begin(), otherVector_.end());
+    return isLess;
+}
+
+/**
+ **************************************************************************************************
+ * \brief       Overload of the more-than > operator to compare the values of two vectors.
+ *              Uses lexicographical comparison to compare the values of the vectors.
+ *
+ * \param       otherVector_: The other vector to compare with
+ *
+ * \retval      true if this vector is lexicographically more than the other.
+ *************************************************************************************************/
+template<typename ItemType, typename AllocatorType>
+[[nodiscard]] inline bool
+vector<ItemType, AllocatorType>::operator>(const vector& otherVector_) const
+{
+    return (otherVector_ < *this);
+}
+
+/**
+ **************************************************************************************************
+ * \brief       Overload of the less-or-equal <= operator to compare the values of two vectors.
+ *              Uses lexicographical comparison to compare the values of the vectors.
+ *
+ * \param       otherVector_: The other vector to compare with
+ *
+ * \retval      true if this vector is lexicographically less or equal to the other.
+ *************************************************************************************************/
+template<typename ItemType, typename AllocatorType>
+[[nodiscard]] inline bool
+vector<ItemType, AllocatorType>::operator<=(const vector& otherVector_) const
+{
+    return !(otherVector_ < *this);
+}
+
+/**
+ **************************************************************************************************
+ * \brief       Overload of the more-or-equal >= operator to compare the values of two vectors.
+ *              Uses lexicographical comparison to compare the values of the vectors.
+ *
+ * \param       otherVector_: The other vector to compare with
+ *
+ * \retval      true if this vector is lexicographically more or equal to the other.
+ *************************************************************************************************/
+template<typename ItemType, typename AllocatorType>
+[[nodiscard]] inline bool
+vector<ItemType, AllocatorType>::operator>=(const vector& otherVector_) const
+{
+    return !(this < otherVector_);
+}
+
+
+/**
+ **************************************************************************************************
+ * \brief       Overload of the three-way-comparison <=> operator to compare the values of two
+ *              vectors.
+ *              Uses lexicographical comparison to compare the values of the vectors.
+ *
+ * \param       otherVector_: The other vector to compare with
+ *
+ * \retval      greater: if this vector is lexicographically greater than the other
+ *              less:    if this vector is lexicographically less than the other
+ *              equal:   if the items of both vectors are equals
+ *************************************************************************************************/
+#ifdef __cpp_impl_three_way_comparison
+template<typename ItemType, typename AllocatorType>
+[[nodiscard]] inline std::strong_ordering
+vector<ItemType, AllocatorType>::operator<=>(const vector& otherVector_) const
+{
+    if(*this < otherVector_)
+    {
+        return std::strong_ordering::greater;
+    }
+    if(*this > otherVector_)
+    {
+        return std::strong_ordering::less;
+    }
+    else /* *this == otherVector_ */
+    {
+        return std::strong_ordering::equal;
+    }
+}
+#endif
 
 
 /*************************************************************************************************/
@@ -1496,6 +1641,15 @@ vector<ItemType, AllocatorType>::check_if_valid(IteratorType iterator_)
 }
 
 
+/**
+**************************************************************************************************
+* \brief       Get and increases the allocation step size.
+*              Whenever this function is called, set the allocation step size to 150%, rounded to
+*              the upper even number.
+*              (Step size of 10 becomes 16).
+*
+* \retval      The adjusted step size.
+*************************************************************************************************/
 template<typename ItemType, typename AllocatorType>
 typename vector<ItemType, AllocatorType>::SizeType
 vector<ItemType, AllocatorType>::step_size() noexcept
