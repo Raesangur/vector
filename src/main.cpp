@@ -26,8 +26,6 @@
 #include <iostream>
 #include <memory_resource>
 
-#include <cassert>
-
 #include "./tests.inl"
 #include "./vector.hpp"
 

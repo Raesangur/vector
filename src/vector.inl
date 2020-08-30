@@ -1015,6 +1015,25 @@ vector<ItemType, AllocatorType>::push_back(const InitializerListType ilist_)
 
 /**
  **************************************************************************************************
+ * \brief       Add elements from another vector to the end of the vector, after the current 
+ *              last item.
+ *
+ * \param       otherVector_: Vector containing elements to push back at the end of the vector.
+ *************************************************************************************************/
+template<typename ItemType, typename AllocatorType>
+template<typename OtherAllocatorType>
+inline void
+vector<ItemType, AllocatorType>::push_back(const vector<ItemType, OtherAllocatorType>& otherVector_)
+{
+    check_fit(otherVector_.length());
+
+    std::copy(otherVector_.cbegin(), otherVector_.cend(), end());
+    add_size(otherVector_.length());
+}
+
+
+/**
+ **************************************************************************************************
  * \brief       Remove the last element of the vector.
  *************************************************************************************************/
 template<typename ItemType, typename AllocatorType>
