@@ -39,13 +39,6 @@
 
 namespace pel
 {
-/** \todo Increase allocation step size automatically when needed */
-/**       \todo Make allocation step sizes align with the implementation's
-                memory allocations alignments and sizes. */
-/** \todo working reverse iterators */
-/** \todo make things actually constexpr */
-
-
 constexpr bool vector_safeness = true;
 
 template<typename ItemType>
@@ -229,7 +222,9 @@ private:
     void change_size(SizeType newLength_);
 
     void check_fit(SizeType extraLength_);
-    void check_if_valid(IteratorType iterator_);
+    constexpr void check_if_valid(IteratorType iterator_);
+
+    SizeType step_size() noexcept;
 
 
     /*********************************************************************************************/
@@ -238,16 +233,8 @@ private:
     SizeType      m_capacity      = 0;
     IteratorType  m_beginIterator = IteratorType(nullptr);
     IteratorType  m_endIterator   = IteratorType(nullptr);
+    SizeType      m_stepSize      = 4;
     AllocatorType m_allocator{};
-
-
-    /*********************************************************************************************/
-    /* Static variables ------------------------------------------------------------------------ */
-    constexpr inline SizeType
-    m_stepSize()
-    {
-        return 4;
-    }
 };
 
 };        // namespace pel

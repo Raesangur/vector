@@ -1467,7 +1467,7 @@ vector<ItemType, AllocatorType>::check_fit(SizeType extraLength_)
 {
     if(length() + extraLength_ > capacity())
     {
-        reserve(capacity() + m_stepSize() + extraLength_);
+        reserve(capacity() + step_size());
     }
 }
 
@@ -1483,7 +1483,7 @@ vector<ItemType, AllocatorType>::check_fit(SizeType extraLength_)
  *              If the iterator does not belong in the vector's boundaries.
  *************************************************************************************************/
 template<typename ItemType, typename AllocatorType>
-inline void
+constexpr inline void
 vector<ItemType, AllocatorType>::check_if_valid(IteratorType iterator_)
 {
     if constexpr(vector_safeness == true)
@@ -1493,6 +1493,14 @@ vector<ItemType, AllocatorType>::check_if_valid(IteratorType iterator_)
             throw std::invalid_argument("Invalid iterator");
         }
     }
+}
+
+
+template<typename ItemType, typename AllocatorType>
+typename vector<ItemType, AllocatorType>::SizeType
+vector<ItemType, AllocatorType>::step_size() noexcept
+{
+    return ((m_stepSize += m_stepSize / 2) % 2 == 0) ? m_stepSize : ++m_stepSize;
 }
 
 }        // namespace pel
