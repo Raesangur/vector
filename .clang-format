@@ -12,7 +12,7 @@ AlignTrailingComments:          true
 
 AllowAllArgumentsOnNextLine:                true
 AllowAllConstructorInitializersOnNextLine:  true
-AllowAllParametersOfDeclarationOnNextLine:  true
+AllowAllParametersOfDeclarationOnNextLine:  false
 AllowShortBlocksOnASingleLine:              false
 AllowShortCaseLabelsOnASingleLine:          false
 AllowShortFunctionsOnASingleLine:           None
@@ -25,13 +25,15 @@ AlwaysBreakAfterReturnType:             AllDefinitions
 AlwaysBreakBeforeMultilineStrings:      true
 AlwaysBreakTemplateDeclarations:        Yes
 BinPackArguments:                       false
+BinPackParameters:                      false
 
 BreakAfterJavaFieldAnnotations:         true
-BreakBeforeBinaryOperators:             None
-BreakBeforeBraces: Allman
+BreakBeforeBinaryOperators:             NonAssignment
+BreakBeforeBraces:                      Allman
 BreakBeforeTernaryOperators:            true
 BreakConstructorInitializers:           BeforeColon
 BreakInheritanceList:                   BeforeColon
+BreakStringLiterals:                    true
 
 BraceWrapping:
     AfterCaseLabel:         true
@@ -55,14 +57,13 @@ BraceWrapping:
     SplitEmptyNamespace:    true
 BreakBeforeBraces: Custom
 
-BreakStringLiterals:                    true
 ColumnLimit:                            100
 CompactNamespaces:                      false
 
 ConstructorInitializerAllOnOneLineOrOnePerLine: true
 ConstructorInitializerIndentWidth:              0
-Cpp11BracedListStyle:                           true
 
+Cpp11BracedListStyle:       true
 DerivePointerAlignment:     false
 DisableFormat:              false
 FixNamespaceComments:       true
@@ -82,8 +83,9 @@ SpaceBeforeCtorInitializerColon:    true
 SpaceBeforeInheritanceColon:        true
 SpaceBeforeParens:                  Never
 SpaceBeforeRangeBasedForLoopColon:  true
-SpaceInEmptyParentheses:            false
 SpacesBeforeTrailingComments:       8
+
+SpaceInEmptyParentheses:            false
 SpacesInAngles:                     false
 SpacesInCStyleCastParentheses:      false
 SpacesInParentheses:                false

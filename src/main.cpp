@@ -26,6 +26,8 @@
 #include <iostream>
 #include <memory_resource>
 
+#include <cassert>
+
 #include "./tests.inl"
 #include "./vector.hpp"
 
@@ -48,6 +50,9 @@ main()
           },
           std::pmr::polymorphic_allocator<int>{&memResource});
 
+        myVec.push_back(++toto);
+        myVec.push_back(++toto);
+        myVec.push_back(++toto);
         return static_cast<int>(myVec.length());
     }
     catch(...)

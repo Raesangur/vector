@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?> 
 <AutoVisualizer xmlns="http://schemas.microsoft.com/vstudio/debugger/natvis/2010">
   <Type Name ="pel::vector&lt;*&gt;">
-    <DisplayString>{{ length = {m_endIterator.m_ptr - m_beginIterator.m_ptr} }}</DisplayString>
+    <DisplayString>{{ length: {m_endIterator.m_ptr - m_beginIterator.m_ptr} | capacity: {m_capacity} }}</DisplayString>
     <Expand>
       <Item Name ="[length]"> m_endIterator.m_ptr - m_beginIterator.m_ptr </Item>
       <Item Name ="[capacity]"> m_capacity </Item>
@@ -9,6 +9,7 @@
         <Size> m_endIterator.m_ptr - m_beginIterator.m_ptr </Size>
         <ValuePointer> m_beginIterator.m_ptr </ValuePointer>
       </ArrayItems>
+      <Item Name="[allocation step size]"> m_stepSize </Item>
     </Expand>
   </Type>
 </AutoVisualizer>

@@ -28,8 +28,7 @@
 #include "./container_base/src/container_base.h"
 
 #include <algorithm>
-#include <cstddef>
-#include <cstdlib>
+#include <compare>
 #include <functional>
 #include <memory>
 #include <ostream>
@@ -39,13 +38,6 @@
 
 namespace pel
 {
-/** \todo Increase allocation step size automatically when needed */
-/**       \todo Make allocation step sizes align with the implementation's
-                memory allocations alignments and sizes. */
-/** \todo working reverse iterators */
-/** \todo make things actually constexpr */
-
-
 constexpr bool vector_safeness = true;
 
 template<typename ItemType>
@@ -87,8 +79,9 @@ public:
     /*-----------------------------------------------*/
     /* Copy constructor and copy-assignment operator */
     template<typename OtherAllocatorType = AllocatorType>
-    vector(const vector<ItemType, OtherAllocatorType>& otherVector_,
-           const AllocatorType&                        alloc_ = AllocatorType{});
+    explicit vector(const vector<ItemType, OtherAllocatorType>& otherVector_,
+                    const AllocatorType&                        alloc_ = AllocatorType{});
+    explicit vector(const vector& otherVector_);
     template<typename OtherAllocatorType = AllocatorType>
     vector& operator=(const vector<ItemType, OtherAllocatorType>& copy_);
     vector& operator=(const vector& copy_);
@@ -96,7 +89,8 @@ public:
     /*-----------------------------------------------*/
     /* Move constructor and move-assignment operator */
     template<typename OtherAllocatorType = AllocatorType>
-    vector(vector<ItemType, OtherAllocatorType>&& move_, AllocatorType& alloc_ = AllocatorType{});
+    explicit vector(vector<ItemType, OtherAllocatorType>&& move_,
+                    AllocatorType&                         alloc_ = AllocatorType{});
     template<typename OtherAllocatorType = AllocatorType>
     vector& operator=(vector<ItemType, OtherAllocatorType>&& move_);
 
@@ -152,6 +146,16 @@ public:
 
     vector<ItemType, AllocatorType>& operator>>(int steps_);
     vector<ItemType, AllocatorType>& operator<<(int steps_);
+
+    [[nodiscard]] bool operator==(const vector& otherVector_) const;
+    [[nodiscard]] bool operator!=(const vector& otherVector_) const;
+    [[nodiscard]] bool operator<(const vector& otherVector_) const;
+    [[nodiscard]] bool operator>(const vector& otherVector_) const;
+    [[nodiscard]] bool operator<=(const vector& otherVector_) const;
+    [[nodiscard]] bool operator>=(const vector& otherVector_) const;
+#ifdef __cpp_impl_three_way_comparison
+    [[nodiscard]] std::strong_ordering operator<=>(const vector& otherVector_) const;
+#endif
 
 
     /*********************************************************************************************/
@@ -228,8 +232,10 @@ private:
     void add_size(SizeType addedLength_);
     void change_size(SizeType newLength_);
 
-    void check_fit(SizeType extraLength_);
-    void check_if_valid(IteratorType iterator_);
+    void           check_fit(SizeType extraLength_);
+    constexpr void check_if_valid(IteratorType iterator_);
+
+    SizeType step_size() noexcept;
 
 
     /*********************************************************************************************/
@@ -238,16 +244,8 @@ private:
     SizeType      m_capacity      = 0;
     IteratorType  m_beginIterator = IteratorType(nullptr);
     IteratorType  m_endIterator   = IteratorType(nullptr);
+    SizeType      m_stepSize      = 4;
     AllocatorType m_allocator{};
-
-
-    /*********************************************************************************************/
-    /* Static variables ------------------------------------------------------------------------ */
-    constexpr inline SizeType
-    m_stepSize()
-    {
-        return 4;
-    }
 };
 
 };        // namespace pel
