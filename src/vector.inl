@@ -319,153 +319,6 @@ vector<ItemType, AllocatorType>::~vector()
 /* ELEMENT ACCESSORS --------------------------------------------------------------------------- */
 /*************************************************************************************************/
 
-/**
- **************************************************************************************************
- * \brief       Obtain a reference to the element at a specified index in the vector.
- *
- * \param       index_: Index of the element to get.
- *
- * \retval      ItemType&: Reference to the item at the specified index.
- *************************************************************************************************/
-template<typename ItemType, typename AllocatorType>
-[[nodiscard]] inline ItemType&
-vector<ItemType, AllocatorType>::at(SizeType index_)
-{
-    return this->operator[](index_);
-}
-
-
-/**
- **************************************************************************************************
- * \brief       Obtain a constant reference to the element at a specified index in the vector.
- *
- * \param       index_: Index of the element to get.
- *
- * \retval      ItemType&: Const reference to the item at the specified index.
- *************************************************************************************************/
-template<typename ItemType, typename AllocatorType>
-[[nodiscard]] inline const ItemType&
-vector<ItemType, AllocatorType>::at(SizeType index_) const
-{
-    return this->operator[](index_);
-}
-
-
-/**
-**************************************************************************************************
-* \brief       Obtain the iterator to the element at the specified index.
-*
-* \param       index_: Index of the element to get.
-*
-* \retval      IteratorType: Iterator to the item at the specified index.
-*************************************************************************************************/
-template<typename ItemType, typename AllocatorType>
-[[nodiscard]] inline typename vector<ItemType, AllocatorType>::IteratorType
-vector<ItemType, AllocatorType>::iterator_at(DifferenceType index_) const
-{
-    return cbegin() + index_;
-}
-
-
-/**
- **************************************************************************************************
- * \brief       Get the element at the front of the vector.
- *
- * \retval      ItemType&: Element at the front of the vector.
- *
- * \throw       std::length_error
- *              If there was no memory allocated for the elements, accessing even just the first
- *              element would cause errors.
- *************************************************************************************************/
-template<typename ItemType, typename AllocatorType>
-[[nodiscard]] inline ItemType&
-vector<ItemType, AllocatorType>::front()
-{
-    if constexpr(vector_safeness == true)
-    {
-        if(capacity() == 0)
-        {
-            throw std::length_error("Could not access element - No memory allocated");
-        }
-    }
-    return *begin();
-}
-
-
-/**
- **************************************************************************************************
- * \brief       Get the element at the back of the vector.
- *
- * \retval      ItemType&: Element at the back of the vector.
- *
- * \throw       std::length_error
- *              If there was no memory allocated for the elements, accessing even just the first
- *              element would cause errors.
- *************************************************************************************************/
-template<typename ItemType, typename AllocatorType>
-[[nodiscard]] inline ItemType&
-vector<ItemType, AllocatorType>::back()
-{
-    if constexpr(vector_safeness == true)
-    {
-        if(capacity() == 0)
-        {
-            throw std::length_error("Could not access element - No memory allocated");
-        }
-    }
-    return *(end() - 1);
-}
-
-
-/**
- **************************************************************************************************
- * \brief       Get the const element at the front of the vector.
- *
- * \retval      ItemType&: Const element at the front of the vector.
- *
- * \throw       std::length_error
- *              If there was no memory allocated for the elements, accessing even just the first
- *              element would cause errors.
- *************************************************************************************************/
-template<typename ItemType, typename AllocatorType>
-[[nodiscard]] inline const ItemType&
-vector<ItemType, AllocatorType>::front() const
-{
-    if constexpr(vector_safeness == true)
-    {
-        if(capacity() == 0)
-        {
-            throw std::length_error("Could not access element - No memory allocated");
-        }
-    }
-    return *cbegin();
-}
-
-
-/**
- **************************************************************************************************
- * \brief       Get the const element at the back of the vector.
- *
- * \retval      ItemType&: Const element at the back of the vector.
- *
- * \throw       std::length_error
- *              If there was no memory allocated for the elements, accessing even just the first
- *              element would cause errors.
- *************************************************************************************************/
-template<typename ItemType, typename AllocatorType>
-[[nodiscard]] inline const ItemType&
-vector<ItemType, AllocatorType>::back() const
-{
-    if constexpr(vector_safeness == true)
-    {
-        if(capacity() == 0)
-        {
-            throw std::length_error("Could not access element - No memory allocated");
-        }
-    }
-    return *(end() - 1);
-}
-
 
 /**
  **************************************************************************************************
@@ -492,27 +345,6 @@ template<typename ItemType, typename AllocatorType>
 vector<ItemType, AllocatorType>::data() const noexcept
 {
     return begin().ptr();
-}
-
-
-/**
- **************************************************************************************************
- * \brief       Return the index of an iterator from the start of the vector.
- *
- * \param       iterator_: Iterator in the vector to get the index of.
- *
- * \retval      SizeType: index of the iterator.
- *************************************************************************************************/
-template<typename ItemType, typename AllocatorType>
-[[nodiscard]] inline typename vector<ItemType, AllocatorType>::DifferenceType
-vector<ItemType, AllocatorType>::index_of(IteratorType iterator_) const
-{
-    if constexpr(vector_safeness == true)
-    {
-        check_if_valid(iterator_);
-    }
-
-    return iterator_ - begin();
 }
 
 
@@ -1015,7 +847,7 @@ vector<ItemType, AllocatorType>::push_back(const InitializerListType ilist_)
 
 /**
  **************************************************************************************************
- * \brief       Add elements from another vector to the end of the vector, after the current 
+ * \brief       Add elements from another vector to the end of the vector, after the current
  *              last item.
  *
  * \param       otherVector_: Vector containing elements to push back at the end of the vector.
@@ -1632,30 +1464,6 @@ vector<ItemType, AllocatorType>::check_fit(SizeType extraLength_)
     if(length() + extraLength_ > capacity())
     {
         reserve(capacity() + step_size());
-    }
-}
-
-
-/**
- **************************************************************************************************
- * \brief       Check if an iterator is located within the vector's bounds.
- *              If it is not, throw an exception.
- *
- * \param       iterator_: Iterator to check.
- *
- * \throws      std::invalid_argument("Invalid iterator"):
- *              If the iterator does not belong in the vector's boundaries.
- *************************************************************************************************/
-template<typename ItemType, typename AllocatorType>
-constexpr inline void
-vector<ItemType, AllocatorType>::check_if_valid(IteratorType iterator_)
-{
-    if constexpr(vector_safeness == true)
-    {
-        if((iterator_ < cbegin()) || (iterator_ > cend()))
-        {
-            throw std::invalid_argument("Invalid iterator");
-        }
     }
 }
 

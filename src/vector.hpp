@@ -25,7 +25,7 @@
 
 /*************************************************************************************************/
 /* File includes ------------------------------------------------------------------------------- */
-#include "./container_base/src/container_base.h"
+#include "./container_base/src/container_base.hpp"
 
 #include <algorithm>
 #include <compare>
@@ -43,13 +43,8 @@ constexpr bool vector_safeness = true;
 template<typename ItemType>
 using vector_iterator = iterator_base<ItemType>;
 
-template<typename ItemType>
-using reverse_vector_iterator = iterator_base<ItemType>;
-// using reverse_vector_iterator = std::reverse_iterator<vector_iterator<ItemType>>;
-
-
 template<typename ItemType, typename AllocatorType = std::allocator<ItemType>>
-class vector : container_base<ItemType, vector_iterator<ItemType>>
+class vector : public container_base<ItemType, vector_iterator<ItemType>, AllocatorType>
 {
     static_assert(std::is_same_v<ItemType, typename AllocatorType::value_type>,
                   "Allocator must match element type");
@@ -62,7 +57,7 @@ public:
     using SizeType            = std::size_t;
     using DifferenceType      = std::ptrdiff_t;
     using IteratorType        = vector_iterator<ItemType>;
-    using RIteratorType       = reverse_vector_iterator<ItemType>;
+    using RIteratorType       = typename IteratorType::ReverseIteratorType;
     using InitializerListType = std::initializer_list<ItemType>;
 
 
@@ -115,20 +110,8 @@ public:
 
     /*********************************************************************************************/
     /* Element accessors ----------------------------------------------------------------------- */
-    [[nodiscard]] ItemType&       at(SizeType index_) override;
-    [[nodiscard]] const ItemType& at(SizeType index_) const override;
-    [[nodiscard]] IteratorType    iterator_at(DifferenceType index_) const override;
-
-    [[nodiscard]] ItemType&       front() override;
-    [[nodiscard]] ItemType&       back() override;
-    [[nodiscard]] const ItemType& front() const override;
-    [[nodiscard]] const ItemType& back() const override;
-
     [[nodiscard]] ItemType*       data() noexcept;
     [[nodiscard]] const ItemType* data() const noexcept;
-
-
-    [[nodiscard]] DifferenceType index_of(IteratorType iterator_) const;
 
     void assign(const ItemType& value_, DifferenceType offset_ = 0, SizeType count_ = 1);
     void assign(InitializerListType ilist_, DifferenceType offset_ = 0);
@@ -235,7 +218,7 @@ private:
     void change_size(SizeType newLength_);
 
     void           check_fit(SizeType extraLength_);
-    constexpr void check_if_valid(IteratorType iterator_);
+    constexpr void check_if_valid(IteratorType iterator_) const;
 
     SizeType step_size() noexcept;
 
@@ -250,7 +233,7 @@ private:
     AllocatorType m_allocator{};
 };
 
-};        // namespace pel
+}        // namespace pel
 
 
 #include "./vector.inl"

@@ -6,10 +6,13 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="E:\GitHub\vector\src\container_base\src\container_base.h">
+    <ClInclude Include="E:\GitHub\vector\src\container_base\src\container_base.hpp">
       <Filter>src\container_base\src</Filter>
     </ClInclude>
-    <ClInclude Include="E:\GitHub\vector\src\container_base\src\iterator_base.h">
+    <ClInclude Include="E:\GitHub\vector\src\container_base\src\container_base.inl">
+      <Filter>src\container_base\src</Filter>
+    </ClInclude>
+    <ClInclude Include="E:\GitHub\vector\src\container_base\src\iterator_base.hpp">
       <Filter>src\container_base\src</Filter>
     </ClInclude>
     <ClInclude Include="E:\GitHub\vector\src\container_base\src\test\testContainer.hpp">
