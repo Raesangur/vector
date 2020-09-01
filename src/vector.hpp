@@ -130,28 +130,6 @@ public:
     vector<ItemType, AllocatorType>& operator>>(int steps_);
     vector<ItemType, AllocatorType>& operator<<(int steps_);
 
-    [[nodiscard]] bool operator==(const vector& otherVector_) const;
-    [[nodiscard]] bool operator!=(const vector& otherVector_) const;
-    [[nodiscard]] bool operator<(const vector& otherVector_) const;
-    [[nodiscard]] bool operator>(const vector& otherVector_) const;
-    [[nodiscard]] bool operator<=(const vector& otherVector_) const;
-    [[nodiscard]] bool operator>=(const vector& otherVector_) const;
-#ifdef __cpp_impl_three_way_comparison
-    [[nodiscard]] std::strong_ordering operator<=>(const vector& otherVector_) const;
-#endif
-
-
-    /*********************************************************************************************/
-    /* Iterators ------------------------------------------------------------------------------- */
-    [[nodiscard]] IteratorType        begin() const noexcept override;
-    [[nodiscard]] IteratorType        end() const noexcept override;
-    [[nodiscard]] const IteratorType  cbegin() const noexcept override;
-    [[nodiscard]] const IteratorType  cend() const noexcept override;
-    [[nodiscard]] RIteratorType       rbegin() const noexcept;
-    [[nodiscard]] RIteratorType       rend() const noexcept;
-    [[nodiscard]] const RIteratorType crbegin() const noexcept;
-    [[nodiscard]] const RIteratorType crend() const noexcept;
-
 
     /*********************************************************************************************/
     /* Element management ---------------------------------------------------------------------- */
@@ -190,16 +168,10 @@ public:
 
     /*********************************************************************************************/
     /* Memory ---------------------------------------------------------------------------------- */
-    [[nodiscard]] SizeType             length() const noexcept override;
-    [[nodiscard]] SizeType             capacity() const noexcept;
-    [[nodiscard]] bool                 is_empty() const noexcept override;
-    [[nodiscard]] bool                 is_not_empty() const noexcept override;
-    [[nodiscard]] const AllocatorType& get_allocator() const noexcept;
+    [[nodiscard]] SizeType capacity() const noexcept;
 
     void reserve(SizeType newCapacity_);
     void resize(SizeType newLength_);
-
-    void clear();
 
     void shrink_to_fit();
 
@@ -217,8 +189,7 @@ private:
     void add_size(SizeType addedLength_);
     void change_size(SizeType newLength_);
 
-    void           check_fit(SizeType extraLength_);
-    constexpr void check_if_valid(IteratorType iterator_) const;
+    void check_fit(SizeType extraLength_);
 
     SizeType step_size() noexcept;
 
@@ -227,10 +198,7 @@ private:
     /* Variables ------------------------------------------------------------------------------- */
 private:
     SizeType      m_capacity      = 0;
-    IteratorType  m_beginIterator = IteratorType(nullptr);
-    IteratorType  m_endIterator   = IteratorType(nullptr);
     SizeType      m_stepSize      = 4;
-    AllocatorType m_allocator{};
 };
 
 }        // namespace pel
