@@ -48,9 +48,15 @@ main()
           },
           std::pmr::polymorphic_allocator<int>{&memResource});
 
+        myVec.push_back(toto);
         myVec.push_back(++toto);
         myVec.push_back(++toto);
         myVec.push_back(++toto);
+
+        std::cout << "vector's size: " << sizeof(myVec) << '\n';
+        std::cout << "vector's iterator's size" << sizeof(myVec.begin()) << '\n';
+        std::cout << "vector's allocator's size" << sizeof(myVec.get_allocator()) << '\n';
+        std::cout << myVec.to_string() << '\n';
         return static_cast<int>(myVec.length());
     }
     catch(...)
