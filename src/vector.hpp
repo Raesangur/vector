@@ -119,9 +119,6 @@ public:
 
     /*********************************************************************************************/
     /* Operator overloads ---------------------------------------------------------------------- */
-    [[nodiscard]] ItemType&       operator[](SizeType index_) override;
-    [[nodiscard]] const ItemType& operator[](SizeType index_) const override;
-
     vector<ItemType, AllocatorType>& operator+=(const ItemType& rhs_);
 
     const vector<ItemType, AllocatorType> operator++(int);
@@ -185,9 +182,6 @@ public:
     /* Private methods ------------------------------------------------------------------------- */
 private:
     void vector_constructor(SizeType size_);
-
-    void add_size(SizeType addedLength_);
-    void change_size(SizeType newLength_);
 
     void check_fit(SizeType extraLength_);
 

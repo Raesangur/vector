@@ -398,59 +398,6 @@ vector<ItemType, AllocatorType>::assign(InitializerListType ilist_, DifferenceTy
 /* OPERATOR OVERLOADS -------------------------------------------------------------------------- */
 /*************************************************************************************************/
 
-/**
- **************************************************************************************************
- * \brief       Overload of the brackets[] operator to access an element at a specific index.
- *
- * \param       index_: Index of the element to access.
- *
- * \retval      ItemType&: Reference to the element at the index.
- *
- * \throws      std::length_error("Index out of range")
- *              If the index is out of the vector's length.
- *************************************************************************************************/
-template<typename ItemType, typename AllocatorType>
-[[nodiscard]] inline ItemType&
-vector<ItemType, AllocatorType>::operator[](SizeType index_)
-{
-    if constexpr(vector_safeness == true)
-    {
-        if(index_ >= length())
-        {
-            throw std::length_error("Index out of range");
-        }
-    }
-
-    return begin()[index_];
-}
-
-
-/**
- **************************************************************************************************
- * \brief       Overload of the brackets[] operator to access a const element at a specific index.
- *
- * \param       index_: Index of the element to access.
- *
- * \retval      ItemType&: Const reference to the element at the index.
- *
- * \throws      std::length_error("Index out of range")
- *              If the index is out of the vector's length.
- *************************************************************************************************/
-template<typename ItemType, typename AllocatorType>
-[[nodiscard]] inline const ItemType&
-vector<ItemType, AllocatorType>::operator[](SizeType index_) const
-{
-    if constexpr(vector_safeness == true)
-    {
-        if(index_ >= length())
-        {
-            throw std::length_error("Index out of range!");
-        }
-    }
-
-    return begin()[index_];
-}
-
 
 /**
  **************************************************************************************************
@@ -1082,39 +1029,6 @@ vector<ItemType, AllocatorType>::vector_constructor(SizeType size_)
     /* Deallocate old memory */
     m_allocator.deallocate(oldPtr, capacity());
     m_capacity = size_;
-}
-
-
-/**
- **************************************************************************************************
- * \brief       Add a number of elements to the current length of the vector.
- *
- * \param       addedLength_: Numbers of elements to add to the current length.
- *************************************************************************************************/
-template<typename ItemType, typename AllocatorType>
-inline void
-vector<ItemType, AllocatorType>::add_size(SizeType addedLength_)
-{
-    change_size(length() + addedLength_);
-}
-
-
-/**
- **************************************************************************************************
- * \brief       Change the current length (in elements) of the vector.
- *
- * \param       newLength_: New length (in elements) of the vector.
- *
- * \warning     This function does not check if the capacity is big enough before modifying the
- *              length of the vector.
- *              It should only be called when sure that the vector can hold all the added elements.
- *              (using a function such as \ref check_fit() is recommended).
- *************************************************************************************************/
-template<typename ItemType, typename AllocatorType>
-inline void
-vector<ItemType, AllocatorType>::change_size(SizeType newLength_)
-{
-    m_endIterator = IteratorType(&(begin()[newLength_]));
 }
 
 
