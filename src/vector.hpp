@@ -25,7 +25,7 @@
 
 /*************************************************************************************************/
 /* File includes ------------------------------------------------------------------------------- */
-#include "./container_base/src/container_base.h"
+#include "./container_base/src/container_base.hpp"
 
 #include <algorithm>
 #include <compare>
@@ -43,13 +43,8 @@ constexpr bool vector_safeness = true;
 template<typename ItemType>
 using vector_iterator = iterator_base<ItemType>;
 
-template<typename ItemType>
-using reverse_vector_iterator = iterator_base<ItemType>;
-// using reverse_vector_iterator = std::reverse_iterator<vector_iterator<ItemType>>;
-
-
 template<typename ItemType, typename AllocatorType = std::allocator<ItemType>>
-class vector : container_base<ItemType, vector_iterator<ItemType>>
+class vector : public container_base<ItemType, vector_iterator<ItemType>, AllocatorType>
 {
     static_assert(std::is_same_v<ItemType, typename AllocatorType::value_type>,
                   "Allocator must match element type");
@@ -62,7 +57,7 @@ public:
     using SizeType            = std::size_t;
     using DifferenceType      = std::ptrdiff_t;
     using IteratorType        = vector_iterator<ItemType>;
-    using RIteratorType       = reverse_vector_iterator<ItemType>;
+    using RIteratorType       = typename IteratorType::ReverseIteratorType;
     using InitializerListType = std::initializer_list<ItemType>;
 
 
@@ -115,20 +110,8 @@ public:
 
     /*********************************************************************************************/
     /* Element accessors ----------------------------------------------------------------------- */
-    [[nodiscard]] ItemType&       at(SizeType index_) override;
-    [[nodiscard]] const ItemType& at(SizeType index_) const override;
-    [[nodiscard]] IteratorType    iterator_at(DifferenceType index_) const override;
-
-    [[nodiscard]] ItemType&       front() override;
-    [[nodiscard]] ItemType&       back() override;
-    [[nodiscard]] const ItemType& front() const override;
-    [[nodiscard]] const ItemType& back() const override;
-
     [[nodiscard]] ItemType*       data() noexcept;
     [[nodiscard]] const ItemType* data() const noexcept;
-
-
-    [[nodiscard]] DifferenceType index_of(IteratorType iterator_) const;
 
     void assign(const ItemType& value_, DifferenceType offset_ = 0, SizeType count_ = 1);
     void assign(InitializerListType ilist_, DifferenceType offset_ = 0);
@@ -136,9 +119,6 @@ public:
 
     /*********************************************************************************************/
     /* Operator overloads ---------------------------------------------------------------------- */
-    [[nodiscard]] ItemType&       operator[](SizeType index_) override;
-    [[nodiscard]] const ItemType& operator[](SizeType index_) const override;
-
     vector<ItemType, AllocatorType>& operator+=(const ItemType& rhs_);
 
     const vector<ItemType, AllocatorType> operator++(int);
@@ -146,28 +126,6 @@ public:
 
     vector<ItemType, AllocatorType>& operator>>(int steps_);
     vector<ItemType, AllocatorType>& operator<<(int steps_);
-
-    [[nodiscard]] bool operator==(const vector& otherVector_) const;
-    [[nodiscard]] bool operator!=(const vector& otherVector_) const;
-    [[nodiscard]] bool operator<(const vector& otherVector_) const;
-    [[nodiscard]] bool operator>(const vector& otherVector_) const;
-    [[nodiscard]] bool operator<=(const vector& otherVector_) const;
-    [[nodiscard]] bool operator>=(const vector& otherVector_) const;
-#ifdef __cpp_impl_three_way_comparison
-    [[nodiscard]] std::strong_ordering operator<=>(const vector& otherVector_) const;
-#endif
-
-
-    /*********************************************************************************************/
-    /* Iterators ------------------------------------------------------------------------------- */
-    [[nodiscard]] IteratorType        begin() const noexcept override;
-    [[nodiscard]] IteratorType        end() const noexcept override;
-    [[nodiscard]] const IteratorType  cbegin() const noexcept override;
-    [[nodiscard]] const IteratorType  cend() const noexcept override;
-    [[nodiscard]] RIteratorType       rbegin() const noexcept;
-    [[nodiscard]] RIteratorType       rend() const noexcept;
-    [[nodiscard]] const RIteratorType crbegin() const noexcept;
-    [[nodiscard]] const RIteratorType crend() const noexcept;
 
 
     /*********************************************************************************************/
@@ -207,16 +165,10 @@ public:
 
     /*********************************************************************************************/
     /* Memory ---------------------------------------------------------------------------------- */
-    [[nodiscard]] SizeType             length() const noexcept override;
-    [[nodiscard]] SizeType             capacity() const noexcept;
-    [[nodiscard]] bool                 is_empty() const noexcept override;
-    [[nodiscard]] bool                 is_not_empty() const noexcept override;
-    [[nodiscard]] const AllocatorType& get_allocator() const noexcept;
+    [[nodiscard]] SizeType capacity() const noexcept;
 
     void reserve(SizeType newCapacity_);
     void resize(SizeType newLength_);
-
-    void clear();
 
     void shrink_to_fit();
 
@@ -231,11 +183,7 @@ public:
 private:
     void vector_constructor(SizeType size_);
 
-    void add_size(SizeType addedLength_);
-    void change_size(SizeType newLength_);
-
-    void           check_fit(SizeType extraLength_);
-    constexpr void check_if_valid(IteratorType iterator_);
+    void check_fit(SizeType extraLength_);
 
     SizeType step_size() noexcept;
 
@@ -244,13 +192,10 @@ private:
     /* Variables ------------------------------------------------------------------------------- */
 private:
     SizeType      m_capacity      = 0;
-    IteratorType  m_beginIterator = IteratorType(nullptr);
-    IteratorType  m_endIterator   = IteratorType(nullptr);
     SizeType      m_stepSize      = 4;
-    AllocatorType m_allocator{};
 };
 
-};        // namespace pel
+}        // namespace pel
 
 
 #include "./vector.inl"
